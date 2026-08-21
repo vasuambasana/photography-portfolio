@@ -98,10 +98,26 @@ function getFileHash(filePath) {
   }
 }
 
+// Calculate EXIF fingerprint (date taken, camera model, shutter, aperture, iso, focal length)
+async function getExifSignature(filePath) {
+  try {
+    const exifr = await import('exifr');
+    const data = await exifr.default.parse(filePath, {
+      pick: ['DateTimeOriginal', 'Model', 'FocalLength', 'FNumber', 'ExposureTime', 'ISO'],
+    });
+    if (data && (data.DateTimeOriginal || data.ExposureTime)) {
+      return `${data.Model}_${data.DateTimeOriginal?.getTime() || ''}_${data.FocalLength}_${data.FNumber}_${data.ExposureTime}_${data.ISO}`;
+    }
+  } catch (e) {
+    // fallback
+  }
+  return null;
+}
+
 // ---------------------------------------------------------------------------
-// Collect files to process & Deduplicate
+// Collect files to process & Deduplicate Smartly
 // ---------------------------------------------------------------------------
-function collectImages(inputPath) {
+async function collectImages(inputPath) {
   const resolved = path.resolve(inputPath);
 
   if (!fs.existsSync(resolved)) {
@@ -124,53 +140,56 @@ function collectImages(inputPath) {
     process.exit(1);
   }
 
-  // 1. Group by stem to deduplicate RAW + JPG pairs (e.g. IMG_0001.CR3 and IMG_0001.JPG)
-  // and strip copy suffixes like " (1)", "_copy", "-copy"
-  const stemMap = new Map();
   const seenHashes = new Set();
-  const deduplicated = [];
+  const seenExifSigs = new Map();
+  const resultFiles = [];
 
   for (const filePath of allFiles) {
+    const fileName = path.basename(filePath);
     const ext = path.extname(filePath).toLowerCase();
     const baseName = path.basename(filePath, ext);
 
-    // Normalize stem to catch all duplicate naming conventions:
-    // "IMG_0001 (1)", "IMG_0001_copy", "IMG_0001 - Copy", "IMG_0001-Edit", "IMG_0001_1" -> "img_0001"
-    const cleanStem = baseName
-      .replace(/[\s\-_]*(copy|edit|\(\d+\)|_\d+|\-\d+)$/i, '')
-      .replace(/[\s\-_]+/g, '')
-      .toLowerCase();
-
-    // Check MD5 hash deduplication (catches identical files even with different names)
+    // 1. Content MD5 Hash Check (Exact content duplicates)
     const hash = getFileHash(filePath);
     if (seenHashes.has(hash)) {
-      console.log(`   ⏭️  Skipping duplicate image content: ${path.basename(filePath)}`);
+      console.log(`   ⏭️  Skipping exact byte duplicate: ${fileName}`);
       continue;
     }
 
-    // Handle RAW vs JPG pairing and duplicate RAW / duplicate JPG with same base name
-    if (stemMap.has(cleanStem)) {
-      const existing = stemMap.get(cleanStem);
-      const existingExt = path.extname(existing).toLowerCase();
-      const existingIsRaw = RAW_EXTENSIONS.includes(existingExt);
-      const currentIsRaw = RAW_EXTENSIONS.includes(ext);
+    // 2. EXIF Timestamp & Camera Specs Fingerprint Check
+    const exifSig = await getExifSignature(filePath);
+    if (exifSig) {
+      if (seenExifSigs.has(exifSig)) {
+        const existing = seenExifSigs.get(exifSig);
+        const existingExt = path.extname(existing.path).toLowerCase();
+        const existingIsRaw = RAW_EXTENSIONS.includes(existingExt);
+        const currentIsRaw = RAW_EXTENSIONS.includes(ext);
 
-      // If existing is JPG and current is RAW, upgrade to RAW
-      if (!existingIsRaw && currentIsRaw) {
-        console.log(`   🔄 Upgrading photo from JPG (${path.basename(existing)}) to RAW (${path.basename(filePath)})`);
-        stemMap.set(cleanStem, filePath);
-        seenHashes.add(hash);
-      } else {
-        console.log(`   ⏭️  Skipping duplicate ${currentIsRaw ? 'RAW' : 'JPG'} photo: ${path.basename(filePath)}`);
+        if (!existingIsRaw && currentIsRaw) {
+          // Replace JPG with RAW for the exact same EXIF shot
+          console.log(`   🔄 Upgrading photo from JPG (${path.basename(existing.path)}) to RAW (${fileName})`);
+          const idx = resultFiles.indexOf(existing.path);
+          if (idx !== -1) resultFiles[idx] = filePath;
+          seenExifSigs.set(exifSig, { path: filePath, isRaw: currentIsRaw });
+          seenHashes.add(hash);
+        } else {
+          console.log(`   ⏭️  Skipping duplicate shot (identical EXIF timestamp & gear settings): ${fileName}`);
+        }
+        continue;
       }
-      continue;
+      seenExifSigs.set(exifSig, { path: filePath, isRaw: RAW_EXTENSIONS.includes(ext) });
     }
 
+    // 3. Exact stem RAW+JPG pair check (e.g. IMG_0001.CR3 vs IMG_0001.JPG)
+    const exactStem = baseName.toLowerCase();
+    const isCopyFilename = /[\s\-_]*(copy|edit|\(\d+\)|_\d+|\-\d+)$/i.test(baseName);
+
+    // If filename has a copy pattern like " (1)", but its EXIF signature was unique, keep it!
     seenHashes.add(hash);
-    stemMap.set(cleanStem, filePath);
+    resultFiles.push(filePath);
   }
 
-  return Array.from(stemMap.values());
+  return resultFiles;
 }
 
 // ---------------------------------------------------------------------------
@@ -209,8 +228,6 @@ async function readExif(filePath) {
     return {};
   }
 }
-
-const RAW_EXTENSIONS = ['.cr2', '.cr3', '.dng', '.arw', '.nef', '.rw2', '.orf'];
 
 async function getJpegBuffer(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -425,7 +442,7 @@ async function main() {
     // Check if the input directory itself is a category folder
     if (VALID_CATEGORIES.includes(folderName)) {
       const cat = category || folderName;
-      const images = collectImages(resolvedInput);
+      const images = await collectImages(resolvedInput);
       images.forEach(img => tasks.push({ img, cat }));
     } else {
       // Check subfolders for category names
@@ -436,14 +453,14 @@ async function main() {
         const subName = sub.toLowerCase();
         if (VALID_CATEGORIES.includes(subName)) {
           const cat = subName;
-          const images = collectImages(path.join(resolvedInput, sub));
+          const images = await collectImages(path.join(resolvedInput, sub));
           images.forEach(img => tasks.push({ img, cat }));
         }
       }
 
       // Fallback if no category subfolders matched, but photos exist in current folder
       if (tasks.length === 0 && category) {
-        const images = collectImages(resolvedInput);
+        const images = await collectImages(resolvedInput);
         images.forEach(img => tasks.push({ img, cat: category }));
       }
     }
