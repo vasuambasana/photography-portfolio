@@ -200,14 +200,50 @@ async function readExif(filePath) {
     const exifr = await import('exifr');
     const data = await exifr.default.parse(filePath, {
       pick: ['Make', 'Model', 'LensModel', 'LensMake',
-             'FocalLength', 'FNumber', 'ExposureTime', 'ISO',
+             'FocalLength', 'FocalLengthIn35mmFormat', 'FNumber', 'ExposureTime', 'ISO',
              'GPSLatitude', 'GPSLongitude', 'DateTimeOriginal'],
     });
 
     if (!data) return {};
 
-    // Format shutter speed
-    let shutterSpeed = '';
+    // 1. Format Camera Body (avoid duplicates like "Google Google Pixel" or "Apple Apple iPhone")
+    let make = data.Make ? data.Make.trim() : '';
+    let model = data.Model ? data.Model.trim() : '';
+
+    let body = '';
+    if (make && model) {
+      if (model.toLowerCase().startsWith(make.toLowerCase())) {
+        body = model;
+      } else {
+        body = `${make} ${model}`;
+      }
+    } else {
+      body = model || make || undefined;
+    }
+
+    // 2. Detect Smartphone Lens vs Dedicated Camera Lens
+    let lens = data.LensModel ? data.LensModel.trim() : undefined;
+    const isMobile = /iphone|pixel|galaxy|samsung|oneplus|xiaomi|huawei|oppo|vivo/i.test(body || '');
+
+    if (isMobile && lens) {
+      // Clean up verbose mobile lens names like "iPhone 15 Pro back triple camera 6.86mm f/1.78"
+      if (/back.*camera/i.test(lens) || /front.*camera/i.test(lens)) {
+        if (/ultra wide/i.test(lens)) lens = 'Ultra Wide Camera';
+        else if (/telephoto/i.test(lens)) lens = 'Telephoto Camera';
+        else if (/main/i.test(lens) || /back/i.test(lens)) lens = 'Main Camera';
+      }
+    }
+
+    // 3. Format Focal Length (use 35mm equivalent for smartphones if available)
+    let focalLength = undefined;
+    if (data.FocalLengthIn35mmFormat) {
+      focalLength = `${data.FocalLengthIn35mmFormat}mm (35mm eq)`;
+    } else if (data.FocalLength) {
+      focalLength = `${Math.round(data.FocalLength)}mm`;
+    }
+
+    // 4. Format shutter speed
+    let shutterSpeed = undefined;
     if (data.ExposureTime) {
       shutterSpeed = data.ExposureTime < 1
         ? `1/${Math.round(1 / data.ExposureTime)}s`
@@ -215,13 +251,14 @@ async function readExif(filePath) {
     }
 
     return {
-      body: [data.Make, data.Model].filter(Boolean).join(' ').trim() || undefined,
-      lens: data.LensModel || undefined,
-      focalLength: data.FocalLength ? `${Math.round(data.FocalLength)}mm` : undefined,
+      body: body || undefined,
+      lens: lens || undefined,
+      focalLength: focalLength || undefined,
       aperture: data.FNumber ? `f/${data.FNumber}` : undefined,
       shutterSpeed: shutterSpeed || undefined,
       iso: data.ISO ? String(data.ISO) : undefined,
       dateTaken: data.DateTimeOriginal || undefined,
+      isMobile,
     };
   } catch (e) {
     console.warn(`   ⚠️  Could not read EXIF: ${e.message}`);
