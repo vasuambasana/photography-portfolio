@@ -4,11 +4,12 @@ import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://vasuambasana.com',
   output: 'static',
   integrations: [
     tailwind(),
     react(),
+    sitemap(),
   ],
   image: {
     domains: [],
