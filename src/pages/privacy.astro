@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="Privacy policy explaining how personal information is handled on this photography portfolio website."
+  noindex={true}
+>
+  <section class="py-section" aria-labelledby="privacy-heading">
+    <div class="prose-container">
+      <p class="meta-text mb-6">Legal</p>
+
+      <h1 id="privacy-heading" class="font-display text-display-xl text-text-primary mb-8">
+        Privacy Policy
+      </h1>
+
+
+
+      <div class="space-y-8 text-body-md text-text-secondary leading-relaxed">
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Overview</h2>
+          <p>
+            This website is a personal photography portfolio. It does not sell products, process payments, or require user accounts. This policy explains how any personal information you provide is handled.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Information Collection</h2>
+          <p>
+            The only personal information collected is what you voluntarily provide through the contact form: your name, email address, and message content. This information is used solely to respond to your inquiry.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Cookies & Analytics</h2>
+          <p>
+            This site does not use tracking cookies, advertising pixels, or third-party analytics services. Essential cookies may be used by the hosting provider (Cloudflare) for security purposes only.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Third Parties</h2>
+          <p>
+            No personal data is shared with, sold to, or disclosed to third parties. The site is hosted on Cloudflare Pages, which may process standard HTTP request metadata (IP addresses, user agents) in accordance with their own privacy policy.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Contact</h2>
+          <p>
+            If you have questions about this privacy policy, please <a href="/contact">get in touch</a>.
+          </p>
+        </div>
+
+        <p class="text-caption text-text-secondary/60 pt-4 border-t border-subtle">
+          Last updated: August 2026. This policy is a draft and should be reviewed by a qualified legal professional before publication.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

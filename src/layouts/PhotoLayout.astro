@@ -1,0 +1,47 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ThumbnailStrip from '../components/portfolio/ThumbnailStrip.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  coverImage?: string;
+  currentSlug: string;
+  categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
+}
+
+const { title, description, category, date, coverImage, currentSlug, categoryPhotos } = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  ogImage={coverImage}
+  article={{
+    publishedTime: date,
+    section: category,
+  }}
+>
+  <article class="py-section">
+    <slot />
+
+    <!-- Filmstrip navigation -->
+    <ThumbnailStrip currentSlug={currentSlug} categoryPhotos={categoryPhotos} />
+
+    <!-- Contact CTA -->
+    <div class="section-container mt-section text-center">
+      <p class="text-text-secondary text-body-lg mb-6">
+        Interested in working together?
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2 px-8 py-3 bg-text-primary text-surface-main font-body font-medium text-sm rounded-full hover:bg-text-accent transition-colors duration-300 no-underline"
+      >
+        Get in Touch
+      </a>
+    </div>
+  </article>
+</BaseLayout>

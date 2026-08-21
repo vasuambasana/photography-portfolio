@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GalleryGrid from '../../components/portfolio/GalleryGrid.astro';
+import { getCollection } from 'astro:content';
+
+const allPhotos = await getCollection('photos');
+const sortedPhotos = allPhotos.sort((a, b) => a.data.order - b.data.order);
+
+// Extract unique categories for filter
+const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
+---
+
+<BaseLayout
+  title="Portfolio"
+  description="Browse the complete photography portfolio by category."
+>
+  <section class="py-section" aria-labelledby="portfolio-heading">
+    <div class="section-container">
+      <!-- Header -->
+      <div class="mb-12 md:mb-16">
+        <h1 id="portfolio-heading" class="font-display text-display-xl text-text-primary mb-4">
+          Portfolio
+        </h1>
+        <p class="text-body-lg text-text-secondary max-w-prose">
+          A curated collection of photographs exploring architecture, nature, and street life.
+        </p>
+      </div>
+
+      <!-- Category filter -->
+      <nav class="mb-10" aria-label="Filter photos by category">
+        <ul class="flex flex-wrap items-center gap-3">
+          <li>
+            <button
+              data-filter="all"
+              class="filter-btn active px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
+              aria-pressed="true"
+            >
+              All
+            </button>
+          </li>
+          {categories.map((cat) => (
+            <li>
+              <button
+                data-filter={cat}
+                class="filter-btn px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
+                aria-pressed="false"
+              >
+                {cat}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Photos grid -->
+      <GalleryGrid>
+        {sortedPhotos.map((photo) => (
+          <div data-category={photo.data.category} class="group relative aspect-[4/5] overflow-hidden rounded-card bg-surface-overlay">
+            <a href={`/photo/${photo.slug}`} class="block w-full h-full">
+              <img
+                src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
+                alt={photo.data.alt}
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                <div>
+                  <h3 class="text-white font-display text-xl mb-1">{photo.data.title}</h3>
+                  <p class="text-white/80 font-mono text-xs uppercase tracking-widest">{photo.data.category}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        ))}
+      </GalleryGrid>
+    </div>
+  </section>
+
+  <script>
+    function initFilters() {
+      const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+      const items = document.querySelectorAll<HTMLElement>('[data-category]');
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+
+          // Update active states
+          buttons.forEach((b) => {
+            const isActive = b === btn;
+            b.setAttribute('aria-pressed', String(isActive));
+            if (isActive) {
+              b.classList.add('bg-text-primary', 'text-surface-main');
+              b.classList.remove('text-text-secondary');
+            } else {
+              b.classList.remove('bg-text-primary', 'text-surface-main');
+              b.classList.add('text-text-secondary');
+            }
+          });
+
+          // Filter items
+          items.forEach((item) => {
+            if (filter === 'all' || item.dataset.category === filter) {
+              item.style.display = '';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+    }
+
+    initFilters();
+    document.addEventListener('astro:after-swap', initFilters);
+  </script>
+</BaseLayout>

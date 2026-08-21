@@ -1,0 +1,69 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  article?: {
+    publishedTime?: string;
+    section?: string;
+  };
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  ogType = 'website',
+  article,
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = import.meta.env.SITE_URL || Astro.site?.toString() || 'https://example.com';
+const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
+const socialImage = ogImage || new URL('/og-default.jpg', siteUrl).toString();
+const siteName = 'Photography Portfolio';
+---
+
+<!-- Primary Meta -->
+<title>{title} | {siteName}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:site_name" content={siteName} />
+{article?.publishedTime && (
+  <meta property="article:published_time" content={article.publishedTime} />
+)}
+{article?.section && (
+  <meta property="article:section" content={article.section} />
+)}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={socialImage} />
+
+<!-- JSON-LD Structured Data -->
+<script is:inline type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': ogType === 'article' ? 'Article' : 'WebSite',
+  name: title,
+  description: description,
+  url: canonicalUrl,
+  image: socialImage,
+  ...(ogType === 'article' && article?.publishedTime ? {
+    datePublished: article.publishedTime,
+    articleSection: article.section,
+  } : {}),
+})} />

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/contact/ContactForm.astro';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch for project inquiries, collaborations, licensing, or general questions."
+>
+  <section class="py-section" aria-labelledby="contact-heading">
+    <div class="section-container">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
+
+        <!-- Info column -->
+        <div class="lg:col-span-2">
+          <p class="meta-text mb-6">Contact</p>
+
+          <h1 id="contact-heading" class="font-display text-display-xl text-text-primary mb-6">
+            Let's Work Together
+          </h1>
+
+          <p class="text-body-lg text-text-secondary mb-8">
+            Whether you have a project in mind, want to discuss a collaboration, or simply have a question — I'd love to hear from you.
+          </p>
+
+          <!-- Direct email -->
+          <div class="space-y-4">
+            <div>
+              <h2 class="meta-text mb-2">Email Directly</h2>
+              <a
+                href="mailto:hello@example.com"
+                class="text-text-accent text-body-md font-mono hover:opacity-80 transition-opacity"
+              >
+                hello@example.com
+              </a>
+            </div>
+
+            <div>
+              <h2 class="meta-text mb-2">Response Time</h2>
+              <p class="text-text-secondary text-body-sm">
+                Typically within 1–2 business days.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form column -->
+        <div class="lg:col-span-3">
+          <ContactForm />
+        </div>
+
+      </div>
+    </div>
+  </section>
+</BaseLayout>

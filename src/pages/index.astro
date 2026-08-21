@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/portfolio/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPhotos = await getCollection('photos');
+const featuredPhotos = allPhotos
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+---
+
+<BaseLayout
+  title="Home"
+  description="A curated photography portfolio showcasing architecture, landscape, editorial, and documentary work."
+>
+  <!-- Hero Section -->
+  <section class="relative min-h-[80vh] flex items-center justify-center py-section" aria-labelledby="hero-heading">
+    <!-- Background gradient mesh -->
+    <div class="absolute inset-0 bg-surface-main" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-tr from-text-accent/10 via-transparent to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-surface-main/50 to-surface-main"></div>
+    </div>
+
+    <div class="relative section-container text-center fade-in">
+      <p class="meta-text mb-6">Photography Portfolio</p>
+
+      <h1 id="hero-heading" class="font-display text-display-xl text-text-primary mb-8 max-w-4xl mx-auto">
+        Seeing the world through light, geometry, and quiet moments
+      </h1>
+
+      <p class="text-body-lg text-text-secondary max-w-2xl mx-auto mb-12">
+        A curated collection of architectural, landscape, and editorial photography — exploring the interplay of structure, nature, and human presence.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/portfolio"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-text-primary text-surface-main font-body font-medium text-sm rounded-full hover:bg-text-accent transition-colors duration-300 no-underline"
+        >
+          View Portfolio
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-subtle text-text-primary font-body font-medium text-sm rounded-full hover:bg-surface-overlay transition-colors duration-300 no-underline"
+        >
+          Get in Touch
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Photos -->
+  {featuredPhotos.length > 0 && (
+    <section class="py-section" aria-labelledby="featured-heading">
+      <div class="section-container">
+        <div class="flex items-center justify-between mb-12">
+          <h2 id="featured-heading" class="font-display text-display-md text-text-primary">
+            Featured Work
+          </h2>
+          <a
+            href="/portfolio"
+            class="meta-text hover:text-text-primary transition-colors no-underline"
+          >
+            View All &rarr;
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
+          {featuredPhotos.map((photo) => (
+            <div class="group relative aspect-[4/5] overflow-hidden rounded-card bg-surface-overlay">
+              <a href={`/photo/${photo.slug}`} class="block w-full h-full">
+                <img
+                  src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
+                  alt={photo.data.alt}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <div>
+                    <h3 class="text-white font-display text-xl mb-1">{photo.data.title}</h3>
+                    <p class="text-white/80 font-mono text-xs uppercase tracking-widest">{photo.data.category}</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- About teaser -->
+  <section class="py-section" aria-labelledby="about-teaser-heading">
+    <div class="prose-container text-center">
+      <h2 id="about-teaser-heading" class="font-display text-display-md text-text-primary mb-6">
+        About
+      </h2>
+      <p class="text-body-lg text-text-secondary mb-8">
+        Every photograph is an act of attention. I work with natural light and deliberate composition to reveal the quiet beauty in architectural form, open landscapes, and human expression.
+      </p>
+      <a
+        href="/about"
+        class="inline-flex items-center gap-2 text-text-accent text-body-sm font-medium hover:opacity-80 transition-opacity"
+      >
+        Learn More &rarr;
+      </a>
+    </div>
+  </section>
+</BaseLayout>

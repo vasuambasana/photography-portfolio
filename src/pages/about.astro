@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="Learn about the photographer — artistic perspective, process, equipment, and the philosophy behind the work."
+>
+  <section class="py-section" aria-labelledby="about-heading">
+    <div class="section-container">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
+
+        <!-- Portrait column -->
+        <div class="lg:col-span-2">
+          <div class="sticky top-28">
+            <div
+              class="w-full rounded-card bg-surface-card border border-subtle flex items-center justify-center text-text-secondary text-body-sm"
+              style="aspect-ratio: 4/5;"
+            >
+              Portrait Photo
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio column -->
+        <div class="lg:col-span-3">
+          <p class="meta-text mb-6">About</p>
+
+          <h1 id="about-heading" class="font-display text-display-xl text-text-primary mb-8">
+            <!-- [PLACEHOLDER: Your Name] -->
+            The Photographer
+          </h1>
+
+          <div class="space-y-6 text-body-lg text-text-secondary leading-relaxed">
+            <p>
+              Photography has always been about observation — finding the extraordinary within the ordinary. With a background rooted in both technical precision and creative exploration, every project is an opportunity to distill a moment into its essential visual form.
+            </p>
+
+            <p>
+              The work spans architecture, landscape, and editorial portraiture, unified by an emphasis on natural light, deliberate composition, and the quiet spaces between subjects. Each series is conceived as a visual essay — a sustained investigation into a theme, place, or feeling.
+            </p>
+
+            <p>
+              Based in a studio that prioritizes simplicity and available light, the workflow moves from careful field capture through selective editing on iPad Pro, producing a curated body of work where every frame earns its place.
+            </p>
+          </div>
+
+          <!-- Equipment & Process -->
+          <div class="mt-12 pt-8 border-t border-subtle">
+            <h2 class="font-display text-display-md text-text-primary mb-6">
+              Equipment & Process
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <h3 class="meta-text mb-3">Camera System</h3>
+                <p class="text-text-primary font-mono text-body-sm">Canon R5 Mark II</p>
+              </div>
+              <div>
+                <h3 class="meta-text mb-3">Editing</h3>
+                <p class="text-text-primary font-mono text-body-sm">iPad Pro</p>
+              </div>
+              <div>
+                <h3 class="meta-text mb-3">Approach</h3>
+                <p class="text-text-secondary text-body-sm">
+                  Natural light, minimal post-processing, curated selections
+                </p>
+              </div>
+              <div>
+                <h3 class="meta-text mb-3">Formats</h3>
+                <p class="text-text-secondary text-body-sm">
+                  Architecture, landscape, editorial, documentary
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="mt-12 pt-8 border-t border-subtle">
+            <p class="text-text-secondary text-body-lg mb-6">
+              Interested in working together or have a question?
+            </p>
+            <a
+              href="/contact"
+              class="inline-flex items-center gap-2 px-8 py-3 bg-text-primary text-surface-main font-body font-medium text-sm rounded-full hover:bg-text-accent transition-colors duration-300 no-underline"
+            >
+              Get in Touch
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

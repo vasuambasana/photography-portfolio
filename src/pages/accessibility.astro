@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Accessibility Statement"
+  description="Accessibility commitment and WCAG 2.2 AA compliance statement for this photography portfolio website."
+  noindex={true}
+>
+  <section class="py-section" aria-labelledby="accessibility-heading">
+    <div class="prose-container">
+      <p class="meta-text mb-6">Commitment</p>
+
+      <h1 id="accessibility-heading" class="font-display text-display-xl text-text-primary mb-8">
+        Accessibility Statement
+      </h1>
+
+      <div class="space-y-8 text-body-md text-text-secondary leading-relaxed">
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Our Commitment</h2>
+          <p>
+            This website is committed to ensuring digital accessibility for all visitors. We strive to conform to the Web Content Accessibility Guidelines (WCAG) 2.2 at the AA level.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Measures Taken</h2>
+          <ul class="space-y-2 list-none">
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Semantic HTML elements for proper document structure</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Full keyboard navigation support with visible focus indicators</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Text contrast ratios meeting WCAG AA standards (≥ 4.5:1)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Descriptive alt text for all photographs and images</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Skip-to-content link for screen reader users</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Reduced-motion support for users who prefer minimal animation</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Touch targets sized at minimum 44×44 pixels</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-text-accent mt-1" aria-hidden="true">—</span>
+              <span>Accessible form labels and error messaging</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="font-display text-display-md text-text-primary mb-4">Feedback</h2>
+          <p>
+            If you encounter any accessibility barriers on this website, please <a href="/contact">contact me</a>. I take accessibility feedback seriously and will work to address issues promptly.
+          </p>
+        </div>
+
+        <p class="text-caption text-text-secondary/60 pt-4 border-t border-subtle">
+          Last updated: August 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

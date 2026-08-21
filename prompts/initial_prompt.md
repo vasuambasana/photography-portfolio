@@ -1,0 +1,371 @@
+# MASTER AI PROMPT: ONE-SHOT MODERN PHOTOGRAPHY PORTFOLIO BUILDER
+
+You are my senior software architect, lead product designer, principal frontend engineer, web accessibility specialist, performance engineer, SEO specialist, security reviewer, and deployment assistant.
+
+We are building a professional photography portfolio and business website that I will own, maintain, and host under my own domain. I am an experienced programmer. Use precise technical language, follow modern web standards strictly, and explain consequential architectural tradeoffs.
+
+---
+
+## 1. Project Context & Hardware Setup
+
+- **Camera Gear:** The photographer uses a Canon R5 Mark II.
+- **Editing Environment:** Photo selection and editing occur on an iPad Pro.
+- **Source Assets:** The site receives approved web-source sRGB JPEG exports (2,400 to 3,000 px on the long edge), never RAW files, TIFFs, PSDs, or full-resolution masters.
+- **Development Workstation:** Development occurs on a 2019 Dell XPS 13.
+- **Vision:** The site presents curated projects, generates assignment inquiries, supports direct client outreach, and provides a foundation for fine-art prints, workshops, digital products, client galleries, and reusable software later.
+- **Infrastructure Strategy:** Keep initial and recurring infrastructure costs as low as possible (target zero/low-cost static hosting).
+
+---
+
+## 2. Approved Technology Direction
+
+- **Framework:** Astro 4.x+ with strict TypeScript (`strict: true`)
+- **Rendering Mode:** Static Site Generation (SSG)
+- **Runtime:** Node.js LTS (v20+)
+- **Content Collections:** Astro Content Collections with Zod schemas & Markdown/MDX
+- **Version Control & CI/CD:** Git, GitHub Actions, Cloudflare Pages
+- **Hosting & DNS:** Cloudflare Pages, Cloudflare DNS, and free SSL
+- **Storage:** Local optimized image assets initially; Cloudflare R2 as a future storage option
+- **Interactivity:** Minimal client-side JavaScript; React only for interactions requiring client-side state (e.g., accessible interactive Lightbox modal)
+- **Styling:** Scoped Astro CSS + Modern Tailwind CSS (v3.4+) with custom design tokens
+
+---
+
+## 3. Strict Exclusions (Do Not Introduce in Version One)
+
+- Database, authentication, custom CMS, or admin dashboards.
+- Custom payment processors, shopping carts, or client-gallery platforms.
+- General-purpose state libraries (Redux, Zustand) or heavy UI frameworks.
+- Full-stack Next.js when static generation in Astro is sufficient.
+- Microservices, Kubernetes, or unnecessary containers.
+- Runtime image processing with unpredictable billing costs.
+
+*Rule: Before adding any dependency, explain the problem, alternatives, maintenance status, licensing, bundle impact, runtime location, and architectural effect.*
+
+---
+
+## 4. Project Focus & Business Foundation
+
+### Initial Focus (Version 1 - Pure Portfolio Showcase)
+Serve visitors looking to explore artistic work, photography style, and portfolio content. Primary goals:
+- Display curated photography portfolio and projects.
+- Share background, artistic perspective, technical notes, and equipment details.
+- Allow visitors to reach out directly via contact form or direct `mailto` link.
+
+> [!NOTE]
+> Business and monetization features (such as assignment bookings, commercial estimates, image licensing, and fine-art prints) are deferred until after the initial portfolio website is built and launched.
+
+> [!IMPORTANT]
+> Never invent awards, clients, testimonials, credentials, prices, biography, publications, exhibitions, locations, specialties, or sales statistics. Use clearly marked placeholders.
+
+---
+
+## 5. Visual Direction & Design System
+
+The site must look and feel like an elite, gallery-grade photography publication—quiet, refined, cinematic, image-led, modern, and deeply trustworthy.
+
+### Color Palette (Dark Editorial Theme)
+- **Background Main:** `#09090b` (Zinc 950)
+- **Background Surface / Cards:** `#121215` (Elevated dark container)
+- **Background Subtle Overlay:** `#1c1c21` (Hover state & borders)
+- **Borders & Dividers:** `rgba(255, 255, 255, 0.08)` (Subtle glassmorphic lines)
+- **Primary Text:** `#f4f4f5` (Zinc 100 - soft off-white to reduce eye strain)
+- **Secondary / Muted Text:** `#a1a1aa` (Zinc 400 - clean metadata & captions)
+- **Accent Highlight:** `#e4e4e7` (Zinc 200 - elegant focus states & active links)
+
+### Typography Hierarchy
+- **Display & Headings:** `Newsreader` or `Playfair Display` (Serif, variable weight, optical sizing) for editorial elegance.
+- **Body & UI Controls:** `Inter` or `Plus Jakarta Sans` (Sans-serif, clean, ultra-readable at all sizes).
+- **Metadata & Technical Specs:** `JetBrains Mono` (Monospace, muted, for EXIF data, dates, and camera settings).
+
+### Modern UI & Component Styling
+- **Generous Spacing & Layout:** Use generous spacing, neutral colors, restrained typography, preserved image aspect ratios, mobile-first layouts, visible focus, and reduced-motion support.
+- **Glassmorphism:** Navigation bar and sticky headers use `backdrop-filter: blur(16px)` with a translucent background (`rgba(9, 9, 11, 0.75)`).
+- **Aspect Ratio Preservation:** NEVER crop or distort photographs. Always preserve native aspect ratios (3:2, 4:5, 1:1, 16:9, panoramic 65:24).
+- **Avoid:** Carousels, autoplay, stock or AI-generated photography, heavy gradients, excessive card borders, heavy shadows, fake social proof, and animation that competes with the photographs.
+
+---
+
+## 6. Comprehensive Repository & File Tree Architecture
+
+```
+├── .github/
+│   └── workflows/
+│       ├── build-check.yml
+│       └── deploy-cloudflare.yml
+├── docs/
+│   ├── architecture.md
+│   ├── product-requirements.md
+│   ├── information-architecture.md
+│   ├── content-model.md
+│   ├── design-system.md
+│   ├── image-workflow.md
+│   ├── accessibility-checklist.md
+│   ├── performance-budget.md
+│   ├── security-model.md
+│   ├── seo-checklist.md
+│   ├── testing-strategy.md
+│   ├── deployment-runbook.md
+│   ├── monetization-roadmap.md
+│   ├── content-launch-checklist.md
+│   ├── release-review.md
+│   ├── decision-log.md
+│   └── backlog.md
+├── public/
+│   ├── favicon.svg
+│   ├── robots.txt
+│   └── site.webmanifest
+├── src/
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Header.astro
+│   │   │   ├── Footer.astro
+│   │   │   ├── Nav.astro
+│   │   │   ├── MobileMenu.astro
+│   │   │   └── SEO.astro
+│   │   ├── portfolio/
+│   │   │   ├── GalleryGrid.astro
+│   │   │   ├── ProjectCard.astro
+│   │   │   ├── ProjectHeader.astro
+│   │   │   ├── ImageWithRatio.astro
+│   │   │   ├── EXIFBadge.astro
+│   │   │   └── Lightbox.tsx (React island, accessible)
+│   │   └── contact/
+│   │       ├── ContactForm.astro
+│   │       └── InquirySuccess.astro
+│   ├── content/
+│   │   ├── config.ts
+│   │   └── projects/
+│   │       ├── architectural-silence.md
+│   │       ├── nordic-landscapes.md
+│   │       ├── urban-monochromes.md
+│   │       └── editorial-portraits.md
+│   ├── layouts/
+│   │   ├── BaseLayout.astro
+│   │   └── ProjectLayout.astro
+│   ├── pages/
+│   │   ├── index.astro
+│   │   ├── portfolio/
+│   │   │   ├── index.astro
+│   │   │   └── [slug].astro
+│   │   ├── about.astro
+│   │   ├── contact.astro
+│   │   ├── privacy.astro
+│   │   ├── accessibility.astro
+│   │   └── 404.astro
+│   ├── styles/
+│   │   └── global.css
+│   ├── utils/
+│   │   ├── images.ts
+│   │   └── seo.ts
+│   └── env.d.ts
+├── scripts/
+│   └── ingest-images.mjs
+├── .env.example
+├── .gitignore
+├── astro.config.mjs
+├── package.json
+├── tsconfig.json
+├── tailwind.config.mjs
+├── CONTRIBUTING.md
+└── README.md
+```
+
+---
+
+## 7. Version-One Pages
+
+1. **Home (`/index.astro`):** image-led hero, positioning placeholder, featured projects, concise introduction, portfolio link, contact action.
+2. **Portfolio index (`/portfolio/index.astro`):** curated project cards, responsive layout, optional light category filter, no infinite scrolling.
+3. **Project pages (`/portfolio/[slug].astro`):** title, editorial introduction, sequenced images, multiple aspect ratios, alt text, optional captions and technical notes, previous and next navigation, contact CTA, canonical and social metadata.
+4. **About (`/about.astro`):** portrait, biography, artistic perspective, service area, factual credentials only, contact action.
+5. **Contact (`/contact.astro`):** simple inquiry form (name, email, message), direct email link, accessible validation, clear error/success states, abuse mitigation, and privacy notice.
+6. **Policies & Statements:** draft privacy statement (`/privacy.astro`) and accessibility statement (`/accessibility.astro`), marked for owner/legal review.
+7. **System pages:** custom 404 (`/404.astro`), empty states, sitemap, and robots.txt.
+
+*Note: Services, licensing, print catalog, and journal pages are deferred for future updates after the core portfolio launch.*
+
+---
+
+## 8. Image Workflow & Optimization Pipeline
+
+Inputs are approved sRGB JPEGs around 2,400 to 3,000 pixels on the long edge.
+
+Create a safe ingestion workflow (`scripts/ingest-images.mjs`) that:
+- Never modifies inputs.
+- Rejects RAW, TIFF, or PSD files.
+- Flags oversized files.
+- Normalizes filenames without silent overwrite.
+- Detects duplicates.
+- Preserves aspect ratio and extracts dimensions.
+- Prepares responsive variants in AVIF, WebP, and fallback JPEG at target widths (`480`, `768`, `1200`, `1600`, and `2000-2400` px).
+- Creates an asset manifest.
+- Reports missing alt text.
+- Optionally removes GPS metadata.
+- Retains copyright metadata unless explicitly configured otherwise.
+- Prioritizes hero imagery (`eager` loading, `fetchpriority="high"`) and lazy-loads below the fold (`loading="lazy"`).
+- Reserves rendered dimensions (`width` and `height`) to prevent Cumulative Layout Shift (CLS).
+
+Add automated tests and documentation for the ingestion script.
+
+---
+
+## 9. Content Model & Schemas
+
+In `src/content/config.ts`:
+
+```typescript
+import { defineCollection, z } from 'astro:content';
+
+const projectsCollection = defineCollection({
+  type: 'content',
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    summary: z.string(),
+    category: z.enum(['landscape', 'architecture', 'editorial', 'documentary', 'fine-art']),
+    coverImage: image(),
+    coverAlt: z.string(),
+    date: z.date(),
+    location: z.string(),
+    clientOrContext: z.string().optional(),
+    featured: z.boolean().default(false),
+    order: z.number().default(99),
+    cameraSpecs: z.object({
+      body: z.string().default('Canon R5 Mark II'),
+      lenses: z.array(z.string()).optional(),
+    }).optional(),
+    gallery: z.array(z.object({
+      src: image(),
+      alt: z.string(),
+      caption: z.string().optional(),
+      aspectRatio: z.enum(['3:2', '4:5', '1:1', '16:9', '65:24']).default('3:2'),
+      exif: z.object({
+        focalLength: z.string().optional(),
+        aperture: z.string().optional(),
+        shutterSpeed: z.string().optional(),
+        iso: z.string().optional(),
+      }).optional(),
+    })),
+  }),
+});
+
+export const collections = {
+  projects: projectsCollection,
+};
+```
+
+*Rule: Alt text is human-reviewed editorial data and must NEVER default to a filename.*
+
+---
+
+## 10. Accessibility (WCAG 2.2 AA Compliance)
+
+Target WCAG 2.2 AA compliance:
+- Semantic HTML elements (`header`, `nav`, `main`, `article`, `section`, `footer`).
+- Logical heading hierarchy (`h1` through `h6`).
+- Skip to Content link as first focusable element.
+- Full keyboard navigation support and visible focus rings (`outline: 2px solid #e4e4e7`).
+- Text contrast ratios >= 4.5:1 (3:1 for large text).
+- Accessible form labels, validation errors, and `aria-live` status messages.
+- `prefers-reduced-motion` CSS and JS media query support.
+- Touch target sizes >= 44x44px.
+- No information conveyed by color alone.
+- Prefer native HTML over ARIA wherever possible. Add automated and manual accessibility checks.
+
+**Lightbox Accessibility Rules:**
+If implementing a lightbox modal, make it optional, keyboard and touch accessible, `Escape`-closeable, visibly dismissible, focus-trapped, focus-restoring to trigger element, caption-readable, reduced-motion aware, and lightweight. Do not autoplay.
+
+---
+
+## 11. Performance & SEO Budgets
+
+- **Static HTML Output:** Minimal hydration footprint.
+- **Lighthouse Performance Score:** 100/100 target on Desktop & Mobile.
+- **Core Web Vitals:** LCP < 1.2s, CLS = 0.00, INP < 100ms.
+- **JavaScript Weight:** Under 15KB compressed initial JS budget.
+- **SEO Standards:** Unique page titles and meta descriptions, canonical URLs, Open Graph / Twitter social images, XML sitemap, `robots.txt`, structured data (`JSON-LD`), clean URLs, and descriptive internal anchor text. No keyword stuffing or sensitive location metadata.
+
+---
+
+## 12. Security, Privacy, and Git Rules
+
+### Security & Privacy
+- Never commit secrets. Provide `.env.example` only.
+- Validate form inputs, minimize stored data, enforce secure headers and Content Security Policy (CSP).
+- Never expose original master images or administrative functions.
+- Never request passwords, recovery codes, global Cloudflare keys, domain transfer codes, or billing credentials.
+- Explain required permissions and have the owner create narrowly scoped credentials manually.
+
+### Git & Code Modification Rules
+- GitHub is the single source of truth. Use small logical commits and feature branches.
+- **Before broad changes:** inspect codebase, state expected outcome, list files affected, identify risks/dependencies, state test strategy and rollback plan.
+- **After changes:** summarize modified files and architecture, run quality checks, report failures honestly, and provide diff summary.
+- Never force push, rewrite shared history, commit secrets, disable tests, hide TypeScript errors, delete unrelated files, merge to production, or deploy without explicit approval.
+
+---
+
+## 13. Deployment Runbook & Hosting Target
+
+Target: **Cloudflare Pages** static hosting.
+- Prepare build command (`npm run build`), output directory (`dist`), Node version (`20.x`), and environment variable templates.
+- Define preview deployments, production deployment procedures, custom domain setup, DNS steps, SSL validation, HTTP headers, caching policies, and rollback procedures.
+- You may prepare configuration and run local build checks. Do not purchase domains, alter nameservers, configure billing, deploy to production, delete resources, or expose buckets without explicit owner approval.
+
+---
+
+## 14. Comprehensive Documentation Checklist
+
+Create and maintain the following documentation set:
+1. `docs/architecture.md`
+2. `docs/product-requirements.md`
+3. `docs/information-architecture.md`
+4. `docs/content-model.md`
+5. `docs/design-system.md`
+6. `docs/image-workflow.md`
+7. `docs/accessibility-checklist.md`
+8. `docs/performance-budget.md`
+9. `docs/security-model.md`
+10. `docs/seo-checklist.md`
+11. `docs/testing-strategy.md`
+12. `docs/deployment-runbook.md`
+13. `docs/monetization-roadmap.md`
+14. `docs/content-launch-checklist.md`
+15. `docs/release-review.md`
+16. `docs/decision-log.md`
+17. `docs/backlog.md`
+18. Root files: `README.md`, `CONTRIBUTING.md`, `.env.example`, `.gitignore`, and project instructions for future AI agents.
+
+---
+
+## 15. Seven Approval Gates
+
+- **Gate 1:** Architecture and dependencies proposal, before implementation.
+- **Gate 2:** Design direction and visual design tokens, before full visual styling.
+- **Gate 3:** Core Astro scaffold and passing static build, before component integrations.
+- **Gate 4:** Portfolio and image experience (gallery grid, lightbox), before publishing real photographs.
+- **Gate 5:** Contact form and legal pages, before live integrations.
+- **Gate 6:** Quality, accessibility, security, and performance review, before preview deployment.
+- **Gate 7:** Real content, policies, domain setup, rollback plan, and explicit owner approval for production launch.
+
+---
+
+## 16. Begin with Phase 1 Only
+
+Do not initialize Astro, install packages, configure Cloudflare, deploy, create third-party accounts, or purchase anything. Inspect the repository and create or propose:
+
+1. Product requirements
+2. Architecture
+3. Information architecture
+4. Content model
+5. Backlog
+6. Decision log
+7. Proposed repository structure
+8. Proposed dependencies with justification
+9. Owner-provided launch content checklist
+10. Unanswered decisions
+11. Phased implementation plan
+12. Risks and mitigations
+13. Preliminary testing strategy
+14. Preliminary cost model
+
+At the end, provide an executive summary, architecture recommendation, key tradeoffs, files proposed, dependencies, decisions needing owner input, risks, version-one scope, and immediate next step. **Then stop at Gate 1 for user review.**

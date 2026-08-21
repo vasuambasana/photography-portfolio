@@ -1,0 +1,154 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!-- Mobile menu toggle button -->
+<button
+  id="mobile-menu-toggle"
+  type="button"
+  class="md:hidden flex flex-col items-center justify-center w-11 h-11 gap-1.5 rounded-lg transition-colors hover:bg-surface-overlay"
+  aria-expanded="false"
+  aria-controls="mobile-menu"
+  aria-label="Open navigation menu"
+>
+  <span class="hamburger-line w-5 h-px bg-text-primary transition-transform duration-300" />
+  <span class="hamburger-line w-5 h-px bg-text-primary transition-opacity duration-300" />
+  <span class="hamburger-line w-5 h-px bg-text-primary transition-transform duration-300" />
+</button>
+
+<!-- Mobile menu overlay -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation menu"
+>
+  <!-- Backdrop -->
+  <div
+    id="mobile-menu-backdrop"
+    class="absolute inset-0 bg-surface-main/90 backdrop-blur-sm"
+  />
+
+  <!-- Menu panel -->
+  <div class="relative z-10 flex flex-col h-full pt-20 pb-8 px-6">
+    <!-- Close button -->
+    <button
+      id="mobile-menu-close"
+      type="button"
+      class="absolute top-5 right-5 w-11 h-11 flex items-center justify-center rounded-lg hover:bg-surface-overlay transition-colors"
+      aria-label="Close navigation menu"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 4l12 12M16 4L4 16" />
+      </svg>
+    </button>
+
+    <!-- Nav links -->
+    <nav aria-label="Mobile navigation" class="flex-1">
+      <ul class="flex flex-col gap-2">
+        {navLinks.map(({ href, label }) => {
+          const isActive = currentPath === href ||
+            (href !== '/' && currentPath.startsWith(href));
+          return (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'block py-3 px-4 text-2xl font-display font-medium rounded-lg transition-colors duration-200',
+                  isActive
+                    ? 'text-text-primary bg-surface-overlay'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay/50',
+                ]}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+    
+    <div class="pt-8 mt-8 border-t border-border-subtle flex items-center justify-between">
+      <span class="text-sm font-medium text-text-secondary">Theme</span>
+      <ThemeToggle />
+    </div>
+  </div>
+</div>
+
+<script>
+  function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+
+    if (!toggle || !menu || !closeBtn || !backdrop) return;
+
+    let previouslyFocused: HTMLElement | null = null;
+
+    function openMenu() {
+      previouslyFocused = document.activeElement as HTMLElement;
+      menu!.classList.remove('hidden');
+      toggle!.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      closeBtn!.focus();
+
+      // Trap focus
+      menu!.addEventListener('keydown', trapFocus);
+    }
+
+    function closeMenu() {
+      menu!.classList.add('hidden');
+      toggle!.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      menu!.removeEventListener('keydown', trapFocus);
+
+      // Restore focus
+      if (previouslyFocused) {
+        previouslyFocused.focus();
+      }
+    }
+
+    function trapFocus(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        closeMenu();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+
+      const focusable = menu!.querySelectorAll<HTMLElement>(
+        'a[href], button, [tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    }
+
+    toggle.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', closeMenu);
+  }
+
+  // Init on page load and Astro view transitions
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>

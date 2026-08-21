@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Astro cache
+.astro/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+
+# Never commit RAW/master images
+*.CR3
+*.CR2
+*.ARW
+*.NEF
+*.DNG
+*.RAF
+*.ORF
+*.RW2
+*.PSD
+*.TIFF
+*.TIF

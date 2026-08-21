@@ -1,0 +1,77 @@
+---
+export interface Props {
+  currentSlug: string;
+  categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
+}
+
+const { currentSlug, categoryPhotos } = Astro.props;
+
+// Find the index of the current photo to pass to the client-side script
+const currentIndex = categoryPhotos.findIndex(p => p.slug === currentSlug);
+const nextSlug = currentIndex < categoryPhotos.length - 1 ? categoryPhotos[currentIndex + 1].slug : null;
+const prevSlug = currentIndex > 0 ? categoryPhotos[currentIndex - 1].slug : null;
+---
+
+<div class="mt-16 border-t border-subtle pt-8 section-container">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="meta-text">More in this category</h3>
+    <p class="text-xs text-text-tertiary hidden sm:block">Use &larr; &rarr; keys to navigate</p>
+  </div>
+  
+  <div class="relative w-full overflow-hidden">
+    <!-- Filmstrip container -->
+    <div 
+      class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar" 
+      id="thumbnail-strip"
+    >
+      {categoryPhotos.map((photo, index) => {
+        const isActive = photo.slug === currentSlug;
+        return (
+          <a
+            href={`/photo/${photo.slug}`}
+            class={`flex-none w-24 h-24 sm:w-32 sm:h-32 snap-center rounded-lg overflow-hidden transition-all duration-300 ${isActive ? 'ring-2 ring-text-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-100 hover:scale-100'}`}
+            aria-label={`View ${photo.title}`}
+            aria-current={isActive ? 'page' : undefined}
+            id={isActive ? 'active-thumbnail' : undefined}
+          >
+            <img 
+              src={photo.imageSrc} 
+              alt={photo.alt}
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ prevSlug, nextSlug }}>
+  // Scroll the active thumbnail into view
+  const activeThumb = document.getElementById('active-thumbnail');
+  if (activeThumb) {
+    activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && prevSlug) {
+      window.location.href = `/photo/${prevSlug}`;
+    } else if (e.key === 'ArrowRight' && nextSlug) {
+      window.location.href = `/photo/${nextSlug}`;
+    }
+  });
+</script>
+
+<style>
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+</style>

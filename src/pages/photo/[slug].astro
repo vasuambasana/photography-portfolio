@@ -1,0 +1,128 @@
+---
+import PhotoLayout from '../../layouts/PhotoLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const photos = await getCollection('photos');
+
+  return photos.map((photo) => {
+    // Get all photos in the same category
+    const categoryPhotos = photos
+      .filter((p) => p.data.category === photo.data.category)
+      .sort((a, b) => a.data.order - b.data.order)
+      .map(p => ({
+        slug: p.slug,
+        title: p.data.title,
+        imageSrc: typeof p.data.image === 'string' ? p.data.image : p.data.image.src,
+        alt: p.data.alt
+      }));
+
+    return {
+      params: { slug: photo.slug },
+      props: {
+        photo,
+        categoryPhotos,
+      },
+    };
+  });
+}
+
+interface Props {
+  photo: CollectionEntry<'photos'>;
+  categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
+}
+
+const { photo, categoryPhotos } = Astro.props;
+const { Content } = await photo.render();
+const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
+
+const imageSrc = typeof image === 'string' ? image : image.src;
+---
+
+<PhotoLayout
+  title={title}
+  description={title}
+  category={category}
+  date={date.toISOString()}
+  coverImage={imageSrc}
+  currentSlug={photo.slug}
+  categoryPhotos={categoryPhotos}
+>
+  <div class="section-container">
+    <!-- Large Photo Display -->
+    <div class="mb-12 rounded-xl overflow-hidden bg-surface-overlay shadow-sm max-w-[80%] mx-auto">
+      <img
+        src={imageSrc}
+        alt={alt}
+        class="w-full h-auto max-h-[80vh] object-contain mx-auto bg-surface-main"
+      />
+    </div>
+
+    <!-- Metadata and Content -->
+    <div class="max-w-prose mx-auto">
+      <header class="mb-8">
+        <h1 class="text-display-lg font-display text-text-primary mb-2">{title}</h1>
+        <div class="flex flex-wrap gap-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
+          <span>{category}</span>
+          {location && (
+            <>
+              <span class="text-subtle">&bull;</span>
+              <span>{location}</span>
+            </>
+          )}
+        </div>
+      </header>
+
+      <!-- The markdown content (few sentences) -->
+      <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-lg leading-relaxed [&>p]:mb-6">
+        <Content />
+      </div>
+
+      <!-- Camera Specs -->
+      {cameraSpecs && (
+        <div class="mt-12 pt-8 border-t border-subtle">
+          <h3 class="text-xs font-mono uppercase tracking-widest text-text-secondary mb-4">Gear & Settings</h3>
+          <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8 text-sm text-text-secondary">
+            {cameraSpecs.body && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">Camera</span>
+                <span class="text-text-primary">{cameraSpecs.body}</span>
+              </li>
+            )}
+            {cameraSpecs.lens && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">Lens</span>
+                <span class="text-text-primary">{cameraSpecs.lens}</span>
+              </li>
+            )}
+            {cameraSpecs.focalLength && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">Focal Length</span>
+                <span class="text-text-primary">{cameraSpecs.focalLength}</span>
+              </li>
+            )}
+            {cameraSpecs.aperture && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">Aperture</span>
+                <span class="text-text-primary">{cameraSpecs.aperture}</span>
+              </li>
+            )}
+            {cameraSpecs.shutterSpeed && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">Shutter</span>
+                <span class="text-text-primary">{cameraSpecs.shutterSpeed}</span>
+              </li>
+            )}
+            {cameraSpecs.iso && (
+              <li>
+                <span class="block text-xs uppercase text-text-tertiary mb-1">ISO</span>
+                <span class="text-text-primary">{cameraSpecs.iso}</span>
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+</PhotoLayout>
