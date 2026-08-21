@@ -80,10 +80,26 @@ if (!inputPath) {
   process.exit(1);
 }
 
+import crypto from 'node:crypto';
+
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.cr2', '.cr3', '.dng', '.arw', '.nef', '.rw2', '.orf'];
+const RAW_EXTENSIONS = ['.cr2', '.cr3', '.dng', '.arw', '.nef', '.rw2', '.orf'];
+
+// Calculate MD5 hash of a file (or first 1MB for fast checking of large files)
+function getFileHash(filePath) {
+  try {
+    const fd = fs.openSync(filePath, 'r');
+    const buffer = Buffer.alloc(1024 * 1024); // 1MB sample
+    const bytesRead = fs.readSync(fd, buffer, 0, 1024 * 1024, 0);
+    fs.closeSync(fd);
+    return crypto.createHash('md5').update(buffer.subarray(0, bytesRead)).digest('hex');
+  } catch (e) {
+    return filePath;
+  }
+}
 
 // ---------------------------------------------------------------------------
-// Collect files to process
+// Collect files to process & Deduplicate
 // ---------------------------------------------------------------------------
 function collectImages(inputPath) {
   const resolved = path.resolve(inputPath);
@@ -93,20 +109,60 @@ function collectImages(inputPath) {
     process.exit(1);
   }
 
+  let allFiles = [];
+
   const stat = fs.statSync(resolved);
   if (stat.isFile()) {
-    return [resolved];
-  }
-
-  if (stat.isDirectory()) {
-    return fs.readdirSync(resolved)
+    allFiles = [resolved];
+  } else if (stat.isDirectory()) {
+    allFiles = fs.readdirSync(resolved)
       .filter(f => IMAGE_EXTENSIONS.includes(path.extname(f).toLowerCase()))
       .map(f => path.join(resolved, f))
       .sort();
+  } else {
+    console.error(`❌ Not a file or directory: ${resolved}`);
+    process.exit(1);
   }
 
-  console.error(`❌ Not a file or directory: ${resolved}`);
-  process.exit(1);
+  // 1. Group by stem to deduplicate RAW + JPG pairs (e.g. IMG_0001.CR3 and IMG_0001.JPG)
+  // and strip copy suffixes like " (1)", "_copy", "-copy"
+  const stemMap = new Map();
+  const seenHashes = new Set();
+  const deduplicated = [];
+
+  for (const filePath of allFiles) {
+    const ext = path.extname(filePath).toLowerCase();
+    const baseName = path.basename(filePath, ext);
+
+    // Normalize name to detect copies: "IMG_0001 (1)" -> "IMG_0001"
+    const cleanStem = baseName
+      .replace(/[\s\-_]*(copy|\(\d+\)|\d+)$/i, '')
+      .toLowerCase();
+
+    // Check MD5 hash deduplication
+    const hash = getFileHash(filePath);
+    if (seenHashes.has(hash)) {
+      console.log(`   ⏭️  Skipping exact duplicate file: ${path.basename(filePath)}`);
+      continue;
+    }
+    seenHashes.add(hash);
+
+    // Handle RAW + JPG pairing: prefer RAW over JPG if both exist for same stem
+    if (stemMap.has(cleanStem)) {
+      const existing = stemMap.get(cleanStem);
+      const existingExt = path.extname(existing).toLowerCase();
+      if (!RAW_EXTENSIONS.includes(existingExt) && RAW_EXTENSIONS.includes(ext)) {
+        // Replace existing JPG with RAW
+        stemMap.set(cleanStem, filePath);
+      }
+      console.log(`   ⏭️  Skipping duplicate paired photo: ${path.basename(filePath)}`);
+      continue;
+    }
+
+    stemMap.set(cleanStem, filePath);
+  }
+
+  return Array.from(stemMap.values());
 }
 
 // ---------------------------------------------------------------------------
@@ -250,6 +306,14 @@ async function processImage(filePath, targetCategory, orderStart) {
   const ext = path.extname(filePath).toLowerCase();
   const originalName = path.basename(filePath, ext);
   const isRaw = RAW_EXTENSIONS.includes(ext);
+  const rawSlug = toSlug(originalName);
+
+  // Check if photo is already imported
+  const existingMd = path.join(ROOT, 'src', 'content', 'photos', `${rawSlug}.md`);
+  if (fs.existsSync(existingMd)) {
+    console.log(`\n⏭️  Skipping [already imported]: ${path.basename(filePath)}`);
+    return rawSlug;
+  }
 
   console.log(`\n📸 Processing [${targetCategory}]${isRaw ? ' (RAW format)' : ''}: ${path.basename(filePath)}`);
 
