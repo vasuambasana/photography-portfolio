@@ -80,7 +80,7 @@ if (!inputPath) {
   process.exit(1);
 }
 
-const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.cr2', '.cr3', '.dng', '.arw', '.nef', '.rw2', '.orf'];
 
 // ---------------------------------------------------------------------------
 // Collect files to process
@@ -146,10 +146,21 @@ async function readExif(filePath) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Gemini AI description generation (Free Tier Safe)
-// ---------------------------------------------------------------------------
-let quotaExceeded = false;
+const RAW_EXTENSIONS = ['.cr2', '.cr3', '.dng', '.arw', '.nef', '.rw2', '.orf'];
+
+async function getJpegBuffer(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  if (RAW_EXTENSIONS.includes(ext)) {
+    try {
+      const exifr = await import('exifr');
+      const thumb = await exifr.default.thumbnail(filePath);
+      if (thumb) return Buffer.from(thumb);
+    } catch (e) {
+      console.warn(`   ⚠️  Could not extract JPEG preview from RAW: ${e.message}`);
+    }
+  }
+  return fs.readFileSync(filePath);
+}
 
 async function generateDescription(filePath, category) {
   if (quotaExceeded) {
@@ -168,9 +179,9 @@ async function generateDescription(filePath, category) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const imageBuffer = fs.readFileSync(filePath);
+    const imageBuffer = await getJpegBuffer(filePath);
     const base64 = imageBuffer.toString('base64');
-    const mimeType = filePath.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const mimeType = 'image/jpeg';
 
     const prompt = `You are a professional photography curator writing for a photographer's portfolio website.
 
@@ -238,8 +249,9 @@ function getNextOrder(category) {
 async function processImage(filePath, targetCategory, orderStart) {
   const ext = path.extname(filePath).toLowerCase();
   const originalName = path.basename(filePath, ext);
+  const isRaw = RAW_EXTENSIONS.includes(ext);
 
-  console.log(`\n📸 Processing [${targetCategory}]: ${path.basename(filePath)}`);
+  console.log(`\n📸 Processing [${targetCategory}]${isRaw ? ' (RAW format)' : ''}: ${path.basename(filePath)}`);
 
   // 1. Read EXIF
   console.log('   🔍 Reading EXIF data...');
@@ -263,15 +275,23 @@ async function processImage(filePath, targetCategory, orderStart) {
   const alt = aiData?.alt || `A ${targetCategory} photograph`;
   const description = aiData?.description || `A ${targetCategory} photograph. Replace this placeholder with your own description.`;
 
-  // 3. Copy image to public/photos/<targetCategory>/
+  // 3. Save web image to public/photos/<targetCategory>/
   const slug = toSlug(title);
-  const destFileName = `${slug}${ext}`;
+  const outputExt = isRaw ? '.jpg' : ext;
+  const destFileName = `${slug}${outputExt}`;
   const destDir = path.join(ROOT, 'public', 'photos', targetCategory);
   const destPath = path.join(destDir, destFileName);
 
   fs.mkdirSync(destDir, { recursive: true });
-  fs.copyFileSync(filePath, destPath);
-  console.log(`   📁 Copied to: public/photos/${targetCategory}/${destFileName}`);
+
+  if (isRaw) {
+    const jpegBuf = await getJpegBuffer(filePath);
+    fs.writeFileSync(destPath, jpegBuf);
+    console.log(`   🖼️  Extracted & saved JPEG to: public/photos/${targetCategory}/${destFileName}`);
+  } else {
+    fs.copyFileSync(filePath, destPath);
+    console.log(`   📁 Copied to: public/photos/${targetCategory}/${destFileName}`);
+  }
 
   // 4. Determine date
   const photoDate = exif.dateTaken
