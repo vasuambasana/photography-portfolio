@@ -25,6 +25,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
+// Load .env if present
+const envPath = path.join(ROOT, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf-8');
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const [key, ...val] = trimmed.split('=');
+    if (key && !process.env[key.trim()]) {
+      process.env[key.trim()] = val.join('=').trim().replace(/^["']|["']$/g, '');
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Parse CLI arguments
 // ---------------------------------------------------------------------------
@@ -130,9 +144,16 @@ async function readExif(filePath) {
 }
 
 // ---------------------------------------------------------------------------
-// Gemini AI description generation
+// Gemini AI description generation (Free Tier Safe)
 // ---------------------------------------------------------------------------
+let quotaExceeded = false;
+
 async function generateDescription(filePath, category) {
+  if (quotaExceeded) {
+    console.warn('   ⚠️  Daily free quota reached. Falling back to placeholder title/description for remaining photos.');
+    return null;
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.warn('   ⚠️  No GEMINI_API_KEY found in environment. Using placeholder text.');
@@ -168,6 +189,11 @@ Respond in this exact JSON format, no markdown:
     const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
     return JSON.parse(cleaned);
   } catch (e) {
+    if (e.message?.includes('429') || e.message?.toLowerCase().includes('quota') || e.message?.toLowerCase().includes('rate limit')) {
+      console.warn('   🛑 Free tier rate/daily limit reached! Switching to placeholder mode for safety.');
+      quotaExceeded = true;
+      return null;
+    }
     console.warn(`   ⚠️  Gemini API error: ${e.message}`);
     return null;
   }
@@ -298,10 +324,19 @@ async function main() {
   let order = getNextOrder(category);
   const slugs = [];
 
-  for (const img of images) {
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
     const slug = await processImage(img, order);
     slugs.push(slug);
     order++;
+
+    // Wait 4.2s between photos if there are more remaining (15 req/min rate limit safety)
+    if (i < images.length - 1 && !skipAI && !quotaExceeded) {
+      console.log('   ⏳ Waiting 4s to stay within Gemini Free Tier rate limits...');
+      await sleep(4200);
+    }
   }
 
   console.log('\n' + '─'.repeat(50));
