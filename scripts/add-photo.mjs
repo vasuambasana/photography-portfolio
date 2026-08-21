@@ -20,6 +20,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 // Load .env if present
 const envPath = path.join(ROOT, '.env');
+let quotaExceeded = false;
 if (fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf-8');
   for (const line of envContent.split('\n')) {
@@ -295,7 +297,7 @@ async function generateDescription(filePath, category) {
   try {
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
     const imageBuffer = await getJpegBuffer(filePath);
     const base64 = imageBuffer.toString('base64');
@@ -412,11 +414,17 @@ async function processImage(filePath, targetCategory, orderStart) {
 
   if (isRaw) {
     const jpegBuf = await getJpegBuffer(filePath);
-    fs.writeFileSync(destPath, jpegBuf);
-    console.log(`   🖼️  Extracted & saved JPEG to: public/photos/${targetCategory}/${destFileName}`);
+    await sharp(jpegBuf)
+      .resize({ width: 2560, withoutEnlargement: true })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toFile(destPath);
+    console.log(`   🖼️  Extracted & optimized RAW to JPEG: public/photos/${targetCategory}/${destFileName}`);
   } else {
-    fs.copyFileSync(filePath, destPath);
-    console.log(`   📁 Copied to: public/photos/${targetCategory}/${destFileName}`);
+    await sharp(filePath)
+      .resize({ width: 2560, withoutEnlargement: true })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toFile(destPath);
+    console.log(`   📁 Optimized & copied to: public/photos/${targetCategory}/${destFileName}`);
   }
 
   // 4. Determine date
