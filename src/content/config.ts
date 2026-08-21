@@ -36,7 +36,7 @@ const photosCollection = defineCollection({
   type: 'content',
   schema: ({ image }) => z.object({
     title: z.string(),
-    category: z.enum(['architecture', 'nature', 'street', 'night']),
+    category: z.enum(['architecture', 'nature', 'street', 'night', 'people', 'portrait', 'travel', 'abstract']),
     image: z.union([image(), z.string()]),
     alt: z.string(),
     date: z.date(),

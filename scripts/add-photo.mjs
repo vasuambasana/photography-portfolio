@@ -55,25 +55,28 @@ const category = getArg('category');
 const skipAI = args.includes('--skip-ai');
 const featured = args.includes('--featured');
 
-if (!inputPath || !category) {
+const VALID_CATEGORIES = ['architecture', 'nature', 'street', 'night', 'people', 'portrait', 'travel', 'abstract'];
+
+if (!inputPath) {
   console.error(`
-  Usage: node scripts/add-photo.mjs <path> --category <category>
+  Usage: node scripts/add-photo.mjs <path-to-image-or-folder> [--category <category>]
 
   Options:
-    --category    Required. One of: architecture, nature, street, night
+    --category    Optional if path is a category folder or parent folder with category subfolders.
+                  One of: ${VALID_CATEGORIES.join(', ')}
     --skip-ai     Skip Gemini API call (uses placeholder text)
     --featured    Mark the photo as featured on the homepage
 
   Examples:
-    node scripts/add-photo.mjs "C:\\Photos\\my-photo.jpg" --category architecture
-    node scripts/add-photo.mjs "C:\\Photos\\night-folder\\" --category night --skip-ai
-  `);
-  process.exit(1);
-}
+    # Process entire Google Drive photography-portfolio folder (auto-detects categories from subfolders):
+    node scripts/add-photo.mjs "G:\\My Drive\\photography-portfolio"
 
-const VALID_CATEGORIES = ['architecture', 'nature', 'street', 'night'];
-if (!VALID_CATEGORIES.includes(category)) {
-  console.error(`❌ Invalid category "${category}". Must be one of: ${VALID_CATEGORIES.join(', ')}`);
+    # Process specific category subfolder:
+    node scripts/add-photo.mjs "G:\\My Drive\\photography-portfolio\\architecture" --category architecture
+
+    # Process single image:
+    node scripts/add-photo.mjs "C:\\Photos\\my-shot.jpg" --category people
+  `);
   process.exit(1);
 }
 
@@ -232,11 +235,11 @@ function getNextOrder(category) {
 // ---------------------------------------------------------------------------
 // Process a single image
 // ---------------------------------------------------------------------------
-async function processImage(filePath, orderStart) {
+async function processImage(filePath, targetCategory, orderStart) {
   const ext = path.extname(filePath).toLowerCase();
   const originalName = path.basename(filePath, ext);
 
-  console.log(`\n📸 Processing: ${path.basename(filePath)}`);
+  console.log(`\n📸 Processing [${targetCategory}]: ${path.basename(filePath)}`);
 
   // 1. Read EXIF
   console.log('   🔍 Reading EXIF data...');
@@ -249,7 +252,7 @@ async function processImage(filePath, orderStart) {
   let aiData = null;
   if (!skipAI) {
     console.log('   🤖 Generating AI description...');
-    aiData = await generateDescription(filePath, category);
+    aiData = await generateDescription(filePath, targetCategory);
     if (aiData) {
       console.log(`      Title: "${aiData.title}"`);
       console.log(`      Description: "${aiData.description.substring(0, 80)}..."`);
@@ -257,18 +260,18 @@ async function processImage(filePath, orderStart) {
   }
 
   const title = aiData?.title || originalName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-  const alt = aiData?.alt || `A ${category} photograph`;
-  const description = aiData?.description || `A ${category} photograph. Replace this placeholder with your own description.`;
+  const alt = aiData?.alt || `A ${targetCategory} photograph`;
+  const description = aiData?.description || `A ${targetCategory} photograph. Replace this placeholder with your own description.`;
 
-  // 3. Copy image to public/photos/<category>/
+  // 3. Copy image to public/photos/<targetCategory>/
   const slug = toSlug(title);
   const destFileName = `${slug}${ext}`;
-  const destDir = path.join(ROOT, 'public', 'photos', category);
+  const destDir = path.join(ROOT, 'public', 'photos', targetCategory);
   const destPath = path.join(destDir, destFileName);
 
   fs.mkdirSync(destDir, { recursive: true });
   fs.copyFileSync(filePath, destPath);
-  console.log(`   📁 Copied to: public/photos/${category}/${destFileName}`);
+  console.log(`   📁 Copied to: public/photos/${targetCategory}/${destFileName}`);
 
   // 4. Determine date
   const photoDate = exif.dateTaken
@@ -291,8 +294,8 @@ async function processImage(filePath, orderStart) {
   // 6. Write markdown file
   const mdContent = `---
 title: "${title}"
-category: "${category}"
-image: "/photos/${category}/${destFileName}"
+category: "${targetCategory}"
+image: "/photos/${targetCategory}/${destFileName}"
 alt: "${alt}"
 date: ${photoDate}
 location: ""
@@ -315,37 +318,78 @@ ${description}
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
-  console.log(`\n🚀 Add Photo — Category: ${category}`);
+  const resolvedInput = path.resolve(inputPath);
+  if (!fs.existsSync(resolvedInput)) {
+    console.error(`❌ Path not found: ${resolvedInput}`);
+    process.exit(1);
+  }
+
+  const stat = fs.statSync(resolvedInput);
+  let tasks = [];
+
+  if (stat.isDirectory()) {
+    const folderName = path.basename(resolvedInput).toLowerCase();
+    
+    // Check if the input directory itself is a category folder
+    if (VALID_CATEGORIES.includes(folderName)) {
+      const cat = category || folderName;
+      const images = collectImages(resolvedInput);
+      images.forEach(img => tasks.push({ img, cat }));
+    } else {
+      // Check subfolders for category names
+      const subdirs = fs.readdirSync(resolvedInput)
+        .filter(f => fs.statSync(path.join(resolvedInput, f)).isDirectory());
+
+      for (const sub of subdirs) {
+        const subName = sub.toLowerCase();
+        if (VALID_CATEGORIES.includes(subName)) {
+          const cat = subName;
+          const images = collectImages(path.join(resolvedInput, sub));
+          images.forEach(img => tasks.push({ img, cat }));
+        }
+      }
+
+      // Fallback if no category subfolders matched, but photos exist in current folder
+      if (tasks.length === 0 && category) {
+        const images = collectImages(resolvedInput);
+        images.forEach(img => tasks.push({ img, cat: category }));
+      }
+    }
+  } else if (stat.isFile()) {
+    const cat = category || 'architecture';
+    tasks.push({ img: resolvedInput, cat });
+  }
+
+  if (tasks.length === 0) {
+    console.error(`❌ No photos found to process in "${resolvedInput}". Ensure subfolders are named after categories: ${VALID_CATEGORIES.join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`\n🚀 Photography Portfolio Importer`);
+  console.log(`Found ${tasks.length} photo(s) across categories.`);
   console.log('─'.repeat(50));
 
-  const images = collectImages(inputPath);
-  console.log(`Found ${images.length} image(s) to process.\n`);
-
-  let order = getNextOrder(category);
-  const slugs = [];
-
   const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+  const processedSlugs = [];
 
-  for (let i = 0; i < images.length; i++) {
-    const img = images[i];
-    const slug = await processImage(img, order);
-    slugs.push(slug);
-    order++;
+  for (let i = 0; i < tasks.length; i++) {
+    const { img, cat } = tasks[i];
+    const order = getNextOrder(cat);
+    const slug = await processImage(img, cat, order);
+    processedSlugs.push(slug);
 
-    // Wait 4.2s between photos if there are more remaining (15 req/min rate limit safety)
-    if (i < images.length - 1 && !skipAI && !quotaExceeded) {
+    // Wait 4.2s between photos to stay within Gemini Free Tier rate limits
+    if (i < tasks.length - 1 && !skipAI && !quotaExceeded) {
       console.log('   ⏳ Waiting 4s to stay within Gemini Free Tier rate limits...');
       await sleep(4200);
     }
   }
 
   console.log('\n' + '─'.repeat(50));
-  console.log(`✅ Done! Added ${slugs.length} photo(s) to "${category}" category.`);
+  console.log(`✅ Done! Added ${processedSlugs.length} photo(s).`);
   console.log('\nNext steps:');
-  console.log('  1. Review the generated markdown files in src/content/photos/');
-  console.log('  2. Fill in the "location" field if the EXIF had no GPS data');
-  console.log('  3. Tweak the AI-generated description if needed');
-  console.log('  4. Commit and push:');
+  console.log('  1. Review markdown files in src/content/photos/');
+  console.log('  2. Commit and push:');
   console.log('     git add .');
   console.log('     git commit -m "Add new photos"');
   console.log('     git push');
