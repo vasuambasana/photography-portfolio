@@ -453,6 +453,7 @@ image: "/photos/${targetCategory}/${destFileName}"
 alt: "${alt}"
 date: ${photoDate}
 location: ""
+originalFilename: "${path.basename(filePath)}"
 featured: ${featured}
 order: ${orderStart}
 ${cameraBlock}

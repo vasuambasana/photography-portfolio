@@ -5,6 +5,7 @@ image: "/photos/nature/edge-of-dusk.jpg"
 alt: "Silhouetted blue mountain layers sit under a dark sky punctuated by a vivid strip of orange light at the horizon."
 date: 2025-11-29
 location: ""
+originalFilename: "2P4A4842 (1).jpg"
 featured: false
 order: 14
 cameraSpecs:

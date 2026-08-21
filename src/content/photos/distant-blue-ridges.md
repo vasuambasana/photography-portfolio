@@ -5,6 +5,7 @@ image: "/photos/nature/distant-blue-ridges.jpg"
 alt: "A foreground of dense evergreen trees overlooks cascading layers of blue mountain ridges stretching into a pale sky."
 date: 2025-11-29
 location: ""
+originalFilename: "2P4A4601.jpg"
 featured: false
 order: 13
 cameraSpecs:

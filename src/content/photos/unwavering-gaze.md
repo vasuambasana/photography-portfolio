@@ -5,6 +5,7 @@ image: "/photos/nature/unwavering-gaze.jpg"
 alt: "A mountain lion sits upright on a wooden platform, staring directly into the camera with a blurred forest background."
 date: 2026-02-28
 location: ""
+originalFilename: "2P4A5210.jpg"
 featured: false
 order: 17
 cameraSpecs:

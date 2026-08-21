@@ -41,6 +41,7 @@ const photosCollection = defineCollection({
     alt: z.string(),
     date: z.date(),
     location: z.string().optional(),
+    originalFilename: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(99),
     cameraSpecs: z.object({

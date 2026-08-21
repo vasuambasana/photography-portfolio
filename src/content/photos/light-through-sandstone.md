@@ -5,6 +5,7 @@ image: "/photos/nature/light-through-sandstone.jpg"
 alt: "Smooth, swirling sandstone slot canyon walls illuminated by glowing orange light and deep purple shadows."
 date: 2026-04-05
 location: ""
+originalFilename: "2P4A5868.jpg"
 featured: false
 order: 21
 cameraSpecs:

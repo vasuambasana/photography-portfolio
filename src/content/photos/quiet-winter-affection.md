@@ -5,6 +5,7 @@ image: "/photos/nature/quiet-winter-affection.jpg"
 alt: "Two wolves stand together in deep snow among bare trees, with one nuzzling the back of the other under low sunlight."
 date: 2026-02-28
 location: ""
+originalFilename: "2P4A5149.jpg"
 featured: false
 order: 22
 cameraSpecs:

@@ -5,6 +5,7 @@ image: "/photos/nature/quiet-sentinel.jpg"
 alt: "A peregrine falcon perches alertly atop a weathered wooden stump against a soft, cool blue background."
 date: 2026-02-28
 location: ""
+originalFilename: "2P4A5234.jpg"
 featured: false
 order: 18
 cameraSpecs:

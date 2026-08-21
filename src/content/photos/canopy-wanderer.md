@@ -5,6 +5,7 @@ image: "/photos/nature/canopy-wanderer.jpg"
 alt: "A red panda walks carefully along a thick tree branch against a soft blue background."
 date: 2026-02-28
 location: ""
+originalFilename: "2P4A5198.jpg"
 featured: false
 order: 16
 cameraSpecs:

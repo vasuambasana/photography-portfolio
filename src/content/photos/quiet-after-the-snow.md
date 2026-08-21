@@ -5,6 +5,7 @@ image: "/photos/nature/quiet-after-the-snow.jpg"
 alt: "A snow-dusted park walkway lined with empty benches and bare winter trees."
 date: 2026-01-19
 location: ""
+originalFilename: "20260118_230202.jpg"
 featured: false
 order: 10
 cameraSpecs:

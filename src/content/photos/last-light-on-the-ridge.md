@@ -5,6 +5,7 @@ image: "/photos/nature/last-light-on-the-ridge.jpg"
 alt: "A mountain slope glowing with warm orange sunlight along its crest while the lower forest remains in deep shadow."
 date: 2025-11-28
 location: ""
+originalFilename: "2P4A4371 (1).jpg"
 featured: false
 order: 11
 
