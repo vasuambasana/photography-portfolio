@@ -134,31 +134,39 @@ function collectImages(inputPath) {
     const ext = path.extname(filePath).toLowerCase();
     const baseName = path.basename(filePath, ext);
 
-    // Normalize name to detect copies: "IMG_0001 (1)" -> "IMG_0001"
+    // Normalize stem to catch all duplicate naming conventions:
+    // "IMG_0001 (1)", "IMG_0001_copy", "IMG_0001 - Copy", "IMG_0001-Edit", "IMG_0001_1" -> "img_0001"
     const cleanStem = baseName
-      .replace(/[\s\-_]*(copy|\(\d+\)|\d+)$/i, '')
+      .replace(/[\s\-_]*(copy|edit|\(\d+\)|_\d+|\-\d+)$/i, '')
+      .replace(/[\s\-_]+/g, '')
       .toLowerCase();
 
-    // Check MD5 hash deduplication
+    // Check MD5 hash deduplication (catches identical files even with different names)
     const hash = getFileHash(filePath);
     if (seenHashes.has(hash)) {
-      console.log(`   ⏭️  Skipping exact duplicate file: ${path.basename(filePath)}`);
+      console.log(`   ⏭️  Skipping duplicate image content: ${path.basename(filePath)}`);
       continue;
     }
-    seenHashes.add(hash);
 
-    // Handle RAW + JPG pairing: prefer RAW over JPG if both exist for same stem
+    // Handle RAW vs JPG pairing and duplicate RAW / duplicate JPG with same base name
     if (stemMap.has(cleanStem)) {
       const existing = stemMap.get(cleanStem);
       const existingExt = path.extname(existing).toLowerCase();
-      if (!RAW_EXTENSIONS.includes(existingExt) && RAW_EXTENSIONS.includes(ext)) {
-        // Replace existing JPG with RAW
+      const existingIsRaw = RAW_EXTENSIONS.includes(existingExt);
+      const currentIsRaw = RAW_EXTENSIONS.includes(ext);
+
+      // If existing is JPG and current is RAW, upgrade to RAW
+      if (!existingIsRaw && currentIsRaw) {
+        console.log(`   🔄 Upgrading photo from JPG (${path.basename(existing)}) to RAW (${path.basename(filePath)})`);
         stemMap.set(cleanStem, filePath);
+        seenHashes.add(hash);
+      } else {
+        console.log(`   ⏭️  Skipping duplicate ${currentIsRaw ? 'RAW' : 'JPG'} photo: ${path.basename(filePath)}`);
       }
-      console.log(`   ⏭️  Skipping duplicate paired photo: ${path.basename(filePath)}`);
       continue;
     }
 
+    seenHashes.add(hash);
     stemMap.set(cleanStem, filePath);
   }
 
