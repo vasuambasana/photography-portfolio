@@ -9,7 +9,7 @@ export default defineConfig({
   integrations: [
     tailwind(),
     react(),
-    // sitemap(), // temporarily disabled — version compatibility issue, will fix
+    sitemap(),
   ],
   image: {
     domains: [],

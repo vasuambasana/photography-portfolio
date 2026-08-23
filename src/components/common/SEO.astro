@@ -22,10 +22,10 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = import.meta.env.SITE_URL || Astro.site?.toString() || 'https://example.com';
+const siteUrl = import.meta.env.SITE_URL || Astro.site?.toString() || 'https://vasuambasana.com';
 const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
 const socialImage = ogImage || new URL('/og-default.jpg', siteUrl).toString();
-const siteName = 'Photography Portfolio';
+const siteName = 'Vasu Ambasana';
 ---
 
 <!-- Primary Meta -->
@@ -55,15 +55,24 @@ const siteName = 'Photography Portfolio';
 <meta name="twitter:image" content={socialImage} />
 
 <!-- JSON-LD Structured Data -->
-<script is:inline type="application/ld+json" set:html={JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': ogType === 'article' ? 'Article' : 'WebSite',
-  name: title,
-  description: description,
-  url: canonicalUrl,
-  image: socialImage,
-  ...(ogType === 'article' && article?.publishedTime ? {
-    datePublished: article.publishedTime,
-    articleSection: article.section,
-  } : {}),
-})} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify([
+  {
+    '@context': 'https://schema.org',
+    '@type': ogType === 'article' ? 'Article' : 'WebSite',
+    name: title,
+    description: description,
+    url: canonicalUrl,
+    image: socialImage,
+    ...(ogType === 'article' && article?.publishedTime ? {
+      datePublished: article.publishedTime,
+      articleSection: article.section,
+    } : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Vasu Ambasana',
+    url: 'https://vasuambasana.com',
+    jobTitle: 'Photographer'
+  }
+])} />

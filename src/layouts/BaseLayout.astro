@@ -29,8 +29,7 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafafa" id="theme-color-meta" />
 
     <!-- Theme Initialization Script (blocking to prevent FOUC) -->
     <script is:inline>
@@ -43,8 +42,10 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     
       if (theme === 'light') {
         document.documentElement.classList.remove('dark');
+        document.getElementById('theme-color-meta').setAttribute('content', '#fafafa');
       } else {
         document.documentElement.classList.add('dark');
+        document.getElementById('theme-color-meta').setAttribute('content', '#09090b');
       }
       window.localStorage.setItem('theme', theme);
     </script>

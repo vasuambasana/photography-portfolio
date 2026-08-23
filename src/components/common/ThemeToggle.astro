@@ -62,6 +62,11 @@
 
         const isDark = element.classList.contains("dark");
         localStorage.setItem("theme", isDark ? "dark" : "light");
+
+        const metaThemeColor = document.getElementById("theme-color-meta");
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute("content", isDark ? "#09090b" : "#fafafa");
+        }
       });
     });
   };

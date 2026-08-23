@@ -410,7 +410,6 @@ async function generateDescription(filePath, category) {
   try {
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
     const imageBuffer = await getJpegBuffer(filePath);
     const base64 = imageBuffer.toString('base64');
@@ -426,18 +425,40 @@ Analyze this ${category} photograph and provide:
 Respond in this exact JSON format, no markdown:
 {"title": "...", "alt": "...", "description": "..."}`;
 
-    const result = await model.generateContent([
-      prompt,
-      { inlineData: { data: base64, mimeType } },
-    ]);
+    const modelsToTry = [
+      'gemini-3.5-flash-lite',
+      'gemini-3.1-flash-lite',
+      'gemini-3.6-flash',
+      'gemini-3.7-flash',
+      'gemini-3.5-flash',
+      'gemini-3-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-2.5-flash'
+    ];
 
-    const text = result.response.text().trim();
-    // Strip markdown code fences if present
-    const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
-    return JSON.parse(cleaned);
+    let lastError;
+    for (const modelName of modelsToTry) {
+        try {
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent([
+              prompt,
+              { inlineData: { data: base64, mimeType } },
+            ]);
+        
+            const text = result.response.text().trim();
+            // Strip markdown code fences if present
+            const cleaned = text.replace(/^```json?\n?/i, '').replace(/\n?```$/i, '').trim();
+            return JSON.parse(cleaned);
+        } catch (e) {
+            console.warn(`   ⚠️  Model ${modelName} failed: ${e.message}`);
+            lastError = e;
+        }
+    }
+    
+    throw lastError; // If we get here, all models failed
   } catch (e) {
     if (e.message?.includes('429') || e.message?.toLowerCase().includes('quota') || e.message?.toLowerCase().includes('rate limit')) {
-      console.warn('   🛑 Free tier rate/daily limit reached! Switching to placeholder mode for safety.');
+      console.warn('   🛑 All free tier rate/daily limits reached! Switching to placeholder mode for safety.');
       quotaExceeded = true;
       return null;
     }
