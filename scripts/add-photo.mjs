@@ -263,6 +263,66 @@ async function readExif(filePath) {
       isMobile,
     };
   } catch (e) {
+    // For CR3 and other formats exifr can't parse directly,
+    // try extracting the embedded JPEG and reading EXIF from that
+    if (RAW_EXTENSIONS.includes(path.extname(filePath).toLowerCase())) {
+      try {
+        console.log(`   🔄 Retrying EXIF read from embedded JPEG...`);
+        const jpegBuf = await getJpegBuffer(filePath);
+        if (jpegBuf && jpegBuf.length > 0) {
+          const exifr = await import('exifr');
+          const data = await exifr.default.parse(jpegBuf, {
+            pick: ['Make', 'Model', 'LensModel', 'LensMake',
+                   'FocalLength', 'FocalLengthIn35mmFormat', 'FNumber', 'ExposureTime', 'ISO',
+                   'GPSLatitude', 'GPSLongitude', 'DateTimeOriginal'],
+          });
+          if (data) {
+            let make = data.Make ? data.Make.trim() : '';
+            let model = data.Model ? data.Model.trim() : '';
+            let body = '';
+            if (model && make && model.toLowerCase().startsWith(make.toLowerCase())) {
+              body = model;
+            } else if (model && make) {
+              body = `${make} ${model}`;
+            } else {
+              body = model || make || '';
+            }
+
+            let focalLength = undefined;
+            if (data.FocalLengthIn35mmFormat) {
+              focalLength = `${data.FocalLengthIn35mmFormat}mm (35mm eq)`;
+            } else if (data.FocalLength) {
+              focalLength = `${Math.round(data.FocalLength)}mm`;
+            }
+
+            let shutterSpeed = undefined;
+            if (data.ExposureTime) {
+              shutterSpeed = data.ExposureTime < 1
+                ? `1/${Math.round(1 / data.ExposureTime)}s`
+                : `${data.ExposureTime}s`;
+            }
+
+            const lens = data.LensModel || undefined;
+            console.log(`      Camera: ${body || 'Unknown'}`);
+            if (lens) console.log(`      Lens: ${lens}`);
+            console.log(`      Focal: ${focalLength || '?'}  f/${data.FNumber || '?'}  ${shutterSpeed || '?'}  ISO ${data.ISO || '?'}`);
+
+            return {
+              body: body || undefined,
+              lens: lens,
+              focalLength: focalLength || undefined,
+              aperture: data.FNumber ? `f/${data.FNumber}` : undefined,
+              shutterSpeed: shutterSpeed || undefined,
+              iso: data.ISO ? String(data.ISO) : undefined,
+              dateTaken: data.DateTimeOriginal || undefined,
+              isMobile: false,
+            };
+          }
+        }
+      } catch (e2) {
+        console.warn(`   ⚠️  EXIF fallback also failed: ${e2.message}`);
+      }
+    }
     console.warn(`   ⚠️  Could not read EXIF: ${e.message}`);
     return {};
   }
@@ -270,16 +330,69 @@ async function readExif(filePath) {
 
 async function getJpegBuffer(filePath) {
   const ext = path.extname(filePath).toLowerCase();
-  if (RAW_EXTENSIONS.includes(ext)) {
-    try {
-      const exifr = await import('exifr');
-      const thumb = await exifr.default.thumbnail(filePath);
-      if (thumb) return Buffer.from(thumb);
-    } catch (e) {
-      console.warn(`   ⚠️  Could not extract JPEG preview from RAW: ${e.message}`);
-    }
+
+  if (!RAW_EXTENSIONS.includes(ext)) {
+    return fs.readFileSync(filePath);
   }
-  return fs.readFileSync(filePath);
+
+  // Method 1: Try exifr thumbnail extraction (works for CR2, DNG, ARW, NEF, etc.)
+  try {
+    const exifr = await import('exifr');
+    const thumb = await exifr.default.thumbnail(filePath);
+    if (thumb && thumb.length > 10000) {
+      console.log(`   📦 Extracted JPEG preview via exifr (${(thumb.length / 1024).toFixed(0)} KB)`);
+      return Buffer.from(thumb);
+    }
+  } catch (e) {
+    // exifr failed — try binary scan
+  }
+
+  // Method 2: Binary scan for embedded JPEG (works for CR3 / ISO BMFF containers)
+  // CR3 files contain one or more JPEG images. We scan for SOI (0xFFD8) and EOI (0xFFD9)
+  // markers and extract the largest one (which is the full-resolution preview).
+  console.log(`   📦 Scanning binary for embedded JPEG (CR3/BMFF fallback)...`);
+  try {
+    const rawData = fs.readFileSync(filePath);
+    const jpegs = [];
+    let searchFrom = 0;
+
+    while (searchFrom < rawData.length - 2) {
+      // Find SOI marker (0xFF 0xD8)
+      const soiIndex = rawData.indexOf(Buffer.from([0xFF, 0xD8]), searchFrom);
+      if (soiIndex === -1) break;
+
+      // Find EOI marker (0xFF 0xD9) after the SOI
+      let eoiIndex = soiIndex + 2;
+      while (eoiIndex < rawData.length - 1) {
+        eoiIndex = rawData.indexOf(Buffer.from([0xFF, 0xD9]), eoiIndex);
+        if (eoiIndex === -1) break;
+        eoiIndex += 2; // Include the EOI marker itself
+
+        const jpegCandidate = rawData.subarray(soiIndex, eoiIndex);
+        // Only consider JPEG segments larger than 50KB (skip tiny thumbnails)
+        if (jpegCandidate.length > 50 * 1024) {
+          jpegs.push({ offset: soiIndex, length: jpegCandidate.length, buffer: jpegCandidate });
+        }
+        break;
+      }
+
+      if (eoiIndex === -1) break;
+      searchFrom = eoiIndex;
+    }
+
+    if (jpegs.length > 0) {
+      // Pick the largest JPEG found (usually the full-resolution preview)
+      jpegs.sort((a, b) => b.length - a.length);
+      const best = jpegs[0];
+      console.log(`   📦 Found ${jpegs.length} embedded JPEG(s) — using largest (${(best.length / 1024 / 1024).toFixed(1)} MB)`);
+      return best.buffer;
+    }
+  } catch (e) {
+    console.warn(`   ⚠️  Binary JPEG scan failed: ${e.message}`);
+  }
+
+  console.warn(`   ⚠️  No usable JPEG found in RAW file — cannot process`);
+  return null;
 }
 
 async function generateDescription(filePath, category) {
@@ -372,11 +485,25 @@ async function processImage(filePath, targetCategory, orderStart) {
   const isRaw = RAW_EXTENSIONS.includes(ext);
   const rawSlug = toSlug(originalName);
 
-  // Check if photo is already imported
+  // Check if photo is already imported (by raw slug match)
   const existingMd = path.join(ROOT, 'src', 'content', 'photos', `${rawSlug}.md`);
   if (fs.existsSync(existingMd)) {
     console.log(`\n⏭️  Skipping [already imported]: ${path.basename(filePath)}`);
     return rawSlug;
+  }
+
+  // Check if photo was already imported under a different slug (by originalFilename)
+  const currentBasename = path.basename(filePath);
+  const photosDir = path.join(ROOT, 'src', 'content', 'photos');
+  if (fs.existsSync(photosDir)) {
+    for (const mdFile of fs.readdirSync(photosDir).filter(f => f.endsWith('.md'))) {
+      const content = fs.readFileSync(path.join(photosDir, mdFile), 'utf-8');
+      const match = content.match(/^originalFilename:\s*"?([^"\n]+)"?/m);
+      if (match && match[1].trim() === currentBasename) {
+        console.log(`\n⏭️  Skipping [already imported as ${mdFile}]: ${currentBasename}`);
+        return mdFile.replace('.md', '');
+      }
+    }
   }
 
   console.log(`\n📸 Processing [${targetCategory}]${isRaw ? ' (RAW format)' : ''}: ${path.basename(filePath)}`);
@@ -414,11 +541,20 @@ async function processImage(filePath, targetCategory, orderStart) {
 
   if (isRaw) {
     const jpegBuf = await getJpegBuffer(filePath);
-    await sharp(jpegBuf)
-      .resize({ width: 2560, withoutEnlargement: true })
-      .jpeg({ quality: 85, mozjpeg: true })
-      .toFile(destPath);
-    console.log(`   🖼️  Extracted & optimized RAW to JPEG: public/photos/${targetCategory}/${destFileName}`);
+    if (!jpegBuf || jpegBuf.length === 0) {
+      console.log(`   ⚠️  Could not extract usable JPEG from RAW — skipping ${path.basename(filePath)}`);
+      return null;
+    }
+    try {
+      await sharp(jpegBuf)
+        .resize({ width: 2560, withoutEnlargement: true })
+        .jpeg({ quality: 85, mozjpeg: true })
+        .toFile(destPath);
+      console.log(`   🖼️  Extracted & optimized RAW to JPEG: public/photos/${targetCategory}/${destFileName}`);
+    } catch (rawErr) {
+      console.log(`   ⚠️  Sharp failed on RAW buffer for ${path.basename(filePath)}: ${rawErr.message} — skipping`);
+      return null;
+    }
   } else {
     await sharp(filePath)
       .resize({ width: 2560, withoutEnlargement: true })
