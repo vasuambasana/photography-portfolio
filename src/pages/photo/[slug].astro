@@ -43,7 +43,8 @@ const imageSrc = typeof image === 'string' ? image : image.src;
 const galleryImages = categoryPhotos.map((p: any) => ({
   src: p.imageSrc,
   alt: p.alt,
-  caption: p.title
+  caption: p.title,
+  slug: p.slug
 }));
 const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug);
 ---

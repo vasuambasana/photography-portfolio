@@ -5,6 +5,7 @@ interface GalleryImage {
   src: string;
   alt: string;
   caption?: string;
+  slug?: string;
 }
 
 interface ClickableImageProps {

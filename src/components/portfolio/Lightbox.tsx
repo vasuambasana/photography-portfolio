@@ -4,6 +4,7 @@ interface LightboxImage {
   src: string;
   alt: string;
   caption?: string;
+  slug?: string;
 }
 
 interface LightboxProps {
@@ -37,6 +38,19 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
   const goNext = useCallback(() => goTo(currentIndex + 1), [currentIndex, goTo]);
   const goPrev = useCallback(() => goTo(currentIndex - 1), [currentIndex, goTo]);
 
+  // Close handler: navigate to the current photo's page if different from initial
+  const handleClose = useCallback(() => {
+    const currentImage = images[currentIndex];
+    const initialImage = images[initialIndex];
+
+    // If the user navigated to a different image, go to that photo's page
+    if (currentIndex !== initialIndex && currentImage?.slug) {
+      window.location.href = `/photo/${currentImage.slug}`;
+    } else {
+      onClose();
+    }
+  }, [currentIndex, initialIndex, images, onClose]);
+
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
@@ -44,7 +58,7 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
     const handler = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Escape':
-          onClose();
+          handleClose();
           break;
         case 'ArrowRight':
           goNext();
@@ -57,7 +71,7 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
 
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [isOpen, goNext, goPrev, onClose]);
+  }, [isOpen, goNext, goPrev, handleClose]);
 
   // Focus management
   useEffect(() => {
@@ -116,14 +130,14 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
       {/* Backdrop click to close */}
       <div
         className="absolute inset-0"
-        onClick={onClose}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
       {/* Close button */}
       <button
         ref={closeButtonRef}
-        onClick={onClose}
+        onClick={handleClose}
         className="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-surface-overlay hover:opacity-80 transition-opacity text-text-primary shadow-sm"
         aria-label="Close image viewer"
       >
