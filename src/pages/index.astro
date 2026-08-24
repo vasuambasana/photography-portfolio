@@ -66,9 +66,9 @@ const featuredPhotos = allPhotos
           </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children lg:auto-rows-[minmax(0,1fr)]">
-          {featuredPhotos.map((photo, index) => (
-            <div class={`group relative overflow-hidden rounded-card bg-surface-overlay ${index === 0 ? 'sm:col-span-2 sm:row-span-2 aspect-[4/5] sm:aspect-square lg:aspect-auto' : 'aspect-[4/5]'}`}>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 stagger-children">
+          {featuredPhotos.map((photo) => (
+            <div class="group relative aspect-[4/5] overflow-hidden rounded-card bg-surface-overlay">
               <a href={`/photo/${photo.slug}`} class="block w-full h-full">
                 <img
                   src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
