@@ -108,5 +108,14 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     </main>
 
     <Footer />
+
+    <!-- Image Protection Script -->
+    <script is:inline>
+      document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+        }
+      });
+    </script>
   </body>
 </html>

@@ -2,6 +2,7 @@
 import PhotoLayout from '../../layouts/PhotoLayout.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import ClickableImage from '../../components/portfolio/ClickableImage';
 
 export async function getStaticPaths() {
   const photos = await getCollection('photos');
@@ -52,10 +53,12 @@ const imageSrc = typeof image === 'string' ? image : image.src;
   <div class="section-container">
     <!-- Large Photo Display -->
     <div class="mb-12 rounded-xl overflow-hidden bg-surface-overlay shadow-sm max-w-[80%] mx-auto">
-      <img
+      <ClickableImage 
+        client:load
         src={imageSrc}
         alt={alt}
-        class="w-full h-auto max-h-[80vh] object-contain mx-auto bg-surface-main"
+        caption={title}
+        className="w-full h-auto max-h-[80vh] object-contain mx-auto bg-surface-main"
       />
     </div>
 
