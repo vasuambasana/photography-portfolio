@@ -8,13 +8,19 @@ interface LightboxImage {
 
 interface LightboxProps {
   images: LightboxImage[];
-  initialIndex?: number;
   isOpen: boolean;
   onClose: () => void;
+  initialIndex?: number;
 }
 
-export default function Lightbox({ images, initialIndex = 0, isOpen, onClose }: LightboxProps) {
+export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: LightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+  // Sync currentIndex when initialIndex changes
+  useEffect(() => {
+    setCurrentIndex(initialIndex);
+  }, [initialIndex, isOpen]);
+
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);

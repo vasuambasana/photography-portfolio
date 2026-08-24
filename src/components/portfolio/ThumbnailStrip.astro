@@ -56,6 +56,9 @@ const prevSlug = currentIndex > 0 ? categoryPhotos[currentIndex - 1].slug : null
 
   // Keyboard navigation
   document.addEventListener('keydown', (e) => {
+    // Disable navigation if lightbox is open (indicated by overflow hidden on body)
+    if (document.body.style.overflow === 'hidden') return;
+    
     if (e.key === 'ArrowLeft' && prevSlug) {
       window.location.href = `/photo/${prevSlug}`;
     } else if (e.key === 'ArrowRight' && nextSlug) {

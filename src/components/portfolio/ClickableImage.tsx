@@ -1,18 +1,33 @@
 import { useState } from 'react';
 import Lightbox from './Lightbox';
 
+interface GalleryImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
 interface ClickableImageProps {
   src: string;
   alt: string;
   caption?: string;
   className?: string;
+  galleryImages?: GalleryImage[];
+  initialIndex?: number;
 }
 
-export default function ClickableImage({ src, alt, caption, className = '' }: ClickableImageProps) {
+export default function ClickableImage({ 
+  src, 
+  alt, 
+  caption, 
+  className = '',
+  galleryImages,
+  initialIndex = 0
+}: ClickableImageProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // We pass a single image to the lightbox
-  const images = [{ src, alt, caption }];
+  // If galleryImages is provided, use it. Otherwise, fallback to single image.
+  const images = galleryImages || [{ src, alt, caption }];
 
   return (
     <>
@@ -25,6 +40,7 @@ export default function ClickableImage({ src, alt, caption, className = '' }: Cl
 
       <Lightbox
         images={images}
+        initialIndex={initialIndex}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />
