@@ -1,9 +1,8 @@
 ---
 import Nav from './Nav.astro';
-import MobileMenu from './MobileMenu.astro';
 ---
 
-<header class="glass-nav fixed top-0 left-0 right-0 z-50">
+<header class="glass-nav fixed top-0 left-0 right-0 z-40">
   <div class="section-container flex items-center justify-between h-16 md:h-20">
     <!-- Site name / logo -->
     <a
@@ -18,7 +17,18 @@ import MobileMenu from './MobileMenu.astro';
     <!-- Desktop nav -->
     <Nav />
 
-    <!-- Mobile menu -->
-    <MobileMenu />
+    <!-- Mobile menu toggle button -->
+    <button
+      id="mobile-menu-toggle"
+      type="button"
+      class="md:hidden flex flex-col items-center justify-center w-11 h-11 gap-1.5 rounded-lg transition-colors hover:bg-surface-overlay"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open navigation menu"
+    >
+      <span class="hamburger-line w-5 h-px bg-text-primary transition-transform duration-300"></span>
+      <span class="hamburger-line w-5 h-px bg-text-primary transition-opacity duration-300"></span>
+      <span class="hamburger-line w-5 h-px bg-text-primary transition-transform duration-300"></span>
+    </button>
   </div>
 </header>

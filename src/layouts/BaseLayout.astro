@@ -1,6 +1,7 @@
 ---
 import SEO from '../components/common/SEO.astro';
 import Header from '../components/common/Header.astro';
+import MobileMenu from '../components/common/MobileMenu.astro';
 import Footer from '../components/common/Footer.astro';
 import '../styles/global.css';
 
@@ -76,6 +77,7 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     </a>
 
     <Header />
+    <MobileMenu />
 
     <!-- Spacer for fixed header -->
     <div class="h-16 md:h-20" aria-hidden="true" />
