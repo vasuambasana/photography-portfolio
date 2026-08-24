@@ -63,10 +63,10 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
                 loading="lazy"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5 md:p-6 pointer-events-none">
                 <div>
-                  <h3 class="text-white font-display text-xl mb-1">{photo.data.title}</h3>
-                  <p class="text-white/80 font-mono text-xs uppercase tracking-widest">{photo.data.category}</p>
+                  <h3 class="text-white font-display text-xl mb-1 drop-shadow-md">{photo.data.title}</h3>
+                  <p class="text-white/90 font-mono text-xs uppercase tracking-widest drop-shadow-md">{photo.data.category}</p>
                 </div>
               </div>
             </a>
