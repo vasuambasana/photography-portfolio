@@ -3,7 +3,7 @@ export interface Props {
   contactEmail?: string;
 }
 
-const { contactEmail = 'hello@example.com' } = Astro.props;
+const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
 ---
 
 <form
@@ -62,9 +62,9 @@ const { contactEmail = 'hello@example.com' } = Astro.props;
       name="type"
       class="w-full px-4 py-3 bg-surface-card border border-subtle rounded-card text-text-primary text-body-md focus:outline-none focus:ring-2 focus:ring-text-accent focus:border-transparent transition-all duration-200 appearance-none"
     >
-      <option value="general">General Inquiry</option>
-      <option value="project">Project Collaboration</option>
-      <option value="licensing">Image Licensing</option>
+      <option value="general">Just saying hi</option>
+      <option value="project">Photography discussion</option>
+      <option value="licensing">Location inquiry</option>
       <option value="other">Other</option>
     </select>
   </div>
@@ -79,7 +79,7 @@ const { contactEmail = 'hello@example.com' } = Astro.props;
       name="message"
       required
       rows={6}
-      placeholder="Tell me about your project or question..."
+      placeholder="Tell me what's on your mind..."
       class="w-full px-4 py-3 bg-surface-card border border-subtle rounded-card text-text-primary text-body-md placeholder:text-text-secondary/50 focus:outline-none focus:ring-2 focus:ring-text-accent focus:border-transparent transition-all duration-200 resize-y min-h-[120px]"
     ></textarea>
     <p id="contact-message-error" class="hidden mt-2 text-sm text-red-400" role="alert">
@@ -146,6 +146,20 @@ const { contactEmail = 'hello@example.com' } = Astro.props;
 
       if (!isValid) {
         e.preventDefault();
+      } else {
+        e.preventDefault(); // Stop default HTML submission which is unreliable
+
+        const typeSelect = form.querySelector<HTMLSelectElement>('#contact-type');
+        const typeText = typeSelect ? typeSelect.options[typeSelect.selectedIndex].text : '';
+        
+        const subject = encodeURIComponent(`Website Contact: ${name?.value.trim()} - ${typeText}`);
+        const bodyText = `Name: ${name?.value.trim()}\nEmail: ${email?.value.trim()}\n\nMessage:\n${message?.value.trim()}`;
+        const body = encodeURIComponent(bodyText);
+        
+        // Extract email from the action attribute (remove 'mailto:')
+        const toEmail = form.getAttribute('action')?.replace('mailto:', '') || 'ambasana.vasu@gmail.com';
+        
+        window.location.href = `mailto:${toEmail}?subject=${subject}&body=${body}`;
       }
     });
   }
