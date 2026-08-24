@@ -7,7 +7,7 @@ const allPhotos = await getCollection('photos');
 const featuredPhotos = allPhotos
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 4);
+  .slice(0, 8);
 ---
 
 <BaseLayout
