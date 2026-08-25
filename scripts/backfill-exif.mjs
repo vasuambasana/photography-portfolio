@@ -76,8 +76,11 @@ async function run() {
         let newCameraSpecsStr = `cameraSpecs:\n  body: "${cameraSpecs.body}"\n  lens: "${cameraSpecs.lens}"\n  settings: "${cameraSpecs.settings}"\n`;
         
         if (isMissingCameraSpecs) {
-          // insert it before the closing '---'
-          content = content.replace(/\n---(\s*)$/, `\n${newCameraSpecsStr}---$1`);
+          // insert it before the closing '---' of the frontmatter
+          const lastDashIdx = content.indexOf('\n---');
+          if (lastDashIdx !== -1) {
+            content = content.substring(0, lastDashIdx) + `\n${newCameraSpecsStr}` + content.substring(lastDashIdx);
+          }
         } else if (isMissingBody) {
           // replace the existing malformed cameraSpecs block
           content = content.replace(/cameraSpecs:[\s\S]*?(?=\n\w|$)/, newCameraSpecsStr.trimEnd());

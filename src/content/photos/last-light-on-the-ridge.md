@@ -9,6 +9,11 @@ originalFilename: "2P4A4371 (1).jpg"
 featured: false
 order: 11
 
+cameraSpecs:
+  body: "Unknown Body"
+  lens: "Unknown Lens"
+  settings: "Unknown mm | Unknown f/ | Unknown s | Unknown ISO"
+
 ---
 
 I waited on the trail as the sun dropped behind the opposite ridge, watching the shadows climb the mountain. For just a few moments, the last warm light caught the high tree line, creating a stark contrast against the cold blue evening settling below. It was a quiet, fleeting transition that made the cold wait worth it.

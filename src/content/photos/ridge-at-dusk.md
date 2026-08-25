@@ -9,6 +9,11 @@ originalFilename: "2P4A4403.jpg"
 featured: false
 order: 12
 
+cameraSpecs:
+  body: "Unknown Body"
+  lens: "Unknown Lens"
+  settings: "Unknown mm | Unknown f/ | Unknown s | Unknown ISO"
+
 ---
 
 I paused here just as the sun dipped completely below the horizon, leaving only a gentle gradient of light across the sky. The stark contrast of the bare trees against the dimming twilight felt completely calm and unhurried. I wanted to capture that quiet moment when the landscape dissolves into simple shapes and shadows.
