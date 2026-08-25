@@ -24,8 +24,8 @@ const {
 
 const siteUrl = import.meta.env.SITE_URL || Astro.site?.toString() || 'https://vasuambasana.com';
 const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
-const socialImage = ogImage || new URL('/og-default.jpg', siteUrl).toString();
-const siteName = 'Vasu Ambasana';
+const socialImage = ogImage || new URL('/logo.png', siteUrl).toString();
+const siteName = 'VA Photography';
 ---
 
 <!-- Primary Meta -->
