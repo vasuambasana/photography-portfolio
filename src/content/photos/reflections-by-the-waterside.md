@@ -1,0 +1,20 @@
+---
+title: Reflections by the Waterside
+category: people
+image: /photos/people/reflections-by-the-waterside.jpg
+alt: A people photograph
+date: 2026-08-23T00:00:00.000Z
+location: ''
+originalFilename: 2P4A7763.CR3
+featured: false
+order: 18
+cameraSpecs:
+  body: Canon EOS R5m2
+  lens: RF70-200mm F2.8 L IS USM
+  focalLength: 200mm
+  aperture: f/2.8
+  shutterSpeed: 1/1600s
+  iso: '200'
+---
+
+A woman holding a young child stands alongside a teenager near a tranquil pond, framed by the graceful weeping willows overhead. Their figures and the surrounding lush greenery create a serene mirror reflection on the calm water's surface.

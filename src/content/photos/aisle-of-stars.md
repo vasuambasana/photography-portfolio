@@ -1,0 +1,20 @@
+---
+title: Aisle of Stars
+category: night
+image: /photos/night/aisle-of-stars.jpg
+alt: A night photograph
+date: 2025-07-06T00:00:00.000Z
+location: ''
+originalFilename: 20250706_020618.jpg
+featured: false
+order: 29
+cameraSpecs:
+  body: samsung Galaxy Z Fold6
+  lens: Samsung Galaxy Z Fold6 Rear Wide Camera
+  focalLength: 23mm (35mm eq)
+  aperture: f/1.8
+  shutterSpeed: 25s
+  iso: '1600'
+---
+
+Framed by the dark, ink-black silhouettes of towering tree canopies on either side, the brilliant band of the Milky Way stretches vertically across the night sky. Countless glowing stars and distant nebulas create a textured, shimmering pathway of cosmic dust that draws the viewer's eye into the infinite depths of the universe.

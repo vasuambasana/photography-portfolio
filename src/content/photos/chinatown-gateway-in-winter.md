@@ -1,0 +1,20 @@
+---
+title: Chinatown Gateway in Winter
+category: street
+image: /photos/street/chinatown-gateway-in-winter.jpg
+alt: A street photograph
+date: 2026-01-19T00:00:00.000Z
+location: ''
+originalFilename: 20260118_194909.jpg
+featured: false
+order: 18
+cameraSpecs:
+  body: samsung Galaxy Z Fold7
+  lens: Samsung Galaxy Z Fold7 Rear Wide Camera
+  focalLength: 44mm (35mm eq)
+  aperture: f/1.7
+  shutterSpeed: 1/40s
+  iso: '400'
+---
+
+Captured at night, a grand Chinatown gate stands illuminated amidst a heavy snowfall, with glowing lanterns and streetlights reflecting off the wet pavement below. The scene is framed by falling snowflakes caught in the amber glow, while the American and Taiwanese flags hang prominently beneath the intricate architectural details.

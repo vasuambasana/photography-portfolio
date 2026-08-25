@@ -1,0 +1,20 @@
+---
+title: Monolith in Monochrome
+category: architecture
+image: /photos/architecture/monolith-in-monochrome.jpg
+alt: A architecture photograph
+date: 2023-03-22T00:00:00.000Z
+location: ''
+originalFilename: 20230322_185858.jpg
+featured: false
+order: 8
+cameraSpecs:
+  body: samsung SM-S908U1
+  lens: Samsung Galaxy S22 Ultra Rear Telephoto Camera
+  focalLength: 69mm (35mm eq)
+  aperture: f/2.4
+  shutterSpeed: 1/60s
+  iso: '50'
+---
+
+Captured in sharp black and white, the imposing facade of the high-rise building ascends into the overcast sky, framed by the intricate, delicate silhouettes of bare winter branches in the foreground.

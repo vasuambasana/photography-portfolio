@@ -1,0 +1,19 @@
+---
+title: Neon Devotion
+category: night
+image: /photos/night/neon-devotion.jpg
+alt: A night photograph
+date: 2026-01-03T00:00:00.000Z
+location: ''
+originalFilename: 2P4A5000.jpg
+featured: false
+order: 34
+cameraSpecs:
+  body: Canon EOS R5m2
+  focalLength: 200.0mm
+  aperture: f/2.8
+  shutterSpeed: 1/100s
+  iso: '3200'
+---
+
+Vibrant, illuminated stained-glass panels depicting religious iconography glow against a stark black background, partly obscured by a dark foreground surface that creates a striking juxtaposition of sacred art and modern shadows.
