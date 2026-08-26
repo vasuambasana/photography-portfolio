@@ -26,31 +26,50 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
         </p>
       </div>
 
-      <!-- Category filter -->
-      <nav class="mb-10" aria-label="Filter photos by category">
-        <ul class="flex flex-wrap items-center gap-3">
-          <li>
-            <button
-              data-filter="all"
-              class="filter-btn active px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
-              aria-pressed="true"
-            >
-              All
-            </button>
-          </li>
-          {categories.map((cat) => (
+      <!-- Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <!-- Category filter -->
+        <nav aria-label="Filter photos by category">
+          <ul class="flex flex-wrap items-center gap-3">
             <li>
               <button
-                data-filter={cat}
-                class="filter-btn px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
-                aria-pressed="false"
+                data-filter="all"
+                class="filter-btn active px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
+                aria-pressed="true"
               >
-                {cat}
+                All
               </button>
             </li>
-          ))}
-        </ul>
-      </nav>
+            {categories.map((cat) => (
+              <li>
+                <button
+                  data-filter={cat}
+                  class="filter-btn px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
+                  aria-pressed="false"
+                >
+                  {cat}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <!-- View Controls (Hidden on small screens) -->
+        <div class="hidden lg:flex items-center gap-3" aria-label="Grid view controls">
+          <span class="text-xs font-mono uppercase tracking-widest text-text-secondary">Columns</span>
+          <div class="flex items-center bg-surface-overlay border border-subtle rounded-full p-1">
+            {[2, 3, 4, 5].map(num => (
+              <button
+                data-cols={num}
+                class={`view-btn w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono transition-colors duration-200 ${num === 3 ? 'bg-text-primary text-surface-main' : 'text-text-secondary hover:text-text-primary'}`}
+                aria-label={`View ${num} columns`}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <!-- Photos grid -->
       <GalleryGrid>
@@ -81,6 +100,8 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
       const items = document.querySelectorAll<HTMLElement>('[data-category]');
 
+      if (!buttons.length) return;
+
       buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
           const filter = btn.dataset.filter;
@@ -110,7 +131,53 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       });
     }
 
-    initFilters();
-    document.addEventListener('astro:after-swap', initFilters);
+    function initViewControls() {
+      const viewBtns = document.querySelectorAll<HTMLButtonElement>('.view-btn');
+      const grid = document.getElementById('portfolio-grid');
+      
+      if (!grid || !viewBtns.length) return;
+
+      // Check localStorage
+      const savedCols = localStorage.getItem('portfolioCols') || '3';
+      
+      const setCols = (cols) => {
+        // Reset classes
+        grid.classList.remove('lg:grid-cols-2', 'lg:grid-cols-3', 'lg:grid-cols-4', 'lg:grid-cols-5');
+        grid.classList.add(`lg:grid-cols-${cols}`);
+        
+        // Update buttons
+        viewBtns.forEach(btn => {
+          if (btn.dataset.cols === cols) {
+            btn.classList.add('bg-text-primary', 'text-surface-main');
+            btn.classList.remove('text-text-secondary', 'hover:text-text-primary');
+          } else {
+            btn.classList.remove('bg-text-primary', 'text-surface-main');
+            btn.classList.add('text-text-secondary', 'hover:text-text-primary');
+          }
+        });
+      };
+
+      // Initialize
+      setCols(savedCols);
+
+      // Listeners
+      viewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cols = btn.dataset.cols;
+          if (cols) {
+            setCols(cols);
+            localStorage.setItem('portfolioCols', cols);
+          }
+        });
+      });
+    }
+
+    function initAll() {
+      initFilters();
+      initViewControls();
+    }
+
+    initAll();
+    document.addEventListener('astro:after-swap', initAll);
   </script>
 </BaseLayout>
