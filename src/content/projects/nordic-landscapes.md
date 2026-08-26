@@ -15,8 +15,8 @@ cameraSpecs:
     - "RF 70-200mm f/2.8L IS USM"
 ---
 
-[PLACEHOLDER: Write 2–3 paragraphs about this landscape project — the journey, the environments, what you sought to capture, and the emotional register of the work.]
+[PLACEHOLDER: Write 2-3 paragraphs about this landscape project - the journey, the environments, what you sought to capture, and the emotional register of the work.]
 
-The Nordic light is unlike anything else — low, golden, and endlessly soft. These landscapes were captured across multiple seasons, chasing the interplay between weather systems and terrain that defines the northern aesthetic.
+The Nordic light is unlike anything else - low, golden, and endlessly soft. These landscapes were captured across multiple seasons, chasing the interplay between weather systems and terrain that defines the northern aesthetic.
 
 [PLACEHOLDER: Add personal reflections, logistics, or notes on conditions and techniques.]

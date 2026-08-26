@@ -15,8 +15,8 @@ cameraSpecs:
     - "RF 50mm f/1.2L USM"
 ---
 
-[PLACEHOLDER: Write 2–3 paragraphs about this portrait project — the subjects, the setting, lighting philosophy, and the mood you aimed to create.]
+[PLACEHOLDER: Write 2-3 paragraphs about this portrait project - the subjects, the setting, lighting philosophy, and the mood you aimed to create.]
 
-Every portrait is a collaboration. This series uses available light and minimal direction to capture authentic expression — the space between poses where personality surfaces naturally.
+Every portrait is a collaboration. This series uses available light and minimal direction to capture authentic expression - the space between poses where personality surfaces naturally.
 
 [PLACEHOLDER: Add context about the sessions, the relationship with subjects, or editorial direction.]

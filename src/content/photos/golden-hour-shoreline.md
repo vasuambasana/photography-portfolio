@@ -16,4 +16,4 @@ cameraSpecs:
   iso: "50"
 ---
 
-I stood on the bluff just as the late afternoon light began stretching long shadows across the damp sand. What drew me to this scene was the gentle rhythm of the coast—strangers and their dogs scattered along the water's edge as the day quieted down.
+I stood on the bluff just as the late afternoon light began stretching long shadows across the damp sand. What drew me to this scene was the gentle rhythm of the coast-strangers and their dogs scattered along the water's edge as the day quieted down.

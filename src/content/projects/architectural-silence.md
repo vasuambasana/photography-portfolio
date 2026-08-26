@@ -15,7 +15,7 @@ cameraSpecs:
     - "RF 15-35mm f/2.8L IS USM"
 ---
 
-[PLACEHOLDER: Write 2–3 paragraphs about this project — the concept, what drew you to these structures, and the visual approach. Describe the interplay of light, material, and geometry that defines the series.]
+[PLACEHOLDER: Write 2-3 paragraphs about this project - the concept, what drew you to these structures, and the visual approach. Describe the interplay of light, material, and geometry that defines the series.]
 
 Each frame in this series isolates a moment where architecture transcends function and becomes sculpture. The work focuses on clean lines, deliberate shadow, and the way concrete and glass negotiate with natural light across seasons.
 

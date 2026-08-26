@@ -15,8 +15,8 @@ cameraSpecs:
     - "RF 50mm f/1.2L USM"
 ---
 
-[PLACEHOLDER: Write 2–3 paragraphs about this urban/street photography project — what city or cities, your approach, and the themes you explored.]
+[PLACEHOLDER: Write 2-3 paragraphs about this urban/street photography project - what city or cities, your approach, and the themes you explored.]
 
-Stripped of color, the city reveals its skeletal beauty — repeating patterns, fleeting silhouettes, and the tension between permanence and motion. This series documents the overlooked geometry of daily life.
+Stripped of color, the city reveals its skeletal beauty - repeating patterns, fleeting silhouettes, and the tension between permanence and motion. This series documents the overlooked geometry of daily life.
 
 [PLACEHOLDER: Add notes on your street photography philosophy, working methods, or post-processing approach.]
