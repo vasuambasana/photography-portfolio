@@ -141,7 +141,7 @@
   /* Section container */
   .section-container {
     @apply mx-auto px-content;
-    max-width: 72rem;
+    max-width: 96rem;
   }
 
   /* Prose container for text-heavy pages */
