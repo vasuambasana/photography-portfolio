@@ -60,7 +60,7 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
 >
   <div class="section-container">
     <!-- Large Photo Display -->
-    <div class="mb-12 rounded-xl overflow-hidden bg-surface-overlay shadow-sm max-w-[80%] mx-auto">
+    <div class="mb-8 rounded-xl overflow-hidden bg-surface-overlay shadow-sm max-w-[80%] mx-auto">
       <ClickableImage 
         client:load
         src={imageSrc}
@@ -94,7 +94,7 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
 
       <!-- Camera Specs -->
       {cameraSpecs && (
-        <div class="mt-12 pt-8 border-t border-subtle">
+        <div class="mt-8 pt-8 border-t border-subtle">
           <h3 class="text-xs font-mono uppercase tracking-widest text-text-secondary mb-4">Gear & Settings</h3>
           <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8 text-sm text-text-secondary">
             {cameraSpecs.body && (

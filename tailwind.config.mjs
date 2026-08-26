@@ -34,8 +34,8 @@ export default {
         'caption': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.05em' }],
       },
       spacing: {
-        'section': 'clamp(4rem, 8vw, 8rem)',
-        'content': 'clamp(1.5rem, 4vw, 3rem)',
+        'section': 'clamp(2.5rem, 5vw, 5rem)',
+        'content': 'clamp(1rem, 3vw, 2rem)',
       },
       maxWidth: {
         'content': '72rem',
