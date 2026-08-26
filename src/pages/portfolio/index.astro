@@ -54,8 +54,9 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
           </ul>
         </nav>
 
-        <!-- View Controls (Hidden on small screens) -->
-        <div class="hidden lg:flex items-center gap-3" aria-label="Grid view controls">
+        <!-- View Controls (Hidden on mobile) -->
+        <div class="hidden sm:flex items-center gap-3" aria-label="Grid view controls">
+          <!-- Tailwind safelist: sm:grid-cols-2 sm:grid-cols-3 sm:grid-cols-4 sm:grid-cols-5 -->
           <span class="text-xs font-mono uppercase tracking-widest text-text-secondary">Columns</span>
           <div class="flex items-center bg-surface-overlay border border-subtle rounded-full p-1">
             {[2, 3, 4, 5].map(num => (
@@ -142,8 +143,8 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       
       const setCols = (cols) => {
         // Reset classes
-        grid.classList.remove('lg:grid-cols-2', 'lg:grid-cols-3', 'lg:grid-cols-4', 'lg:grid-cols-5');
-        grid.classList.add(`lg:grid-cols-${cols}`);
+        grid.classList.remove('sm:grid-cols-2', 'sm:grid-cols-3', 'sm:grid-cols-4', 'sm:grid-cols-5', 'lg:grid-cols-2', 'lg:grid-cols-3', 'lg:grid-cols-4', 'lg:grid-cols-5');
+        grid.classList.add(`sm:grid-cols-${cols}`);
         
         // Update buttons
         viewBtns.forEach(btn => {
