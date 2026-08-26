@@ -8,11 +8,10 @@ const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
 
 <form
   id="contact-form"
-  action={`mailto:${contactEmail}`}
-  method="POST"
-  enctype="text/plain"
+  action="#"
   class="space-y-6"
   novalidate
+  data-email={contactEmail}
 >
   <!-- Name -->
   <div>
@@ -156,8 +155,8 @@ const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
         const bodyText = `Name: ${name?.value.trim()}\nEmail: ${email?.value.trim()}\n\nMessage:\n${message?.value.trim()}`;
         const body = encodeURIComponent(bodyText);
         
-        // Extract email from the action attribute (remove 'mailto:')
-        const toEmail = form.getAttribute('action')?.replace('mailto:', '') || 'ambasana.vasu@gmail.com';
+        // Extract email from the data attribute
+        const toEmail = form.dataset.email || 'ambasana.vasu@gmail.com';
         
         window.location.href = `mailto:${toEmail}?subject=${subject}&body=${body}`;
       }
