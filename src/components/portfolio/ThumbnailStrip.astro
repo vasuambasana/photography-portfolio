@@ -21,7 +21,7 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
 
 <div class="mt-16 border-t border-subtle pt-8 section-container">
   <div class="flex items-center justify-between mb-4">
-    <h3 class="meta-text">More in this category</h3>
+    <h3 id="thumbnail-strip-heading" class="meta-text">More in this category</h3>
     <p class="text-xs text-text-tertiary hidden sm:block">Use &larr; &rarr; keys to navigate</p>
   </div>
   
@@ -59,6 +59,15 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
 <script define:vars={{ prevSlugAll, nextSlugAll, prevSlugCat, nextSlugCat }}>
   const params = new URLSearchParams(window.location.search);
   const filter = params.get('filter');
+
+  const heading = document.getElementById('thumbnail-strip-heading');
+  if (heading) {
+    if (!filter || filter === 'all') {
+      heading.textContent = 'More from portfolio';
+    } else {
+      heading.textContent = 'More in this category';
+    }
+  }
 
   // Filter thumbnails if necessary
   const thumbs = document.querySelectorAll('.thumbnail-link');
