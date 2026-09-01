@@ -20,7 +20,7 @@ export async function getStaticPaths() {
       }));
 
     // Find prev/next across ALL photos (not just category)
-    const allSorted = photos.sort((a, b) => a.data.order - b.data.order);
+    const allSorted = [...photos].sort((a, b) => a.data.order - b.data.order);
     const currentIdx = allSorted.findIndex(p => p.slug === photo.slug);
     const prevPhoto = currentIdx > 0 ? allSorted[currentIdx - 1] : null;
     const nextPhoto = currentIdx < allSorted.length - 1 ? allSorted[currentIdx + 1] : null;
