@@ -48,10 +48,14 @@ const prevSlug = currentIndex > 0 ? categoryPhotos[currentIndex - 1].slug : null
 </div>
 
 <script define:vars={{ prevSlug, nextSlug }}>
-  // Scroll the active thumbnail into view
+  // Scroll the active thumbnail into view within the strip (not the page)
   const activeThumb = document.getElementById('active-thumbnail');
-  if (activeThumb) {
-    activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  const strip = document.getElementById('thumbnail-strip');
+  if (activeThumb && strip) {
+    const thumbLeft = activeThumb.offsetLeft;
+    const thumbWidth = activeThumb.offsetWidth;
+    const stripWidth = strip.offsetWidth;
+    strip.scrollLeft = thumbLeft - (stripWidth / 2) + (thumbWidth / 2);
   }
 
   // Keyboard navigation

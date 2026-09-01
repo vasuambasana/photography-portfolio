@@ -19,11 +19,19 @@ export async function getStaticPaths() {
         alt: p.data.alt
       }));
 
+    // Find prev/next across ALL photos (not just category)
+    const allSorted = photos.sort((a, b) => a.data.order - b.data.order);
+    const currentIdx = allSorted.findIndex(p => p.slug === photo.slug);
+    const prevPhoto = currentIdx > 0 ? allSorted[currentIdx - 1] : null;
+    const nextPhoto = currentIdx < allSorted.length - 1 ? allSorted[currentIdx + 1] : null;
+
     return {
       params: { slug: photo.slug },
       props: {
         photo,
         categoryPhotos,
+        prevPhoto: prevPhoto ? { slug: prevPhoto.slug, title: prevPhoto.data.title } : null,
+        nextPhoto: nextPhoto ? { slug: nextPhoto.slug, title: nextPhoto.data.title } : null,
       },
     };
   });
@@ -32,9 +40,11 @@ export async function getStaticPaths() {
 interface Props {
   photo: CollectionEntry<'photos'>;
   categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
+  prevPhoto: { slug: string; title: string } | null;
+  nextPhoto: { slug: string; title: string } | null;
 }
 
-const { photo, categoryPhotos } = Astro.props;
+const { photo, categoryPhotos, prevPhoto, nextPhoto } = Astro.props;
 const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
@@ -59,8 +69,8 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
   categoryPhotos={categoryPhotos}
 >
   <div class="section-container">
-    <!-- Large Photo Display -->
-    <div class="mb-8 rounded-xl overflow-hidden bg-surface-overlay shadow-sm max-w-[80%] mx-auto">
+    <!-- Full-width Photo Display -->
+    <div class="rounded-xl overflow-hidden bg-surface-overlay shadow-sm">
       <ClickableImage 
         client:load
         src={imageSrc}
@@ -68,14 +78,42 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
         caption={title}
         galleryImages={galleryImages}
         initialIndex={initialIndex}
-        className="w-full h-auto max-h-[80vh] object-contain mx-auto bg-surface-main"
+        className="w-full h-auto max-h-[85vh] object-contain mx-auto bg-surface-main"
       />
     </div>
 
+    <!-- Prev / Next navigation -->
+    <nav class="flex items-center justify-between py-4" aria-label="Photo navigation">
+      {prevPhoto ? (
+        <a
+          href={`/photo/${prevPhoto.slug}`}
+          class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
+        >
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4l-6 6 6 6" /></svg>
+          Previous
+        </a>
+      ) : <span />}
+      <a
+        href="/portfolio"
+        class="text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
+      >
+        All Photos
+      </a>
+      {nextPhoto ? (
+        <a
+          href={`/photo/${nextPhoto.slug}`}
+          class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
+        >
+          Next
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4l6 6-6 6" /></svg>
+        </a>
+      ) : <span />}
+    </nav>
+
     <!-- Metadata and Content -->
-    <div class="max-w-prose mx-auto">
-      <header class="mb-8">
-        <h1 class="text-display-lg font-display text-text-primary mb-2">{title}</h1>
+    <div class="max-w-prose mx-auto mt-4">
+      <header class="mb-6">
+        <h1 class="text-display-md font-display text-text-primary mb-2">{title}</h1>
         <div class="flex flex-wrap gap-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
           <span>{category}</span>
           {location && (
@@ -88,15 +126,15 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
       </header>
 
       <!-- The markdown content (few sentences) -->
-      <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-lg leading-relaxed [&>p]:mb-6">
+      <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-md leading-relaxed [&>p]:mb-4">
         <Content />
       </div>
 
       <!-- Camera Specs -->
       {cameraSpecs && (
-        <div class="mt-8 pt-8 border-t border-subtle">
+        <div class="mt-6 pt-6 border-t border-subtle">
           <h3 class="text-xs font-mono uppercase tracking-widest text-text-secondary mb-4">Gear & Settings</h3>
-          <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8 text-sm text-text-secondary">
+          <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-6 text-sm text-text-secondary">
             {cameraSpecs.body && (
               <li>
                 <span class="block text-xs uppercase text-text-tertiary mb-1">Camera</span>

@@ -14,62 +14,43 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
   title="Portfolio"
   description="Browse the complete photography portfolio by category."
 >
-  <section class="py-section" aria-labelledby="portfolio-heading">
+  <section class="pt-4 pb-section" aria-labelledby="portfolio-heading">
     <div class="section-container">
       <!-- Header -->
-      <div class="mb-12 md:mb-16">
-        <h1 id="portfolio-heading" class="font-display text-display-xl text-text-primary mb-4">
+      <div class="mb-6 md:mb-8">
+        <h1 id="portfolio-heading" class="font-display text-display-md text-text-primary mb-2">
           Portfolio
         </h1>
-        <p class="text-body-lg text-text-secondary max-w-prose">
+        <p class="text-body-md text-text-secondary max-w-prose">
           A curated collection of photographs exploring architecture, nature, and street life.
         </p>
       </div>
 
-      <!-- Controls -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <!-- Category filter -->
-        <nav aria-label="Filter photos by category">
-          <ul class="flex flex-wrap items-center gap-3">
+      <!-- Category filter -->
+      <nav class="mb-6 md:mb-8" aria-label="Filter photos by category">
+        <ul class="flex flex-wrap items-center gap-2">
+          <li>
+            <button
+              data-filter="all"
+              class="filter-btn active px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
+              aria-pressed="true"
+            >
+              All
+            </button>
+          </li>
+          {categories.map((cat) => (
             <li>
               <button
-                data-filter="all"
-                class="filter-btn active px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
-                aria-pressed="true"
+                data-filter={cat}
+                class="filter-btn px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
+                aria-pressed="false"
               >
-                All
+                {cat}
               </button>
             </li>
-            {categories.map((cat) => (
-              <li>
-                <button
-                  data-filter={cat}
-                  class="filter-btn px-4 py-2 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
-                  aria-pressed="false"
-                >
-                  {cat}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <!-- View Controls -->
-        <div class="flex items-center gap-3" aria-label="Grid view controls">
-          <span class="text-xs font-mono uppercase tracking-widest text-text-secondary hidden sm:inline">Columns</span>
-          <div class="flex items-center bg-surface-overlay border border-subtle rounded-full p-1">
-            {[2, 3, 4, 5].map(num => (
-              <button
-                data-cols={num}
-                class={`view-btn w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono transition-colors duration-200 ${num === 3 ? 'bg-text-primary text-surface-main' : 'text-text-secondary hover:text-text-primary'}`}
-                aria-label={`View ${num} columns`}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+          ))}
+        </ul>
+      </nav>
 
       <!-- Photos grid -->
       <GalleryGrid>
@@ -82,12 +63,6 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
                 loading="lazy"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5 md:p-6 pointer-events-none">
-                <div>
-                  <h3 class="text-white font-display text-xl mb-1 drop-shadow-md">{photo.data.title}</h3>
-                  <p class="text-white/90 font-mono text-xs uppercase tracking-widest drop-shadow-md">{photo.data.category}</p>
-                </div>
-              </div>
             </a>
           </div>
         ))}
@@ -131,52 +106,7 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       });
     }
 
-    function initViewControls() {
-      const viewBtns = document.querySelectorAll<HTMLButtonElement>('.view-btn');
-      const grid = document.getElementById('portfolio-grid');
-      
-      if (!grid || !viewBtns.length) return;
-
-      // Check localStorage
-      const savedCols = localStorage.getItem('portfolioCols') || '3';
-      
-      const setCols = (cols) => {
-        // Use inline styles to cleanly override any responsive Tailwind classes
-        grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-        
-        // Update buttons
-        viewBtns.forEach(btn => {
-          if (btn.dataset.cols === cols) {
-            btn.classList.add('bg-text-primary', 'text-surface-main');
-            btn.classList.remove('text-text-secondary', 'hover:text-text-primary');
-          } else {
-            btn.classList.remove('bg-text-primary', 'text-surface-main');
-            btn.classList.add('text-text-secondary', 'hover:text-text-primary');
-          }
-        });
-      };
-
-      // Initialize
-      setCols(savedCols);
-
-      // Listeners
-      viewBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const cols = btn.dataset.cols;
-          if (cols) {
-            setCols(cols);
-            localStorage.setItem('portfolioCols', cols);
-          }
-        });
-      });
-    }
-
-    function initAll() {
-      initFilters();
-      initViewControls();
-    }
-
-    initAll();
-    document.addEventListener('astro:after-swap', initAll);
+    initFilters();
+    document.addEventListener('astro:after-swap', initFilters);
   </script>
 </BaseLayout>

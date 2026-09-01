@@ -35,7 +35,7 @@ export default {
       },
       spacing: {
         'section': 'clamp(2.5rem, 5vw, 5rem)',
-        'content': 'clamp(1rem, 3vw, 2rem)',
+        'content': 'clamp(0.75rem, 3vw, 2rem)',
       },
       maxWidth: {
         'content': '96rem',
