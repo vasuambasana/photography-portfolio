@@ -96,6 +96,13 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
 
           // Filter items
           items.forEach((item) => {
+            const a = item.querySelector('a');
+            if (a) {
+              const url = new URL(a.href, window.location.origin);
+              url.searchParams.set('filter', filter);
+              a.href = url.toString();
+            }
+
             if (filter === 'all' || item.dataset.category === filter) {
               item.style.display = '';
             } else {
@@ -104,6 +111,13 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
           });
         });
       });
+
+      // Run once on load to set initial URLs if default filter is active
+      const activeBtn = document.querySelector('.filter-btn.active');
+      if (activeBtn) {
+        // @ts-ignore
+        activeBtn.click();
+      }
     }
 
     initFilters();

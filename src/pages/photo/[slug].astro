@@ -19,19 +19,36 @@ export async function getStaticPaths() {
         alt: p.data.alt
       }));
 
-    // Find prev/next across ALL photos (not just category)
     const allSorted = [...photos].sort((a, b) => a.data.order - b.data.order);
-    const currentIdx = allSorted.findIndex(p => p.slug === photo.slug);
-    const prevPhoto = currentIdx > 0 ? allSorted[currentIdx - 1] : null;
-    const nextPhoto = currentIdx < allSorted.length - 1 ? allSorted[currentIdx + 1] : null;
+    
+    // Map all sorted photos for the client
+    const allPhotosClient = allSorted.map(p => ({
+      slug: p.slug,
+      title: p.data.title,
+      imageSrc: typeof p.data.image === 'string' ? p.data.image : p.data.image.src,
+      alt: p.data.alt,
+      category: p.data.category
+    }));
+
+    // Find prev/next for ALL photos
+    const allIdx = allSorted.findIndex(p => p.slug === photo.slug);
+    const prevPhotoAll = allIdx > 0 ? allSorted[allIdx - 1] : null;
+    const nextPhotoAll = allIdx < allSorted.length - 1 ? allSorted[allIdx + 1] : null;
+
+    // Find prev/next for CATEGORY photos
+    const catIdx = categoryPhotos.findIndex(p => p.slug === photo.slug);
+    const prevPhotoCat = catIdx > 0 ? categoryPhotos[catIdx - 1] : null;
+    const nextPhotoCat = catIdx < categoryPhotos.length - 1 ? categoryPhotos[catIdx + 1] : null;
 
     return {
       params: { slug: photo.slug },
       props: {
         photo,
-        categoryPhotos,
-        prevPhoto: prevPhoto ? { slug: prevPhoto.slug, title: prevPhoto.data.title } : null,
-        nextPhoto: nextPhoto ? { slug: nextPhoto.slug, title: nextPhoto.data.title } : null,
+        allPhotosClient,
+        prevPhotoAll: prevPhotoAll ? { slug: prevPhotoAll.slug, title: prevPhotoAll.data.title } : null,
+        nextPhotoAll: nextPhotoAll ? { slug: nextPhotoAll.slug, title: nextPhotoAll.data.title } : null,
+        prevPhotoCat: prevPhotoCat ? { slug: prevPhotoCat.slug, title: prevPhotoCat.title } : null,
+        nextPhotoCat: nextPhotoCat ? { slug: nextPhotoCat.slug, title: nextPhotoCat.title } : null,
       },
     };
   });
@@ -39,24 +56,27 @@ export async function getStaticPaths() {
 
 interface Props {
   photo: CollectionEntry<'photos'>;
-  categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
-  prevPhoto: { slug: string; title: string } | null;
-  nextPhoto: { slug: string; title: string } | null;
+  allPhotosClient: Array<{ slug: string; title: string; imageSrc: string; alt: string; category: string }>;
+  prevPhotoAll: { slug: string; title: string } | null;
+  nextPhotoAll: { slug: string; title: string } | null;
+  prevPhotoCat: { slug: string; title: string } | null;
+  nextPhotoCat: { slug: string; title: string } | null;
 }
 
-const { photo, categoryPhotos, prevPhoto, nextPhoto } = Astro.props;
+const { photo, allPhotosClient, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
 const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
 const imageSrc = typeof image === 'string' ? image : image.src;
 
-const galleryImages = categoryPhotos.map((p: any) => ({
+const galleryImages = allPhotosClient.map((p: any) => ({
   src: p.imageSrc,
   alt: p.alt,
   caption: p.title,
-  slug: p.slug
+  slug: p.slug,
+  category: p.category
 }));
-const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug);
+const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug);
 ---
 
 <PhotoLayout
@@ -66,7 +86,7 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
   date={date.toISOString()}
   coverImage={imageSrc}
   currentSlug={photo.slug}
-  categoryPhotos={categoryPhotos}
+  allPhotosClient={allPhotosClient}
 >
   <div class="section-container">
     <!-- Full-width Photo Display -->
@@ -84,30 +104,34 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
 
     <!-- Prev / Next navigation -->
     <nav class="flex items-center justify-between py-4" aria-label="Photo navigation">
-      {prevPhoto ? (
-        <a
-          href={`/photo/${prevPhoto.slug}`}
-          class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
-        >
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4l-6 6 6 6" /></svg>
-          Previous
-        </a>
-      ) : <span />}
+      <a
+        id="prev-link"
+        href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : "#"}
+        data-all-href={prevPhotoAll ? `/photo/${prevPhotoAll.slug}` : ""}
+        data-cat-href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : ""}
+        class={`inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline ${!prevPhotoCat ? 'hidden' : ''}`}
+      >
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4l-6 6 6 6" /></svg>
+        Previous
+      </a>
+      
       <a
         href="/portfolio"
-        class="text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
+        class="text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline mx-auto"
       >
         All Photos
       </a>
-      {nextPhoto ? (
-        <a
-          href={`/photo/${nextPhoto.slug}`}
-          class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline"
-        >
-          Next
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4l6 6-6 6" /></svg>
-        </a>
-      ) : <span />}
+      
+      <a
+        id="next-link"
+        href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : "#"}
+        data-all-href={nextPhotoAll ? `/photo/${nextPhotoAll.slug}` : ""}
+        data-cat-href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : ""}
+        class={`inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline ${!nextPhotoCat ? 'hidden' : ''}`}
+      >
+        Next
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4l6 6-6 6" /></svg>
+      </a>
     </nav>
 
     <!-- Metadata and Content -->
@@ -177,3 +201,34 @@ const initialIndex = categoryPhotos.findIndex((p: any) => p.slug === photo.slug)
     </div>
   </div>
 </PhotoLayout>
+
+<script>
+  // Setup dynamic Prev/Next links based on current filter
+  const params = new URLSearchParams(window.location.search);
+  const filter = params.get('filter');
+  
+  if (filter) {
+    const prevLink = document.getElementById('prev-link');
+    const nextLink = document.getElementById('next-link');
+
+    if (prevLink) {
+      const href = (filter === 'all') ? prevLink.dataset.allHref : prevLink.dataset.catHref;
+      if (href) {
+        prevLink.href = href + '?filter=' + filter;
+        prevLink.classList.remove('hidden');
+      } else {
+        prevLink.classList.add('hidden');
+      }
+    }
+
+    if (nextLink) {
+      const href = (filter === 'all') ? nextLink.dataset.allHref : nextLink.dataset.catHref;
+      if (href) {
+        nextLink.href = href + '?filter=' + filter;
+        nextLink.classList.remove('hidden');
+      } else {
+        nextLink.classList.add('hidden');
+      }
+    }
+  }
+</script>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Lightbox from './Lightbox';
 
 interface GalleryImage {
@@ -6,6 +6,7 @@ interface GalleryImage {
   alt: string;
   caption?: string;
   slug?: string;
+  category?: string;
 }
 
 interface ClickableImageProps {
@@ -26,9 +27,37 @@ export default function ClickableImage({
   initialIndex = 0
 }: ClickableImageProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [images, setImages] = useState<GalleryImage[]>(galleryImages || [{ src, alt, caption }]);
+  const [idx, setIdx] = useState(initialIndex);
 
-  // If galleryImages is provided, use it. Otherwise, fallback to single image.
-  const images = galleryImages || [{ src, alt, caption }];
+  useEffect(() => {
+    if (!galleryImages) return;
+    
+    // Read filter from URL
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('filter');
+    
+    let filtered = galleryImages;
+    if (filter && filter !== 'all') {
+      filtered = galleryImages.filter(img => img.category === filter);
+    }
+    
+    // If filter results in empty list, fallback to all images
+    if (filtered.length === 0) filtered = galleryImages;
+    
+    setImages(filtered);
+    
+    // Find new initial index
+    // We assume the current page slug matches the one we want to start with
+    const currentSlugMatch = window.location.pathname.match(/\/photo\/([^\/]+)/);
+    if (currentSlugMatch) {
+      const slug = currentSlugMatch[1];
+      const newIdx = filtered.findIndex(img => img.slug === slug);
+      setIdx(newIdx >= 0 ? newIdx : 0);
+    } else {
+      setIdx(0);
+    }
+  }, [galleryImages]);
 
   return (
     <>
@@ -41,7 +70,7 @@ export default function ClickableImage({
 
       <Lightbox
         images={images}
-        initialIndex={initialIndex}
+        initialIndex={idx}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />

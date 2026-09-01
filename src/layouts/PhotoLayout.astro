@@ -9,10 +9,10 @@ export interface Props {
   date: string;
   coverImage?: string;
   currentSlug: string;
-  categoryPhotos: Array<{ slug: string; title: string; imageSrc: string; alt: string }>;
+  allPhotosClient: Array<{ slug: string; title: string; imageSrc: string; alt: string; category: string }>;
 }
 
-const { title, description, category, date, coverImage, currentSlug, categoryPhotos } = Astro.props;
+const { title, description, category, date, coverImage, currentSlug, allPhotosClient } = Astro.props;
 ---
 
 <BaseLayout
@@ -29,7 +29,7 @@ const { title, description, category, date, coverImage, currentSlug, categoryPho
     <slot />
 
     <!-- Filmstrip navigation -->
-    <ThumbnailStrip currentSlug={currentSlug} categoryPhotos={categoryPhotos} />
+    <ThumbnailStrip currentSlug={currentSlug} allPhotosClient={allPhotosClient} />
 
     <!-- Contact CTA -->
     <div class="section-container mt-section text-center">
