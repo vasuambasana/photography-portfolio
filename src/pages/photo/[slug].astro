@@ -203,32 +203,34 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
 </PhotoLayout>
 
 <script>
-  // Setup dynamic Prev/Next links based on current filter
-  const params = new URLSearchParams(window.location.search);
-  const filter = params.get('filter');
-  
-  if (filter) {
-    const prevLink = document.getElementById('prev-link');
-    const nextLink = document.getElementById('next-link');
+  document.addEventListener('astro:page-load', () => {
+    // Setup dynamic Prev/Next links based on current filter
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('filter');
+    
+    if (filter) {
+      const prevLink = document.getElementById('prev-link');
+      const nextLink = document.getElementById('next-link');
 
-    if (prevLink) {
-      const href = (filter === 'all') ? prevLink.dataset.allHref : prevLink.dataset.catHref;
-      if (href) {
-        prevLink.href = href + '?filter=' + filter;
-        prevLink.classList.remove('hidden');
-      } else {
-        prevLink.classList.add('hidden');
+      if (prevLink) {
+        const href = (filter === 'all') ? prevLink.dataset.allHref : prevLink.dataset.catHref;
+        if (href) {
+          prevLink.href = href + '?filter=' + filter;
+          prevLink.classList.remove('hidden');
+        } else {
+          prevLink.classList.add('hidden');
+        }
+      }
+
+      if (nextLink) {
+        const href = (filter === 'all') ? nextLink.dataset.allHref : nextLink.dataset.catHref;
+        if (href) {
+          nextLink.href = href + '?filter=' + filter;
+          nextLink.classList.remove('hidden');
+        } else {
+          nextLink.classList.add('hidden');
+        }
       }
     }
-
-    if (nextLink) {
-      const href = (filter === 'all') ? nextLink.dataset.allHref : nextLink.dataset.catHref;
-      if (href) {
-        nextLink.href = href + '?filter=' + filter;
-        nextLink.classList.remove('hidden');
-      } else {
-        nextLink.classList.add('hidden');
-      }
-    }
-  }
+  });
 </script>

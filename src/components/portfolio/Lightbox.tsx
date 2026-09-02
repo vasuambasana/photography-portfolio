@@ -45,7 +45,7 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
 
     // If the user navigated to a different image, go to that photo's page
     if (currentIndex !== initialIndex && currentImage?.slug) {
-      window.location.href = `/photo/${currentImage.slug}`;
+      window.location.href = `/photo/${currentImage.slug}${window.location.search}`;
     } else {
       onClose();
     }

@@ -40,6 +40,16 @@ export default function ClickableImage({
     let filtered = galleryImages;
     if (filter && filter !== 'all') {
       filtered = galleryImages.filter(img => img.category === filter);
+    } else if (!filter) {
+      // Default to the category of the current image if no filter is specified in URL
+      const currentSlugMatch = window.location.pathname.match(/\/photo\/([^\/]+)/);
+      if (currentSlugMatch) {
+        const slug = currentSlugMatch[1];
+        const currentCategory = galleryImages.find(img => img.slug === slug)?.category;
+        if (currentCategory) {
+          filtered = galleryImages.filter(img => img.category === currentCategory);
+        }
+      }
     }
     
     // If filter results in empty list, fallback to all images
