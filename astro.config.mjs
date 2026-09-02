@@ -7,6 +7,9 @@ import partytown from '@astrojs/partytown';
 export default defineConfig({
   site: 'https://vasuambasana.com',
   output: 'static',
+  redirects: {
+    '/portfolio': '/gallery',
+  },
   integrations: [
     tailwind(),
     react(),
