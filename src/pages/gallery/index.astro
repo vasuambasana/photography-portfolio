@@ -14,43 +14,50 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
   title="Gallery"
   description="Browse the complete photography gallery by category."
 >
-  <section class="pt-4 pb-section" aria-labelledby="gallery-heading">
+  <section class="pt-2 pb-12" aria-labelledby="gallery-heading">
     <div class="section-container">
-      <!-- Header -->
-      <div class="mb-6 md:mb-8">
-        <h1 id="gallery-heading" class="font-display text-display-md text-text-primary mb-2">
-          Gallery
-        </h1>
-        <p class="text-body-md text-text-secondary max-w-prose">
-          A curated collection of photographs exploring architecture, nature, and street life.
-        </p>
-      </div>
+      <!-- Integrated Header & Filter Bar -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 border-b border-subtle">
+        <div>
+          <div class="flex items-center gap-3 mb-1">
+            <h1 id="gallery-heading" class="font-display text-display-md text-text-primary">
+              Gallery
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-overlay text-text-secondary border border-subtle">
+              {sortedPhotos.length} Photographs
+            </span>
+          </div>
+          <p class="text-body-sm text-text-secondary max-w-prose">
+            A visual archive of architecture, nature, street, and twilight captures.
+          </p>
+        </div>
 
-      <!-- Category filter -->
-      <nav class="mb-6 md:mb-8" aria-label="Filter photos by category">
-        <ul class="flex flex-wrap items-center gap-2">
-          <li>
-            <button
-              data-filter="all"
-              class="filter-btn active px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle transition-colors duration-200 bg-text-primary text-surface-main"
-              aria-pressed="true"
-            >
-              All
-            </button>
-          </li>
-          {categories.map((cat) => (
+        <!-- Category filter pills -->
+        <nav aria-label="Filter photos by category">
+          <ul class="flex flex-wrap items-center gap-1.5">
             <li>
               <button
-                data-filter={cat}
-                class="filter-btn px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors duration-200"
-                aria-pressed="false"
+                data-filter="all"
+                class="filter-btn active px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle transition-all duration-200 bg-text-primary text-surface-main shadow-sm"
+                aria-pressed="true"
               >
-                {cat}
+                All
               </button>
             </li>
-          ))}
-        </ul>
-      </nav>
+            {categories.map((cat) => (
+              <li>
+                <button
+                  data-filter={cat}
+                  class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+                  aria-pressed="false"
+                >
+                  {cat}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
 
       <!-- Photos grid -->
       <GalleryGrid>

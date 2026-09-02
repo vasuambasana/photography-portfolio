@@ -38,7 +38,7 @@ export default {
         'content': 'clamp(0.75rem, 3vw, 2rem)',
       },
       maxWidth: {
-        'content': '96rem',
+        'content': '104rem',
         'prose': '42rem',
       },
       borderRadius: {

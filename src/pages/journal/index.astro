@@ -18,11 +18,16 @@ const typeLabels: Record<string, string> = {
   description="Stories from the field — location guides, photographer's notes, and visual essays by Vasu Ambasana."
   ogType="website"
 >
-  <section class="section-container py-12 md:py-20">
+  <section class="section-container pt-4 pb-16">
     <!-- Header -->
-    <header class="mb-12 md:mb-16 max-w-2xl">
-      <h1 class="text-display-lg font-display text-text-primary mb-4">Journal</h1>
-      <p class="text-body-lg text-text-secondary leading-relaxed">
+    <header class="mb-8 md:mb-10 max-w-2xl">
+      <div class="flex items-center gap-3 mb-2">
+        <h1 class="text-display-lg font-display text-text-primary">Journal</h1>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-overlay text-text-secondary border border-subtle">
+          {sortedEntries.length} Stories
+        </span>
+      </div>
+      <p class="text-body-md text-text-secondary leading-relaxed">
         Stories from the field — location guides, technical notes, and the narratives behind the images.
       </p>
     </header>
