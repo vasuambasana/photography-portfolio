@@ -55,7 +55,27 @@ const photosCollection = defineCollection({
   }),
 });
 
+const journalCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    type: z.enum(['field-notes', 'location-guide', 'essay', 'behind-the-lens']).default('field-notes'),
+    date: z.date(),
+    coverImage: z.string(),
+    coverAlt: z.string().default(''),
+    location: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    excerpt: z.string(),
+    readingTime: z.number().optional(),
+    featured: z.boolean().default(false),
+    relatedPhotos: z.array(z.string()).default([]),
+  }),
+});
+
 export const collections = {
   projects: projectsCollection,
   photos: photosCollection,
+  journal: journalCollection,
 };
+

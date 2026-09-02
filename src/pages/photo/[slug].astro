@@ -135,67 +135,77 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
     </nav>
 
     <!-- Metadata and Content -->
-    <div class="max-w-prose mx-auto mt-4">
-      <header class="mb-6">
-        <h1 class="text-display-md font-display text-text-primary mb-2">{title}</h1>
-        <div class="flex flex-wrap gap-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
-          <span>{category}</span>
+    <div class="max-w-prose mx-auto mt-8">
+      <header class="mb-8">
+        <h1 class="text-display-md font-display text-text-primary mb-3">{title}</h1>
+        <div class="flex flex-wrap items-center gap-3 text-xs font-mono tracking-wider text-text-secondary uppercase">
+          <span class="px-2.5 py-1 rounded-full border border-subtle">{category}</span>
           {location && (
-            <>
-              <span class="text-subtle">&bull;</span>
-              <span>{location}</span>
-            </>
+            <span class="flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {location}
+            </span>
           )}
+          <span class="flex items-center gap-1.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </span>
         </div>
       </header>
 
-      <!-- The markdown content (few sentences) -->
-      <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-md leading-relaxed [&>p]:mb-4">
+      <!-- The markdown content / photographer's notes -->
+      <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-lg leading-relaxed [&>p]:mb-4 italic font-display">
         <Content />
       </div>
 
-      <!-- Camera Specs -->
+      <!-- Fine-Art EXIF Plaque -->
       {cameraSpecs && (
-        <div class="mt-6 pt-6 border-t border-subtle">
-          <h3 class="text-xs font-mono uppercase tracking-widest text-text-secondary mb-4">Gear & Settings</h3>
-          <ul class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-6 text-sm text-text-secondary">
+        <div class="mt-10 pt-8 border-t border-subtle">
+          <div class="flex items-center gap-2 mb-5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-text-secondary">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <h3 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">Technical Details</h3>
+          </div>
+          <div class="flex flex-wrap gap-x-8 gap-y-4 text-sm">
             {cameraSpecs.body && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">Camera</span>
-                <span class="text-text-primary">{cameraSpecs.body}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">Camera</span>
+                <span class="text-text-primary font-body">{cameraSpecs.body}</span>
+              </div>
             )}
             {cameraSpecs.lens && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">Lens</span>
-                <span class="text-text-primary">{cameraSpecs.lens}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">Lens</span>
+                <span class="text-text-primary font-body">{cameraSpecs.lens}</span>
+              </div>
             )}
             {cameraSpecs.focalLength && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">Focal Length</span>
-                <span class="text-text-primary">{cameraSpecs.focalLength}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">Focal Length</span>
+                <span class="text-text-primary font-mono">{cameraSpecs.focalLength}</span>
+              </div>
             )}
             {cameraSpecs.aperture && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">Aperture</span>
-                <span class="text-text-primary">{cameraSpecs.aperture}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">Aperture</span>
+                <span class="text-text-primary font-mono">{cameraSpecs.aperture}</span>
+              </div>
             )}
             {cameraSpecs.shutterSpeed && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">Shutter</span>
-                <span class="text-text-primary">{cameraSpecs.shutterSpeed}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">Shutter</span>
+                <span class="text-text-primary font-mono">{cameraSpecs.shutterSpeed}</span>
+              </div>
             )}
             {cameraSpecs.iso && (
-              <li>
-                <span class="block text-xs uppercase text-text-tertiary mb-1">ISO</span>
-                <span class="text-text-primary">{cameraSpecs.iso}</span>
-              </li>
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/60 mb-1">ISO</span>
+                <span class="text-text-primary font-mono">{cameraSpecs.iso}</span>
+              </div>
             )}
-          </ul>
+          </div>
         </div>
       )}
     </div>

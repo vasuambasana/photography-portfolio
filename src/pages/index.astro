@@ -8,6 +8,18 @@ const featuredPhotos = allPhotos
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 8);
+
+const allJournal = await getCollection('journal');
+const latestJournal = allJournal
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 2);
+
+const typeLabels: Record<string, string> = {
+  'field-notes': 'Field Notes',
+  'location-guide': 'Location Guide',
+  'essay': 'Essay',
+  'behind-the-lens': 'Behind the Lens',
+};
 ---
 
 <BaseLayout
@@ -60,18 +72,75 @@ const featuredPhotos = allPhotos
           </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 stagger-children">
+        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 md:gap-4 stagger-children">
           {featuredPhotos.map((photo) => (
-            <div class="group relative aspect-[4/5] overflow-hidden rounded-card bg-surface-overlay">
-              <a href={`/photo/${photo.slug}`} class="block w-full h-full">
+            <div class="group relative overflow-hidden rounded-card bg-surface-overlay mb-3 md:mb-4 break-inside-avoid">
+              <a href={`/photo/${photo.slug}`} class="block w-full">
                 <img
                   src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
                   alt={photo.data.alt}
                   loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                  <span class="p-4 text-white text-sm font-body font-medium">{photo.data.title}</span>
+                </div>
               </a>
             </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Journal Teaser -->
+  {latestJournal.length > 0 && (
+    <section class="py-10 md:py-16 border-t border-subtle" aria-labelledby="journal-heading">
+      <div class="section-container">
+        <div class="flex items-center justify-between mb-8">
+          <h2 id="journal-heading" class="font-display text-display-md text-text-primary">
+            From the Journal
+          </h2>
+          <a
+            href="/journal"
+            class="meta-text hover:text-text-primary transition-colors no-underline"
+          >
+            Read All &rarr;
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {latestJournal.map((entry) => (
+            <article class="group">
+              <a href={`/journal/${entry.slug}`} class="block">
+                <div class="relative overflow-hidden rounded-xl mb-4 aspect-[16/9]">
+                  <img
+                    src={entry.data.coverImage}
+                    alt={entry.data.coverAlt}
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  <span class="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.15em] bg-white/10 backdrop-blur-md text-white rounded-full border border-white/20">
+                    {typeLabels[entry.data.type] || entry.data.type}
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="flex items-center gap-3 text-xs font-mono tracking-wider text-text-secondary uppercase">
+                    {entry.data.location && <span>{entry.data.location}</span>}
+                    <span>{entry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</span>
+                    {entry.data.readingTime && <span>{entry.data.readingTime} min</span>}
+                  </div>
+                  <h3 class="text-xl font-display font-semibold text-text-primary group-hover:text-text-accent transition-colors duration-200">
+                    {entry.data.title}
+                  </h3>
+                  <p class="text-text-secondary text-body-md leading-relaxed line-clamp-2">
+                    {entry.data.excerpt}
+                  </p>
+                </div>
+              </a>
+            </article>
           ))}
         </div>
       </div>
@@ -96,3 +165,4 @@ const featuredPhotos = allPhotos
     </div>
   </section>
 </BaseLayout>
+

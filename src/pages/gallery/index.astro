@@ -55,14 +55,17 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       <!-- Photos grid -->
       <GalleryGrid>
         {sortedPhotos.map((photo) => (
-          <div data-category={photo.data.category} class="group relative aspect-[4/5] overflow-hidden rounded-card bg-surface-overlay">
-            <a href={`/photo/${photo.slug}`} class="block w-full h-full">
+          <div data-category={photo.data.category} class="group relative overflow-hidden rounded-card bg-surface-overlay mb-3 md:mb-4 break-inside-avoid">
+            <a href={`/photo/${photo.slug}`} class="block w-full">
               <img
                 src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
                 alt={photo.data.alt}
                 loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                <span class="p-4 text-white text-sm font-body font-medium">{photo.data.title}</span>
+              </div>
             </a>
           </div>
         ))}

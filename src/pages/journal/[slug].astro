@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('journal');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'journal'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { title, subtitle, type, date, coverImage, coverAlt, location, tags, readingTime, relatedPhotos } = entry.data;
+
+// Fetch related photos if any
+const allPhotos = await getCollection('photos');
+const related = relatedPhotos
+  .map((slug: string) => allPhotos.find((p) => p.slug === slug))
+  .filter(Boolean);
+
+const typeLabels: Record<string, string> = {
+  'field-notes': 'Field Notes',
+  'location-guide': 'Location Guide',
+  'essay': 'Essay',
+  'behind-the-lens': 'Behind the Lens',
+};
+
+// Get all journal entries for prev/next navigation
+const allEntries = (await getCollection('journal')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const currentIdx = allEntries.findIndex((e) => e.slug === entry.slug);
+const prevEntry = currentIdx < allEntries.length - 1 ? allEntries[currentIdx + 1] : null;
+const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
+---
+
+<BaseLayout
+  title={`${title} — Journal — Vasu Ambasana Photography`}
+  description={entry.data.excerpt}
+  ogImage={coverImage}
+  ogType="article"
+  article={{
+    publishedTime: date.toISOString(),
+    section: typeLabels[type] || type,
+  }}
+>
+  <!-- Hero cover image -->
+  <div class="relative w-full h-[40vh] md:h-[55vh] overflow-hidden">
+    <img
+      src={coverImage}
+      alt={coverAlt}
+      class="w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-surface-main via-surface-main/30 to-transparent" />
+  </div>
+
+  <article class="section-container -mt-20 relative z-10">
+    <!-- Article header -->
+    <header class="max-w-prose mx-auto mb-10">
+      <div class="flex items-center gap-3 mb-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
+        <span class="px-2.5 py-1 rounded-full border border-subtle">
+          {typeLabels[type] || type}
+        </span>
+        {location && (
+          <span class="flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {location}
+          </span>
+        )}
+        <span>
+          {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </span>
+        {readingTime && <span>{readingTime} min read</span>}
+      </div>
+
+      <h1 class="text-display-lg font-display text-text-primary mb-3">{title}</h1>
+      {subtitle && (
+        <p class="text-body-lg text-text-secondary italic font-display">{subtitle}</p>
+      )}
+    </header>
+
+    <!-- Article body -->
+    <div class="max-w-prose mx-auto prose prose-invert prose-zinc prose-lg
+      prose-headings:font-display prose-headings:text-text-primary prose-headings:font-semibold
+      prose-p:text-text-secondary prose-p:leading-relaxed
+      prose-a:text-text-accent prose-a:no-underline hover:prose-a:underline
+      prose-strong:text-text-primary
+      prose-li:text-text-secondary
+      prose-blockquote:border-text-accent prose-blockquote:text-text-secondary prose-blockquote:italic
+      prose-img:rounded-xl prose-img:my-8
+    ">
+      <Content />
+    </div>
+
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="max-w-prose mx-auto mt-10 pt-8 border-t border-subtle">
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag: string) => (
+            <span class="px-3 py-1 text-xs font-mono uppercase tracking-wider text-text-secondary bg-surface-overlay rounded-full">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Related Photos -->
+    {related.length > 0 && (
+      <div class="max-w-4xl mx-auto mt-14">
+        <h2 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary mb-6 flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M21 15l-5-5L5 21"/>
+          </svg>
+          Related Photos
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {related.map((photo: any) => (
+            <a href={`/photo/${photo.slug}`} class="group relative overflow-hidden rounded-lg aspect-[4/3]">
+              <img
+                src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
+                alt={photo.data.alt}
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                <span class="p-3 text-white text-sm font-body">{photo.data.title}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Prev / Next navigation -->
+    <nav class="max-w-prose mx-auto mt-14 pt-8 border-t border-subtle">
+      <div class="flex justify-between items-center">
+        {prevEntry ? (
+          <a href={`/journal/${prevEntry.slug}`} class="group flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:-translate-x-1">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <div>
+              <span class="block text-[10px] font-mono uppercase tracking-wider text-text-secondary/60">Older</span>
+              <span class="text-sm font-body">{prevEntry.data.title}</span>
+            </div>
+          </a>
+        ) : <div />}
+        {nextEntry ? (
+          <a href={`/journal/${nextEntry.slug}`} class="group flex items-center gap-2 text-right text-text-secondary hover:text-text-primary transition-colors">
+            <div>
+              <span class="block text-[10px] font-mono uppercase tracking-wider text-text-secondary/60">Newer</span>
+              <span class="text-sm font-body">{nextEntry.data.title}</span>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:translate-x-1">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        ) : <div />}
+      </div>
+    </nav>
+  </article>
+
+  <!-- Bottom spacer -->
+  <div class="h-16 md:h-24" aria-hidden="true" />
+</BaseLayout>

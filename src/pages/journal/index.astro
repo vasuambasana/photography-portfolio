@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allEntries = await getCollection('journal');
+const sortedEntries = allEntries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const typeLabels: Record<string, string> = {
+  'field-notes': 'Field Notes',
+  'location-guide': 'Location Guide',
+  'essay': 'Essay',
+  'behind-the-lens': 'Behind the Lens',
+};
+---
+
+<BaseLayout
+  title="Journal — Vasu Ambasana Photography"
+  description="Stories from the field — location guides, photographer's notes, and visual essays by Vasu Ambasana."
+  ogType="website"
+>
+  <section class="section-container py-12 md:py-20">
+    <!-- Header -->
+    <header class="mb-12 md:mb-16 max-w-2xl">
+      <h1 class="text-display-lg font-display text-text-primary mb-4">Journal</h1>
+      <p class="text-body-lg text-text-secondary leading-relaxed">
+        Stories from the field — location guides, technical notes, and the narratives behind the images.
+      </p>
+    </header>
+
+    <!-- Journal entries -->
+    {sortedEntries.length === 0 ? (
+      <div class="text-center py-20">
+        <p class="text-text-secondary text-body-lg">Coming soon — stories are being written.</p>
+      </div>
+    ) : (
+      <div class="space-y-8 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8">
+        {sortedEntries.map((entry, index) => (
+          <article class:list={[
+            'group relative',
+            index === 0 && sortedEntries.length > 1 ? 'md:col-span-2 lg:col-span-2' : '',
+          ]}>
+            <a href={`/journal/${entry.slug}`} class="block">
+              <!-- Cover image -->
+              <div class:list={[
+                'relative overflow-hidden rounded-xl mb-5',
+                index === 0 && sortedEntries.length > 1 ? 'aspect-[21/9]' : 'aspect-[16/10]',
+              ]}>
+                <img
+                  src={entry.data.coverImage}
+                  alt={entry.data.coverAlt}
+                  loading={index < 3 ? 'eager' : 'lazy'}
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                
+                <!-- Type badge -->
+                <span class="absolute top-4 left-4 px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.15em] bg-white/10 backdrop-blur-md text-white rounded-full border border-white/20">
+                  {typeLabels[entry.data.type] || entry.data.type}
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 text-xs font-mono tracking-wider text-text-secondary uppercase">
+                  {entry.data.location && (
+                    <span class="flex items-center gap-1">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      {entry.data.location}
+                    </span>
+                  )}
+                  <span>
+                    {entry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                  {entry.data.readingTime && (
+                    <span>{entry.data.readingTime} min read</span>
+                  )}
+                </div>
+
+                <h2 class:list={[
+                  'font-display font-semibold text-text-primary group-hover:text-text-accent transition-colors duration-200',
+                  index === 0 && sortedEntries.length > 1 ? 'text-2xl md:text-3xl' : 'text-xl',
+                ]}>
+                  {entry.data.title}
+                </h2>
+
+                {entry.data.subtitle && (
+                  <p class="text-text-secondary text-body-sm italic font-display">{entry.data.subtitle}</p>
+                )}
+
+                <p class="text-text-secondary text-body-md leading-relaxed line-clamp-3">
+                  {entry.data.excerpt}
+                </p>
+
+                <!-- Tags -->
+                {entry.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2 pt-1">
+                    {entry.data.tags.slice(0, 4).map((tag: string) => (
+                      <span class="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-text-secondary/70 bg-surface-overlay rounded-md">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>

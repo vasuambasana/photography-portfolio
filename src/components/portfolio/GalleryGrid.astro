@@ -7,8 +7,9 @@ const { class: className = '' } = Astro.props;
 ---
 
 <div id="portfolio-grid" class:list={[
-  'grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 stagger-children',
+  'columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 md:gap-4 stagger-children [column-fill:_balance]',
   className,
 ]}>
   <slot />
 </div>
+
