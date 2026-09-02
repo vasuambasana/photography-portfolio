@@ -57,10 +57,9 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
 </div>
 
 <script>
-  // Keep track of the keydown listener so we don't add multiple copies
-  let keydownHandler;
-
-  document.addEventListener('astro:page-load', () => {
+  // Astro module scripts are deferred, so DOM is ready when this runs.
+  // No View Transitions in this project, so astro:page-load never fires.
+  (function initThumbnailStrip() {
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('filter');
 
@@ -98,11 +97,7 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
     }
 
     // Keyboard navigation
-    if (keydownHandler) {
-      document.removeEventListener('keydown', keydownHandler);
-    }
-    
-    keydownHandler = (e) => {
+    document.addEventListener('keydown', (e) => {
       // Disable navigation if lightbox is open
       if (document.body.style.overflow === 'hidden') return;
       
@@ -117,9 +112,8 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
           window.location.href = next.href;
         }
       }
-    };
-    document.addEventListener('keydown', keydownHandler);
-  });
+    });
+  })();
 </script>
 
 <style>

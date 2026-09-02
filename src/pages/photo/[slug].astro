@@ -203,8 +203,9 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
 </PhotoLayout>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
-    // Setup dynamic Prev/Next links based on current filter
+  // Astro module scripts are deferred, so DOM is ready when this runs.
+  // No View Transitions in this project, so astro:page-load never fires.
+  (function initPrevNextLinks() {
     const params = new URLSearchParams(window.location.search);
     const filter = params.get('filter');
     
@@ -232,5 +233,5 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
         }
       }
     }
-  });
+  })();
 </script>
