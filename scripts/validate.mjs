@@ -134,9 +134,20 @@ for (const image of walkImages(PHOTOS_DIR)) {
 // ---------------------------------------------------------------------------
 const journal = readAll(JOURNAL_DIR);
 const tagSlugs = new Map();
+let drafts = 0;
 
-for (const { file, data } of journal) {
+for (const { file, data, content } of journal) {
   const where = `journal/${file}`;
+
+  if (data.draft) {
+    drafts++;
+    continue; // drafts are work in progress; they're stripped from production builds
+  }
+
+  // A published entry must not still be carrying scaffolding.
+  if (/\[PLACEHOLDER/i.test(content) || /\[PLACEHOLDER/i.test(JSON.stringify(data))) {
+    error(`${where}: published entry still contains [PLACEHOLDER] — set draft: true or finish it`);
+  }
 
   if (!data.coverImage) {
     error(`${where}: missing coverImage`);
@@ -187,7 +198,8 @@ if (placeholderBody.length) {
 }
 
 console.log(
-  `\n${photos.length} photos, ${journal.length} journal entries, ${tagSlugs.size} tags — ` +
+  `\n${photos.length} photos, ${journal.length - drafts} published journal entries ` +
+    `(+${drafts} draft), ${tagSlugs.size} tags — ` +
     `${errors.length} error(s), ${warnings.length + placeholderAlt.length + placeholderBody.length} warning(s).`
 );
 

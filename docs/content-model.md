@@ -100,6 +100,22 @@ relatedPhotos: [winter-on-the-headland, winter-stroll-by-the-shore]
   `src/utils/journal.ts`). There is no `readingTime` field — a hand-entered one goes stale.
 - **Cover alt text** comes from the referenced photo's `alt`. There is no `coverAlt` field.
 
+### Drafts
+
+`draft: true` keeps an entry in the repo but out of production. It still renders under
+`astro dev`, so you can work on it and look at it; `publishedJournal()` strips drafts when
+`import.meta.env.PROD` is set, across the index, tag pages, detail pages, the RSS feed and
+the home page.
+
+`npm run validate` **fails** if a published (non-draft) entry still contains
+`[PLACEHOLDER`. That's the whole point of the flag: scaffolding should never ship.
+
+### Related photos should be from the same shoot
+
+`relatedPhotos` is a claim that these frames belong together. Check the capture dates before
+filling it in — the first version of the Death Valley entry linked two photos from 2023 and
+two from 2026 while describing a single morning.
+
 ### References fail loudly
 
 `coverImage` and `relatedPhotos` use Astro's `reference('photos')`. Previously

@@ -4,7 +4,7 @@ category: night
 image: ../../assets/photos/night/highway-to-the-cosmos.jpg
 alt: A night photograph
 date: 2023-04-22T00:00:00.000Z
-location: ''
+location: 'Death Valley National Park, California'
 originalFilename: 20230422_002635 (1).jpg
 featured: false
 cameraSpecs:

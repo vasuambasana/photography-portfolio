@@ -69,9 +69,38 @@ build (several minutes). Two rules keep it from getting worse:
   builds the shared filmstrip/lightbox payload once inside `getStaticPaths`. Moving those
   calls into the per-page map would multiply the work by 127.
 
+## Location
+
+`add-photo` reads GPS from the original and reverse-geocodes it through Nominatim
+(OpenStreetMap — free, keyless, one request per second). Only the resulting place name is
+written to frontmatter. **Coordinates are never published**: they stay in the original, and
+sharp strips metadata when it re-encodes, so the JPEGs in `src/assets` carry no location at
+all. Exact coordinates of where a photographer stood are sensitive in a way "Death Valley"
+is not. Set `GEOCODE=off` to skip the lookup.
+
+**Today this yields nothing.** None of the 129 originals carry GPS — the Canon R5 II has no
+built-in receiver, and location tagging was off on the phone. So locations have to be
+assigned by hand, per shoot:
+
+```bash
+npm run locate list --missing      # which shoots still need one
+npm run locate set "Death Valley National Park, California" --dates 2023-04-21..2023-04-23
+npm run locate set "Boston, Massachusetts" --slugs steel-and-sky,harbor-rhythm
+npm run locate gps                 # backfill from GPS, once photos have any
+```
+
+Photos cluster into shoots by capture date and a shoot happens in one place, so one command
+labels a whole trip. Only label shoots you actually remember — an invented location is a
+false claim about a real photograph, and the site shipped one ("Southwest Badlands" for
+Death Valley) before this existed.
+
+If you want this to be automatic in future: turn on location tagging in the phone's camera
+app, and pair the R5 II with the Canon Connect app, which writes GPS from the phone.
+
 ## Maintenance
 
 ```bash
+npm run locate list    # shoots and their location status
 npm run exif audit     # which photos have incomplete cameraSpecs
 npm run exif fix       # re-read EXIF from originals and merge it in
 npm run slugs check    # slugs that have drifted from their titles

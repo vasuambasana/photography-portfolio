@@ -4,7 +4,7 @@ category: night
 image: ../../assets/photos/night/cosmic-tapestry-over-silhouetted-peaks.jpg
 alt: A night photograph
 date: 2023-04-23T00:00:00.000Z
-location: ''
+location: 'Death Valley National Park, California'
 originalFilename: 20230423_043656.jpg
 featured: false
 cameraSpecs:

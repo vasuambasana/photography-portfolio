@@ -64,6 +64,9 @@ const journalCollection = defineCollection({
     tags: z.array(z.string()).default([]),
     excerpt: z.string(),
     featured: z.boolean().default(false),
+    // Drafts render in `astro dev` but are stripped from production builds, so an entry
+    // can sit half-written in the repo without going live.
+    draft: z.boolean().default(false),
     relatedPhotos: z.array(reference('photos')).default([]),
   }),
 });

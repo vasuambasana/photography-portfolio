@@ -16,6 +16,11 @@ guessed aperture is a lie about a real photograph.
 `location` is filled from EXIF GPS or from what the photographer said. Otherwise leave it
 empty. "Looks like New England" is not a source.
 
+**None of the originals carry GPS** (checked: 0 of 129), so location cannot be derived from
+a file. Assign it per shoot with `npm run locate set "<place>" --dates <date>`, and only
+for shoots you actually know. A photo that says "Southwest Badlands" when it was Death
+Valley is the failure mode this exists to prevent — that one shipped.
+
 ## Alt text is editorial copy
 
 Describe what is visible, for someone who cannot see it. Specific and concrete.
@@ -51,6 +56,11 @@ essence", three-adjective stacks, and sentences that only restate what's in the 
   not paths. A slug that doesn't exist fails the build.
 - There is no `readingTime` field — it's computed from the body.
 - There is no `coverAlt` field — it comes from the cover photo's `alt`.
+- `draft: true` keeps an entry out of production builds while still rendering in
+  `astro dev`. Use it for anything with `[PLACEHOLDER]` still in it — `npm run validate`
+  fails on a published entry that contains one.
+- `relatedPhotos` should come from the same shoot. Check the capture dates: an entry about
+  one morning that links photos from two different years is wrong, and that also shipped.
 - Every tag generates a page at `/journal/tag/<slug>`. Reuse existing tags; a near-duplicate
   splits one tag page into two.
 

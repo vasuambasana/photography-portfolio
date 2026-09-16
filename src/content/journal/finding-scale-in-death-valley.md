@@ -1,14 +1,14 @@
 ---
-title: "Finding Scale in the Badlands"
+title: "Finding Scale in Death Valley"
 subtitle: "Desert canyons are notorious liars on camera until a human walks into the frame."
 type: field-notes
 date: 2023-04-23T07:00:00.000Z
 coverImage: above-the-badlands
-location: "Southwest Badlands"
-tags: [desert, scale, badlands, landscape, southwest]
+location: "Death Valley National Park, California"
+tags: [desert, scale, death-valley, landscape, california]
 excerpt: "Desert canyons are notorious liars through a camera lens. Without something human for your eyes to latch onto, a six-hundred-foot cliff looks like a mound of dirt in someone's backyard."
 featured: true
-relatedPhotos: [above-the-badlands, vastness-of-the-canyon, above-the-salt-basin, peaks-of-wonder]
+relatedPhotos: [above-the-badlands, strata-of-the-badlands, above-the-salt-basin, painted-earth-trails, veins-of-the-basin]
 ---
 
 Desert canyons have a way of humiliating wide-angle lenses.

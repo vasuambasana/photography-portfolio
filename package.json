@@ -17,6 +17,7 @@
     "add-photo": "node scripts/add-photo.mjs",
     "backfill-ai": "node scripts/backfill-ai.mjs",
     "exif": "node scripts/exif.mjs",
+    "locate": "node scripts/locate.mjs",
     "slugs": "node scripts/slugs.mjs",
     "optimize": "node scripts/optimize-photos.mjs"
   },

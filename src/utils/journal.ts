@@ -18,6 +18,11 @@ export function sortJournal(entries: CollectionEntry<'journal'>[]) {
   return [...entries].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 
+/** Drops drafts in production builds; `astro dev` shows everything. */
+export function publishedJournal(entries: CollectionEntry<'journal'>[]) {
+  return import.meta.env.PROD ? entries.filter((e) => !e.data.draft) : entries;
+}
+
 /** Pairs each entry with its resolved cover photo and derived reading time. */
 export async function decorate(entries: CollectionEntry<'journal'>[]) {
   return Promise.all(

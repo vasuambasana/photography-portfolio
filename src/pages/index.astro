@@ -5,14 +5,14 @@ import PhotoCard from '../components/portfolio/PhotoCard.astro';
 import JournalCard from '../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
 import { sortPhotos } from '../utils/photos';
-import { decorate, sortJournal } from '../utils/journal';
+import { decorate, publishedJournal, sortJournal } from '../utils/journal';
 
 const allPhotos = await getCollection('photos');
 const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slice(0, 12);
 
 const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
 
-const latestJournal = await decorate(sortJournal(await getCollection('journal')).slice(0, 2));
+const latestJournal = await decorate(sortJournal(publishedJournal(await getCollection('journal'))).slice(0, 2));
 ---
 
 <BaseLayout

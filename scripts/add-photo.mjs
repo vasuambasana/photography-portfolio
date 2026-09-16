@@ -28,6 +28,7 @@ import {
   VALID_CATEGORIES,
   frontmatterImagePath,
 } from './lib/config.mjs';
+import { locationFromExif } from './lib/geocode.mjs';
 
 let quotaExceeded = false;
 
@@ -540,6 +541,15 @@ async function processImage(filePath, targetCategory) {
     console.log(`   📁 Optimized & copied to: src/assets/photos/${targetCategory}/${destFileName}`);
   }
 
+  // 3b. Derive location from GPS, if the original carries any. Coordinates stay on the
+  // original; only the place name is written, and only when we actually have a fix.
+  let location = '';
+  const place = await locationFromExif(filePath);
+  if (place) {
+    location = place;
+    console.log(`   Location: ${place}`);
+  }
+
   // 4. Determine date
   const photoDate = exif.dateTaken
     ? new Date(exif.dateTaken).toISOString().split('T')[0]
@@ -565,7 +575,7 @@ category: "${targetCategory}"
 image: ${frontmatterImagePath(targetCategory, destFileName)}
 alt: "${alt}"
 date: ${photoDate}
-location: ""
+location: "${location}"
 originalFilename: "${path.basename(filePath)}"
 featured: ${featured}
 ${cameraBlock}

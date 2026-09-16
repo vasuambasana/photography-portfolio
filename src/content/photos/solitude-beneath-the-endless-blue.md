@@ -4,7 +4,7 @@ category: people
 image: ../../assets/photos/people/solitude-beneath-the-endless-blue.jpg
 alt: A people photograph
 date: 2023-04-23T00:00:00.000Z
-location: ''
+location: 'Death Valley National Park, California'
 originalFilename: 20230423_131041 (1).jpg
 featured: false
 cameraSpecs:

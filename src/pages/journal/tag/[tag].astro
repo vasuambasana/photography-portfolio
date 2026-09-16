@@ -2,10 +2,10 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import JournalCard from '../../../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
-import { collectTags, decorate, sortJournal } from '../../../utils/journal';
+import { collectTags, decorate, publishedJournal, sortJournal } from '../../../utils/journal';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('journal');
+  const entries = publishedJournal(await getCollection('journal'));
 
   return [...collectTags(entries).entries()].map(([slug, { tag, entries: tagged }]) => ({
     params: { tag: slug },

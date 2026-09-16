@@ -4,6 +4,61 @@ This log tracks all architectural, specification, and prompt changes made throug
 
 ---
 
+## [0.5.1] - 2026-09-15
+
+Corrections and follow-ups from the first review of the revamped `dev` branch.
+
+### Fixed
+- **A journal entry claimed the wrong place.** "Finding Scale in the Badlands", located
+  "Southwest Badlands", was shot in **Death Valley**. Renamed to
+  `finding-scale-in-death-valley`, location and tags corrected, and the 10-photo
+  2023-04-21..23 shoot labelled `Death Valley National Park, California`. Two photo titles
+  carrying "Badlands" were retitled. The entry's `relatedPhotos` had also mixed two photos
+  from 2023 with two from 2026 while describing a single morning; now all five are from the
+  same shoot.
+- **RSS looked broken.** The feed was always valid and returned 200 — browsers just stopped
+  rendering RSS, so clicking it showed raw XML. Added an XSL stylesheet
+  (`public/rss/styles.xsl`) so it renders as a readable page, plus
+  `<link rel="alternate">` autodiscovery, which was missing entirely.
+
+### Added
+- **`npm run locate`** — `list` shows shoots by capture date with location status, `set`
+  assigns a location to a whole shoot by date range or slug, `gps` backfills from EXIF.
+- **GPS → place name in `add-photo`**, via Nominatim. Coordinates are never written to the
+  site; only a coarse place name, and sharp strips metadata from the published JPEG.
+- **`draft: true` on journal entries.** Renders in `astro dev`, stripped from production
+  across index, tag pages, detail pages, RSS and the home page. `validate` now *fails* on a
+  published entry still containing `[PLACEHOLDER`.
+- Three draft journal entries scaffolded from verified EXIF — real dates, gear, lenses and
+  exposure ranges — with every narrative claim left as an explicit placeholder.
+
+### Changed
+- **Journal tags filter in place** instead of navigating away. With 3 entries and 14 tags
+  every tag page held exactly one story, which is a dead end. Tag pages still exist as
+  shareable permalinks, linked from inside each entry. `getActiveFilter`/`withFilter` take a
+  param name so the gallery (`?filter=`) and journal (`?tag=`) share one implementation.
+
+### Lessons Learned & Mistakes Avoided
+- **An empty field is an invitation to invent one.** All 127 photos had `location: ""`, so
+  the ingest model filled the gap from the pixels and produced "Badlands" for Death Valley.
+  *Lesson:* a generative pipeline will not leave a blank alone. Either supply the fact or
+  make its absence explicit — and check what got written before it ships.
+- **Verify the premise before building the feature.** "Extract location when adding" sounded
+  straightforward until the originals were actually checked: **0 of 129 carry GPS**. The
+  extraction is built and correct, but it would have silently done nothing. *Lesson:* scan
+  the real data before writing the code that depends on it.
+- **"It doesn't work" can mean "it works and looks broken."** `/journal/rss.xml` returned
+  200 with valid XML the whole time. The defect was presentational, and no amount of
+  checking the endpoint would have found it. *Lesson:* reproduce the user's actual
+  experience, not the technical contract.
+- **A tag page holding one item is worse than no tag page.** Faceting only earns its keep
+  once there's enough content to face. *Lesson:* match navigation density to content volume.
+- **Scaffolding needs somewhere safe to live.** Without a `draft` flag the only options for
+  an unfinished entry were "publish it half-written" or "don't write it". *Lesson:* give
+  work-in-progress a first-class state before asking anyone to produce drafts.
+
+---
+
 ## [0.5.0] - 2026-09-15
 
 Workflow and maintainability pass on `dev`, alongside the Journal section.

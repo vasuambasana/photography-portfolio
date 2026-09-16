@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import JournalCard from '../../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
-import { collectTags, decorate, sortJournal } from '../../utils/journal';
+import { collectTags, decorate, publishedJournal, sortJournal } from '../../utils/journal';
 
-const allEntries = await getCollection('journal');
+const allEntries = publishedJournal(await getCollection('journal'));
 const entries = await decorate(sortJournal(allEntries));
 const tags = [...collectTags(allEntries).entries()].sort((a, b) => b[1].entries.length - a[1].entries.length);
 ---
@@ -34,14 +34,22 @@ const tags = [...collectTags(allEntries).entries()].sort((a, b) => b[1].entries.
     </header>
 
     {tags.length > 0 && (
-      <nav aria-label="Browse journal by tag" class="mb-8 flex flex-wrap gap-2">
+      <nav aria-label="Filter journal by tag" class="mb-8 flex flex-wrap gap-2">
+        <button
+          data-tag="all"
+          class="tag-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors"
+          aria-pressed="false"
+        >
+          All <span class="text-text-secondary/60">{entries.length}</span>
+        </button>
         {tags.map(([slug, { tag, entries: tagged }]) => (
-          <a
-            href={`/journal/tag/${slug}`}
-            class="px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-text-secondary bg-surface-overlay rounded-full no-underline hover:text-text-primary transition-colors"
+          <button
+            data-tag={slug}
+            class="tag-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors"
+            aria-pressed="false"
           >
             {tag} <span class="text-text-secondary/60">{tagged.length}</span>
-          </a>
+          </button>
         ))}
       </nav>
     )}
@@ -71,5 +79,53 @@ const tags = [...collectTags(allEntries).entries()].sort((a, b) => b[1].entries.
         })}
       </div>
     )}
+
+    <p id="journal-empty" class="hidden text-center py-16 text-text-secondary text-body-md">
+      No stories with that tag yet.
+    </p>
   </section>
+
+  <script>
+    import { ALL_FILTER, getActiveFilter } from '../../utils/filter';
+
+    // Filtering happens in place rather than navigating to /journal/tag/<slug>. With a
+    // small journal, a tag page holding one story is a dead end; the tag pages still
+    // exist as shareable permalinks, linked from inside each entry.
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+    const cards = document.querySelectorAll<HTMLElement>('[data-tags]');
+    const empty = document.getElementById('journal-empty');
+
+    function apply(tag: string, pushUrl: boolean) {
+      buttons.forEach((b) => {
+        const isActive = b.dataset.tag === tag;
+        b.setAttribute('aria-pressed', String(isActive));
+        b.classList.toggle('bg-text-primary', isActive);
+        b.classList.toggle('text-surface-main', isActive);
+        b.classList.toggle('text-text-secondary', !isActive);
+      });
+
+      let visible = 0;
+      cards.forEach((card) => {
+        const tags = (card.dataset.tags || '').split(' ').filter(Boolean);
+        const shown = tag === ALL_FILTER || tags.includes(tag);
+        card.style.display = shown ? '' : 'none';
+        if (shown) visible++;
+      });
+
+      empty?.classList.toggle('hidden', visible > 0);
+
+      if (pushUrl) {
+        const url = new URL(window.location.href);
+        if (tag === ALL_FILTER) url.searchParams.delete('tag');
+        else url.searchParams.set('tag', tag);
+        history.replaceState(null, '', url);
+      }
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => apply(btn.dataset.tag || ALL_FILTER, true));
+    });
+
+    apply(getActiveFilter(window.location.search, 'tag'), false);
+  </script>
 </BaseLayout>

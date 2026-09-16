@@ -9,16 +9,19 @@
 
 export const ALL_FILTER = 'all';
 
-/** Reads the active filter, defaulting to `all` (e.g. when arriving from the home page). */
-export function getActiveFilter(search: string = window.location.search): string {
-  return new URLSearchParams(search).get('filter') || ALL_FILTER;
+/**
+ * Reads the active filter, defaulting to `all` (e.g. when arriving from the home page).
+ * `param` is 'filter' for the gallery's categories and 'tag' for the journal.
+ */
+export function getActiveFilter(search: string = window.location.search, param = 'filter'): string {
+  return new URLSearchParams(search).get(param) || ALL_FILTER;
 }
 
 /** Returns `href` with the filter query param applied. Relative paths only. */
-export function withFilter(href: string, filter: string): string {
+export function withFilter(href: string, filter: string, param = 'filter'): string {
   const [path, query = ''] = href.split('?');
   const params = new URLSearchParams(query);
-  params.set('filter', filter);
+  params.set(param, filter);
   return `${path}?${params}`;
 }
 

@@ -5,11 +5,11 @@ import PhotoCard from '../../components/portfolio/PhotoCard.astro';
 import { getCollection, getEntry, getEntries } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { JOURNAL_TYPE_LABELS } from '../../content/config';
-import { readingTime, sortJournal, tagSlug } from '../../utils/journal';
+import { publishedJournal, readingTime, sortJournal, tagSlug } from '../../utils/journal';
 import { neighbours } from '../../utils/photos';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('journal');
+  const entries = publishedJournal(await getCollection('journal'));
   return entries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -31,7 +31,7 @@ const minutes = readingTime(entry.body);
 // Social scrapers want a modest JPEG, not the full-size original.
 const ogImage = await getImage({ src: cover.data.image, width: 1200, format: 'jpeg' });
 
-const allEntries = sortJournal(await getCollection('journal'));
+const allEntries = sortJournal(publishedJournal(await getCollection('journal')));
 // The list runs newest-first, so the previous *entry* is the next one along.
 const { prev: newerEntry, next: olderEntry } = neighbours(allEntries, entry.slug);
 ---
