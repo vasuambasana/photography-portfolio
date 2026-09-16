@@ -3,12 +3,10 @@ title: "Twenty Minutes on the Headland"
 subtitle: "Why I keep driving out to the New England coast in the middle of February."
 type: field-notes
 date: 2024-02-18T16:52:00.000Z
-coverImage: /photos/nature/winter-on-the-headland.jpg
-coverAlt: "Golden sunset light illuminating an icy rocky shoreline and evergreen trees above the sea"
+coverImage: winter-on-the-headland
 location: "New England Coast"
 tags: [winter, coast, cold-light, new-england]
 excerpt: "It was 19 degrees with a stiff wind off the bay, and the sky looked like wet cement. I was about two minutes from packing the camera back in the trunk when the horizon cracked open."
-readingTime: 3
 featured: true
 relatedPhotos: [winter-on-the-headland, winter-stroll-by-the-shore, sentinel-of-the-granite-coast]
 ---

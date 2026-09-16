@@ -1,13 +1,12 @@
 ---
 title: "Painted Earth Trails"
 category: "nature"
-image: "/photos/nature/painted-earth-trails.jpg"
+image: ../../assets/photos/nature/painted-earth-trails.jpg
 alt: "Hikers navigate trails winding through vibrant turquoise, ochre, and purple mineral-stained desert hills under a bright blue sky."
 date: 2023-04-23
 location: ""
 originalFilename: "20230422_191442.jpg"
 featured: false
-order: 29
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Telephoto Camera"

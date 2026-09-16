@@ -1,51 +1,46 @@
 ---
+import type { ClientPhoto } from '../../pages/photo/[slug].astro';
+
 export interface Props {
   currentSlug: string;
-  allPhotosClient: Array<{ slug: string; title: string; imageSrc: string; alt: string; category: string }>;
+  clientPhotos: ClientPhoto[];
 }
 
-const { currentSlug, allPhotosClient } = Astro.props;
-
-// Find the index of the current photo to pass to the client-side script
-const currentIndex = allPhotosClient.findIndex(p => p.slug === currentSlug);
-// We no longer rely strictly on these static prev/next slugs for keyboard nav if we want dynamic filtering,
-// but we can compute both sets of prev/next and let JS decide
-const nextSlugAll = currentIndex < allPhotosClient.length - 1 ? allPhotosClient[currentIndex + 1].slug : null;
-const prevSlugAll = currentIndex > 0 ? allPhotosClient[currentIndex - 1].slug : null;
-
-const catPhotos = allPhotosClient.filter(p => p.category === allPhotosClient[currentIndex].category);
-const catIdx = catPhotos.findIndex(p => p.slug === currentSlug);
-const nextSlugCat = catIdx < catPhotos.length - 1 ? catPhotos[catIdx + 1].slug : null;
-const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
+const { currentSlug, clientPhotos } = Astro.props;
 ---
 
 <div class="mt-16 border-t border-subtle pt-8 section-container">
   <div class="flex items-center justify-between mb-4">
-    <h3 id="thumbnail-strip-heading" class="meta-text">More in this category</h3>
+    <h2 id="thumbnail-strip-heading" class="meta-text">More from gallery</h2>
     <p class="text-xs text-text-tertiary hidden sm:block">Use &larr; &rarr; keys to navigate</p>
   </div>
-  
+
   <div class="relative w-full overflow-hidden">
     <!-- Filmstrip container -->
-    <div 
-      class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar" 
+    <div
+      class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar"
       id="thumbnail-strip"
     >
-      {allPhotosClient.map((photo, index) => {
+      {clientPhotos.map((photo) => {
         const isActive = photo.slug === currentSlug;
         return (
           <a
             href={`/photo/${photo.slug}`}
-            class={`thumbnail-link flex-none w-24 h-24 sm:w-32 sm:h-32 snap-center rounded-lg overflow-hidden transition-all duration-300 ${isActive ? 'ring-2 ring-text-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-100 hover:scale-100'}`}
+            class:list={[
+              'thumbnail-link flex-none w-24 h-24 sm:w-32 sm:h-32 snap-center rounded-lg overflow-hidden transition-all duration-300',
+              isActive ? 'ring-2 ring-text-accent scale-105 opacity-100' : 'opacity-50 hover:opacity-100',
+            ]}
             aria-label={`View ${photo.title}`}
             aria-current={isActive ? 'page' : undefined}
             id={isActive ? 'active-thumbnail' : undefined}
             data-category={photo.category}
             data-base-href={`/photo/${photo.slug}`}
           >
-            <img 
-              src={photo.imageSrc} 
+            <img
+              src={photo.thumb}
               alt={photo.alt}
+              width="200"
+              height="200"
               loading="lazy"
               class="w-full h-full object-cover"
             />
@@ -57,63 +52,42 @@ const prevSlugCat = catIdx > 0 ? catPhotos[catIdx - 1].slug : null;
 </div>
 
 <script>
-  // Astro module scripts are deferred, so DOM is ready when this runs.
-  // No View Transitions in this project, so astro:page-load never fires.
-  (function initThumbnailStrip() {
-    const params = new URLSearchParams(window.location.search);
-    const filter = params.get('filter');
+  import { ALL_FILTER, getActiveFilter, matchesFilter, withFilter } from '../../utils/filter';
 
-    const heading = document.getElementById('thumbnail-strip-heading');
-    if (heading) {
-      if (!filter || filter === 'all') {
-        heading.textContent = 'More from gallery';
-      } else {
-        heading.textContent = 'More in this category';
-      }
+  const filter = getActiveFilter();
+
+  const heading = document.getElementById('thumbnail-strip-heading');
+  if (heading) {
+    heading.textContent = filter === ALL_FILTER ? 'More from gallery' : 'More in this category';
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('.thumbnail-link').forEach((thumb) => {
+    const shown = matchesFilter(thumb.dataset.category, filter);
+    thumb.style.display = shown ? '' : 'none';
+    if (shown && thumb.dataset.baseHref) {
+      thumb.href = withFilter(thumb.dataset.baseHref, filter);
     }
+  });
 
-    // Filter thumbnails and update hrefs
-    const thumbs = document.querySelectorAll('.thumbnail-link');
-    thumbs.forEach(t => {
-      // Determine visibility based on filter
-      if (!filter || filter === 'all' || t.dataset.category === filter) {
-        t.style.display = '';
-        if (filter) {
-          t.href = (t.dataset.baseHref || '') + '?filter=' + filter;
-        }
-      } else {
-        t.style.display = 'none';
-      }
-    });
+  // Centre the active thumbnail within the strip
+  const activeThumb = document.getElementById('active-thumbnail');
+  const strip = document.getElementById('thumbnail-strip');
+  if (activeThumb && strip) {
+    strip.scrollLeft = activeThumb.offsetLeft - strip.offsetWidth / 2 + activeThumb.offsetWidth / 2;
+  }
 
-    // Scroll the active thumbnail into view within the strip
-    const activeThumb = document.getElementById('active-thumbnail');
-    const strip = document.getElementById('thumbnail-strip');
-    if (activeThumb && strip) {
-      const thumbLeft = activeThumb.offsetLeft;
-      const thumbWidth = activeThumb.offsetWidth;
-      const stripWidth = strip.offsetWidth;
-      strip.scrollLeft = thumbLeft - (stripWidth / 2) + (thumbWidth / 2);
+  document.addEventListener('keydown', (e) => {
+    // The lightbox owns the arrow keys while it is open.
+    if (document.body.style.overflow === 'hidden') return;
+
+    const id = e.key === 'ArrowLeft' ? 'prev-link' : e.key === 'ArrowRight' ? 'next-link' : null;
+    if (!id) return;
+
+    const link = document.getElementById(id) as HTMLAnchorElement | null;
+    if (link && !link.classList.contains('hidden') && link.getAttribute('href') !== '#') {
+      window.location.href = link.href;
     }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      // Disable navigation if lightbox is open
-      if (document.body.style.overflow === 'hidden') return;
-      
-      if (e.key === 'ArrowLeft') {
-        const prev = document.getElementById('prev-link');
-        if (prev && !prev.classList.contains('hidden') && prev.getAttribute('href') !== '#') {
-          window.location.href = prev.href;
-        }
-      } else if (e.key === 'ArrowRight') {
-        const next = document.getElementById('next-link');
-        if (next && !next.classList.contains('hidden') && next.getAttribute('href') !== '#') {
-          window.location.href = next.href;
-        }
-      }
-    });
-  })();
+  });
 </script>
 
 <style>

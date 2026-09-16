@@ -1,13 +1,12 @@
 ---
 title: Vista of the High Desert
 category: people
-image: /photos/people/vista-of-the-high-desert.jpg
+image: ../../assets/photos/people/vista-of-the-high-desert.jpg
 alt: A people photograph
 date: 2023-04-23T00:00:00.000Z
 location: ''
 originalFilename: 20230423_173524.jpg
 featured: false
-order: 4
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Ultrawide Camera

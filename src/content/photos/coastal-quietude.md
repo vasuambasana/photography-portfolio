@@ -1,13 +1,12 @@
 ---
 title: Coastal Quietude
 category: people
-image: /photos/people/coastal-quietude.jpg
+image: ../../assets/photos/people/coastal-quietude.jpg
 alt: A people photograph
 date: 2026-08-08T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7997.jpg
 featured: false
-order: 21
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF35mm F1.8 MACRO IS STM

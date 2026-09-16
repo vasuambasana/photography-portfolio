@@ -5,9 +5,12 @@ export interface Props {
   canonical?: string;
   ogImage?: string;
   ogType?: 'website' | 'article';
+  /** Overrides the JSON-LD @type; defaults to Article for `ogType="article"`. */
+  schema?: 'BlogPosting' | 'Photograph';
   article?: {
     publishedTime?: string;
     section?: string;
+    readingTime?: number;
   };
   noindex?: boolean;
 }
@@ -18,14 +21,24 @@ const {
   canonical,
   ogImage,
   ogType = 'website',
+  schema,
   article,
   noindex = false,
 } = Astro.props;
 
 const siteUrl = import.meta.env.SITE_URL || Astro.site?.toString() || 'https://vasuambasana.com';
 const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
-const socialImage = ogImage || new URL('/logo.png', siteUrl).toString();
+const socialImage = new URL(ogImage || '/logo.png', siteUrl).toString();
 const siteName = 'VA Photography';
+
+const AUTHOR = {
+  '@type': 'Person',
+  name: 'Vasu Ambasana',
+  url: siteUrl,
+  jobTitle: 'Photographer',
+};
+
+const schemaType = schema || (ogType === 'article' ? 'Article' : 'WebSite');
 ---
 
 <!-- Primary Meta -->
@@ -58,21 +71,17 @@ const siteName = 'VA Photography';
 <script is:inline type="application/ld+json" set:html={JSON.stringify([
   {
     '@context': 'https://schema.org',
-    '@type': ogType === 'article' ? 'Article' : 'WebSite',
+    '@type': schemaType,
     name: title,
+    headline: title,
     description: description,
     url: canonicalUrl,
     image: socialImage,
-    ...(ogType === 'article' && article?.publishedTime ? {
-      datePublished: article.publishedTime,
-      articleSection: article.section,
-    } : {}),
+    author: AUTHOR,
+    ...(schemaType !== 'WebSite' ? { creator: AUTHOR, publisher: AUTHOR } : {}),
+    ...(article?.publishedTime ? { datePublished: article.publishedTime } : {}),
+    ...(article?.section ? { articleSection: article.section } : {}),
+    ...(article?.readingTime ? { timeRequired: `PT${article.readingTime}M` } : {}),
   },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'Vasu Ambasana',
-    url: 'https://vasuambasana.com',
-    jobTitle: 'Photographer'
-  }
+  { '@context': 'https://schema.org', ...AUTHOR },
 ])} />

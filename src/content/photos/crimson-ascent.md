@@ -1,13 +1,12 @@
 ---
 title: Crimson Ascent
 category: street
-image: /photos/street/crimson-ascent.jpg
+image: ../../assets/photos/street/crimson-ascent.jpg
 alt: A street photograph
 date: 2024-08-30T00:00:00.000Z
 location: ''
 originalFilename: 20240903_021344.jpg
 featured: false
-order: 14
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Super Telephoto Camera

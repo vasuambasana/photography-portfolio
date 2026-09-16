@@ -1,13 +1,12 @@
 ---
 title: Monolith in Monochrome
 category: architecture
-image: /photos/architecture/monolith-in-monochrome.jpg
+image: ../../assets/photos/architecture/monolith-in-monochrome.jpg
 alt: A architecture photograph
 date: 2023-03-22T00:00:00.000Z
 location: ''
 originalFilename: 20230322_185858.jpg
 featured: false
-order: 8
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Telephoto Camera

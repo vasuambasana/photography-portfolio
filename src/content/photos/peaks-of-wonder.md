@@ -1,13 +1,12 @@
 ---
 title: Peaks of Wonder
 category: people
-image: /photos/people/peaks-of-wonder.jpg
+image: ../../assets/photos/people/peaks-of-wonder.jpg
 alt: A people photograph
 date: 2026-04-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5555.CR3
 featured: true
-order: 4
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

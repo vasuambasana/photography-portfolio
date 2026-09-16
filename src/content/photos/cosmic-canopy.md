@@ -1,13 +1,12 @@
 ---
 title: Cosmic Canopy
 category: night
-image: /photos/night/cosmic-canopy.jpg
+image: ../../assets/photos/night/cosmic-canopy.jpg
 alt: A night photograph
 date: 2024-02-19T00:00:00.000Z
 location: ''
 originalFilename: 20240219_013351.jpg
 featured: false
-order: 19
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   focalLength: 23mm (35mm eq)

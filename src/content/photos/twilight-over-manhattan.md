@@ -1,13 +1,12 @@
 ---
 title: Twilight Over Manhattan
 category: architecture
-image: /photos/architecture/twilight-over-manhattan.jpg
+image: ../../assets/photos/architecture/twilight-over-manhattan.jpg
 alt: A architecture photograph
 date: 2024-09-01T00:00:00.000Z
 location: ''
 originalFilename: 20240901_193912.jpg
 featured: false
-order: 25
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Wide Camera

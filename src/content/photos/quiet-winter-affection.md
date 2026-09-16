@@ -1,7 +1,7 @@
 ---
 title: Quiet Winter Affection
 category: nature
-image: /photos/nature/quiet-winter-affection.jpg
+image: ../../assets/photos/nature/quiet-winter-affection.jpg
 alt: >-
   Two wolves stand together in deep snow among bare trees, with one nuzzling the
   back of the other under low sunlight.
@@ -9,7 +9,6 @@ date: 2026-02-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5149.jpg
 featured: false
-order: 22
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

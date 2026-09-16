@@ -1,13 +1,12 @@
 ---
 title: "Last Light Drift"
 category: "nature"
-image: "/photos/nature/last-light-drift.jpg"
+image: ../../assets/photos/nature/last-light-drift.jpg
 alt: "A silhouetted paddleboarder glides across calm ocean waters reflecting a vibrant orange sunset sky."
 date: 2022-08-08
 location: ""
 originalFilename: "20220807_194448.jpg"
 featured: false
-order: 23
 cameraSpecs:
   body: "samsung SM-N976U"
   focalLength: "52mm (35mm eq)"

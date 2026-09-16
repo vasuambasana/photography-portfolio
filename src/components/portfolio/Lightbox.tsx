@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 interface LightboxImage {
   src: string;
   alt: string;
-  caption?: string;
+  title?: string;
   slug?: string;
 }
 
@@ -41,7 +41,6 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
   // Close handler: navigate to the current photo's page if different from initial
   const handleClose = useCallback(() => {
     const currentImage = images[currentIndex];
-    const initialImage = images[initialIndex];
 
     // If the user navigated to a different image, go to that photo's page
     if (currentIndex !== initialIndex && currentImage?.slug) {
@@ -185,8 +184,8 @@ export default function Lightbox({ images, isOpen, onClose, initialIndex = 0 }: 
 
         {/* Caption and counter */}
         <div className="mt-4 text-center">
-          {current.caption && (
-            <p className="text-sm text-zinc-400 mb-2">{current.caption}</p>
+          {current.title && (
+            <p className="text-sm text-zinc-400 mb-2">{current.title}</p>
           )}
           {images.length > 1 && (
             <p className="text-xs text-zinc-500 font-mono">

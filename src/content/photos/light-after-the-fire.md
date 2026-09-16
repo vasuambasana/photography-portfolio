@@ -1,13 +1,12 @@
 ---
 title: "Light After the Fire"
 category: "nature"
-image: "/photos/nature/light-after-the-fire.jpg"
+image: ../../assets/photos/nature/light-after-the-fire.jpg
 alt: "A forest of charred, bare trees stands on a snowy mountain slope illuminated by a warm sunset."
 date: 2023-04-17
 location: ""
 originalFilename: "20230416_192541.jpg"
 featured: false
-order: 26
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

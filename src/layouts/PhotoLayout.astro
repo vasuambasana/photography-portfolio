@@ -2,6 +2,8 @@
 import BaseLayout from './BaseLayout.astro';
 import ThumbnailStrip from '../components/portfolio/ThumbnailStrip.astro';
 
+import type { ClientPhoto } from '../pages/photo/[slug].astro';
+
 export interface Props {
   title: string;
   description: string;
@@ -9,16 +11,17 @@ export interface Props {
   date: string;
   coverImage?: string;
   currentSlug: string;
-  allPhotosClient: Array<{ slug: string; title: string; imageSrc: string; alt: string; category: string }>;
+  clientPhotos: ClientPhoto[];
 }
 
-const { title, description, category, date, coverImage, currentSlug, allPhotosClient } = Astro.props;
+const { title, description, category, date, coverImage, currentSlug, clientPhotos } = Astro.props;
 ---
 
 <BaseLayout
   title={title}
   description={description}
   ogType="article"
+  schema="Photograph"
   ogImage={coverImage}
   article={{
     publishedTime: date,
@@ -29,7 +32,7 @@ const { title, description, category, date, coverImage, currentSlug, allPhotosCl
     <slot />
 
     <!-- Filmstrip navigation -->
-    <ThumbnailStrip currentSlug={currentSlug} allPhotosClient={allPhotosClient} />
+    <ThumbnailStrip currentSlug={currentSlug} clientPhotos={clientPhotos} />
 
     <!-- Contact CTA -->
     <div class="section-container mt-12 md:mt-16 text-center">

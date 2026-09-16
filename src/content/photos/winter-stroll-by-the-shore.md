@@ -1,13 +1,12 @@
 ---
 title: Winter Stroll by the Shore
 category: people
-image: /photos/people/winter-stroll-by-the-shore.jpg
+image: ../../assets/photos/people/winter-stroll-by-the-shore.jpg
 alt: A people photograph
 date: 2024-01-20T00:00:00.000Z
 location: ''
 originalFilename: 20240120_125608.jpg
 featured: false
-order: 5
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

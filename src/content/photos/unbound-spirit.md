@@ -1,13 +1,12 @@
 ---
 title: Unbound Spirit
 category: people
-image: /photos/people/unbound-spirit.jpg
+image: ../../assets/photos/people/unbound-spirit.jpg
 alt: A people photograph
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6707.CR3
 featured: false
-order: 10
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF35mm F1.8 MACRO IS STM

@@ -1,13 +1,12 @@
 ---
 title: 'Urban Symmetry: Boston''s Transit Axis'
 category: architecture
-image: /photos/architecture/urban-symmetry-boston-s-transit-axis.jpg
+image: ../../assets/photos/architecture/urban-symmetry-boston-s-transit-axis.jpg
 alt: A architecture photograph
 date: 2023-06-10T00:00:00.000Z
 location: ''
 originalFilename: 20230610_154507.jpg
 featured: false
-order: 12
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

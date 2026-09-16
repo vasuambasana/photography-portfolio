@@ -1,13 +1,12 @@
 ---
 title: Canopy of Infinity
 category: night
-image: /photos/night/canopy-of-infinity.jpg
+image: ../../assets/photos/night/canopy-of-infinity.jpg
 alt: A night photograph
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_022724.jpg
 featured: true
-order: 3
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

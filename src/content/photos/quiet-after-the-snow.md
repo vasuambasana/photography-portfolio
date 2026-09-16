@@ -1,13 +1,12 @@
 ---
 title: "Quiet After the Snow"
 category: "nature"
-image: "/photos/nature/quiet-after-the-snow.jpg"
+image: ../../assets/photos/nature/quiet-after-the-snow.jpg
 alt: "A snow-dusted park walkway lined with empty benches and bare winter trees."
 date: 2026-01-19
 location: ""
 originalFilename: "20260118_230202.jpg"
 featured: false
-order: 10
 cameraSpecs:
   body: "samsung Galaxy Z Fold7"
   lens: "Samsung Galaxy Z Fold7 Rear Wide Camera"

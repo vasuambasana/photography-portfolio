@@ -1,13 +1,12 @@
 ---
 title: Celestial Web
 category: architecture
-image: /photos/architecture/celestial-web.jpg
+image: ../../assets/photos/architecture/celestial-web.jpg
 alt: A architecture photograph
 date: 2026-01-16T00:00:00.000Z
 location: ''
 originalFilename: 20260115_233759.jpg
 featured: true
-order: 2
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

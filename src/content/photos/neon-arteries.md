@@ -1,13 +1,12 @@
 ---
 title: Neon Arteries
 category: night
-image: /photos/night/neon-arteries.jpg
+image: ../../assets/photos/night/neon-arteries.jpg
 alt: A night photograph
 date: 2024-06-16T00:00:00.000Z
 location: ''
 originalFilename: 20240615_211855.jpg
 featured: false
-order: 21
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Wide Camera

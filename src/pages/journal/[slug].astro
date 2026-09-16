@@ -1,7 +1,12 @@
 ---
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import PhotoCard from '../../components/portfolio/PhotoCard.astro';
+import { getCollection, getEntry, getEntries } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { JOURNAL_TYPE_LABELS } from '../../content/config';
+import { readingTime, sortJournal, tagSlug } from '../../utils/journal';
+import { neighbours } from '../../utils/photos';
 
 export async function getStaticPaths() {
   const entries = await getCollection('journal');
@@ -17,43 +22,42 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { title, subtitle, type, date, coverImage, coverAlt, location, tags, readingTime, relatedPhotos } = entry.data;
+const { title, subtitle, type, date, coverImage, location, tags, relatedPhotos } = entry.data;
 
-// Fetch related photos if any
-const allPhotos = await getCollection('photos');
-const related = relatedPhotos
-  .map((slug: string) => allPhotos.find((p) => p.slug === slug))
-  .filter(Boolean);
+const cover = (await getEntry(coverImage))!;
+const related = await getEntries(relatedPhotos);
+const minutes = readingTime(entry.body);
 
-const typeLabels: Record<string, string> = {
-  'field-notes': 'Field Notes',
-  'location-guide': 'Location Guide',
-  'essay': 'Essay',
-  'behind-the-lens': 'Behind the Lens',
-};
+// Social scrapers want a modest JPEG, not the full-size original.
+const ogImage = await getImage({ src: cover.data.image, width: 1200, format: 'jpeg' });
 
-// Get all journal entries for prev/next navigation
-const allEntries = (await getCollection('journal')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const currentIdx = allEntries.findIndex((e) => e.slug === entry.slug);
-const prevEntry = currentIdx < allEntries.length - 1 ? allEntries[currentIdx + 1] : null;
-const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
+const allEntries = sortJournal(await getCollection('journal'));
+// The list runs newest-first, so the previous *entry* is the next one along.
+const { prev: newerEntry, next: olderEntry } = neighbours(allEntries, entry.slug);
 ---
 
 <BaseLayout
-  title={`${title} — Journal — Vasu Ambasana Photography`}
+  title={title}
   description={entry.data.excerpt}
-  ogImage={coverImage}
+  ogImage={ogImage.src}
   ogType="article"
+  schema="BlogPosting"
   article={{
     publishedTime: date.toISOString(),
-    section: typeLabels[type] || type,
+    section: JOURNAL_TYPE_LABELS[type],
+    readingTime: minutes,
   }}
 >
   <!-- Hero cover image -->
   <div class="relative w-full h-[40vh] md:h-[55vh] overflow-hidden">
-    <img
-      src={coverImage}
-      alt={coverAlt}
+    <Image
+      src={cover.data.image}
+      alt={cover.data.alt}
+      width={2400}
+      widths={[800, 1600, 2400]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
       class="w-full h-full object-cover"
     />
     <div class="absolute inset-0 bg-gradient-to-t from-surface-main via-surface-main/30 to-transparent" />
@@ -62,9 +66,9 @@ const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
   <article class="section-container -mt-20 relative z-10">
     <!-- Article header -->
     <header class="max-w-prose mx-auto mb-10">
-      <div class="flex items-center gap-3 mb-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs font-mono tracking-wider text-text-secondary uppercase">
         <span class="px-2.5 py-1 rounded-full border border-subtle">
-          {typeLabels[type] || type}
+          {JOURNAL_TYPE_LABELS[type]}
         </span>
         {location && (
           <span class="flex items-center gap-1">
@@ -75,7 +79,7 @@ const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
         <span>
           {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </span>
-        {readingTime && <span>{readingTime} min read</span>}
+        <span>{minutes} min read</span>
       </div>
 
       <h1 class="text-display-lg font-display text-text-primary mb-3">{title}</h1>
@@ -101,10 +105,13 @@ const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
     {tags.length > 0 && (
       <div class="max-w-prose mx-auto mt-10 pt-8 border-t border-subtle">
         <div class="flex flex-wrap gap-2">
-          {tags.map((tag: string) => (
-            <span class="px-3 py-1 text-xs font-mono uppercase tracking-wider text-text-secondary bg-surface-overlay rounded-full">
+          {tags.map((tag) => (
+            <a
+              href={`/journal/tag/${tagSlug(tag)}`}
+              class="px-3 py-1 text-xs font-mono uppercase tracking-wider text-text-secondary bg-surface-overlay rounded-full no-underline hover:text-text-primary transition-colors"
+            >
               #{tag}
-            </span>
+            </a>
           ))}
         </div>
       </div>
@@ -122,18 +129,15 @@ const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
           Related Photos
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {related.map((photo: any) => (
-            <a href={`/photo/${photo.slug}`} class="group relative overflow-hidden rounded-lg aspect-[4/3]">
-              <img
-                src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
-                alt={photo.data.alt}
-                loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                <span class="p-3 text-white text-sm font-body">{photo.data.title}</span>
-              </div>
-            </a>
+          {related.map((photo) => (
+            <PhotoCard
+              photo={photo}
+              aspect="4/3"
+              rounded="rounded-lg"
+              class="mb-0"
+              widths={[300, 600]}
+              sizes="(min-width: 768px) 30vw, 45vw"
+            />
           ))}
         </div>
       </div>
@@ -141,25 +145,25 @@ const nextEntry = currentIdx > 0 ? allEntries[currentIdx - 1] : null;
 
     <!-- Prev / Next navigation -->
     <nav class="max-w-prose mx-auto mt-14 pt-8 border-t border-subtle">
-      <div class="flex justify-between items-center">
-        {prevEntry ? (
-          <a href={`/journal/${prevEntry.slug}`} class="group flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:-translate-x-1">
+      <div class="flex justify-between items-center gap-4">
+        {olderEntry ? (
+          <a href={`/journal/${olderEntry.slug}`} class="group flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors no-underline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 transition-transform group-hover:-translate-x-1">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
             <div>
               <span class="block text-[10px] font-mono uppercase tracking-wider text-text-secondary/60">Older</span>
-              <span class="text-sm font-body">{prevEntry.data.title}</span>
+              <span class="text-sm font-body">{olderEntry.data.title}</span>
             </div>
           </a>
         ) : <div />}
-        {nextEntry ? (
-          <a href={`/journal/${nextEntry.slug}`} class="group flex items-center gap-2 text-right text-text-secondary hover:text-text-primary transition-colors">
+        {newerEntry ? (
+          <a href={`/journal/${newerEntry.slug}`} class="group flex items-center gap-2 text-right text-text-secondary hover:text-text-primary transition-colors no-underline">
             <div>
               <span class="block text-[10px] font-mono uppercase tracking-wider text-text-secondary/60">Newer</span>
-              <span class="text-sm font-body">{nextEntry.data.title}</span>
+              <span class="text-sm font-body">{newerEntry.data.title}</span>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:translate-x-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 transition-transform group-hover:translate-x-1">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>

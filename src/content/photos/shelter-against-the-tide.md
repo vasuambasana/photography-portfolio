@@ -1,13 +1,12 @@
 ---
 title: "Shelter Against the Tide"
 category: "people"
-image: "/photos/people/shelter-against-the-tide.jpg"
+image: ../../assets/photos/people/shelter-against-the-tide.jpg
 alt: "High-angle view of two people wrapped in a pink blanket standing on a metal stairway railing above dark, churning ocean water."
 date: 2022-08-20
 location: ""
 originalFilename: "20220820_183016.jpg"
 featured: false
-order: 1
 cameraSpecs:
   body: "samsung SM-N976U"
   focalLength: "52mm (35mm eq)"

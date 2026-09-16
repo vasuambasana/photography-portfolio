@@ -1,13 +1,12 @@
 ---
 title: Symphony in Steel and Shadow
 category: architecture
-image: /photos/architecture/symphony-in-steel-and-shadow.jpg
+image: ../../assets/photos/architecture/symphony-in-steel-and-shadow.jpg
 alt: A architecture photograph
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5028(1) (1).jpg
 featured: false
-order: 30
 cameraSpecs:
   body: Canon EOS R5m2
   focalLength: 135.0mm

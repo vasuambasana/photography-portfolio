@@ -1,13 +1,12 @@
 ---
 title: Midnight Interlude
 category: street
-image: /photos/street/midnight-interlude.jpg
+image: ../../assets/photos/street/midnight-interlude.jpg
 alt: A street photograph
 date: 2026-01-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5078.jpg
 featured: false
-order: 20
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

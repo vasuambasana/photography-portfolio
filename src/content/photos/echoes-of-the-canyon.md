@@ -1,13 +1,12 @@
 ---
 title: Echoes of the Canyon
 category: people
-image: /photos/people/echoes-of-the-canyon.jpg
+image: ../../assets/photos/people/echoes-of-the-canyon.jpg
 alt: A people photograph
 date: 2026-04-05T00:00:00.000Z
 location: ''
 originalFilename: IMG_5324 (1).jpg
 featured: false
-order: 26
 cameraSpecs:
   body: Apple iPhone 17 Pro
   lens: iPhone 17 Pro back triple camera 6.765mm f/1.78

@@ -1,13 +1,12 @@
 ---
 title: "Harbor Remnants"
 category: "nature"
-image: "/photos/nature/harbor-remnants.jpg"
+image: ../../assets/photos/nature/harbor-remnants.jpg
 alt: "A sun-dried fish tail hangs from a rope-wrapped dock piling against deep blue water and a clear sky."
 date: 2025-05-26
 location: ""
 originalFilename: "20250526_140105.jpg"
 featured: false
-order: 9
 cameraSpecs:
   body: "samsung Galaxy Z Fold6"
   lens: "Samsung Galaxy Z Fold6 Rear Wide Camera"

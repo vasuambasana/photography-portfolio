@@ -1,13 +1,12 @@
 ---
 title: Rise from the Frost
 category: street
-image: /photos/street/rise-from-the-frost.jpg
+image: ../../assets/photos/street/rise-from-the-frost.jpg
 alt: A street photograph
 date: 2026-01-18T00:00:00.000Z
 location: ''
 originalFilename: 20260117_204859.jpg
 featured: false
-order: 17
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

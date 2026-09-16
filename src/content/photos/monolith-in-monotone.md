@@ -1,13 +1,12 @@
 ---
 title: Monolith in Monotone
 category: architecture
-image: /photos/architecture/monolith-in-monotone.jpg
+image: ../../assets/photos/architecture/monolith-in-monotone.jpg
 alt: A architecture photograph
 date: 2023-06-07T00:00:00.000Z
 location: ''
 originalFilename: 20230607_125015.jpg
 featured: false
-order: 11
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Wide Camera

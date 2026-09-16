@@ -1,13 +1,12 @@
 ---
 title: Cosmic Tapestry Over Silhouetted Peaks
 category: night
-image: /photos/night/cosmic-tapestry-over-silhouetted-peaks.jpg
+image: ../../assets/photos/night/cosmic-tapestry-over-silhouetted-peaks.jpg
 alt: A night photograph
 date: 2023-04-23T00:00:00.000Z
 location: ''
 originalFilename: 20230423_043656.jpg
 featured: false
-order: 15
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Wide Camera

@@ -1,13 +1,12 @@
 ---
 title: "Spectrum in the Mist"
 category: "nature"
-image: "/photos/nature/spectrum-in-the-mist.jpg"
+image: ../../assets/photos/nature/spectrum-in-the-mist.jpg
 alt: "A tall waterfall cascades down a sheer granite cliff, creating a vibrant rainbow in the mist above a pine forest."
 date: 2023-04-16
 location: ""
 originalFilename: "20230415_160157.jpg"
 featured: false
-order: 25
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Super Telephoto Camera"

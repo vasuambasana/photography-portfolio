@@ -1,13 +1,12 @@
 ---
 title: Beacon of the Skyline
 category: architecture
-image: /photos/architecture/beacon-of-the-skyline.jpg
+image: ../../assets/photos/architecture/beacon-of-the-skyline.jpg
 alt: A architecture photograph
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240903_023443.jpg
 featured: false
-order: 27
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Super Telephoto Camera

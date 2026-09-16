@@ -1,13 +1,12 @@
 ---
 title: Selenic Tapestry
 category: night
-image: /photos/night/selenic-tapestry.jpg
+image: ../../assets/photos/night/selenic-tapestry.jpg
 alt: A night photograph
 date: 2023-08-03T00:00:00.000Z
 location: ''
 originalFilename: 20230803_004705.jpg
 featured: false
-order: 17
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

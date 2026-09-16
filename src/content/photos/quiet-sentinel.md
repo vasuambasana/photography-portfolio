@@ -1,7 +1,7 @@
 ---
 title: Quiet Sentinel
 category: nature
-image: /photos/nature/quiet-sentinel.jpg
+image: ../../assets/photos/nature/quiet-sentinel.jpg
 alt: >-
   A peregrine falcon perches alertly atop a weathered wooden stump against a
   soft, cool blue background.
@@ -9,7 +9,6 @@ date: 2026-02-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5234.jpg
 featured: false
-order: 18
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

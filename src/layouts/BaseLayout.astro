@@ -10,14 +10,16 @@ export interface Props {
   description: string;
   ogImage?: string;
   ogType?: 'website' | 'article';
+  schema?: 'BlogPosting' | 'Photograph';
   article?: {
     publishedTime?: string;
     section?: string;
+    readingTime?: number;
   };
   noindex?: boolean;
 }
 
-const { title, description, ogImage, ogType, article, noindex } = Astro.props;
+const { title, description, ogImage, ogType, schema, article, noindex } = Astro.props;
 ---
 
 <!doctype html>
@@ -32,8 +34,8 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.clarity.ms https://*.bing.com; worker-src 'self' blob:;" />
 
     <!-- Google tag (gtag.js) -->
-    <script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-DY8LMP98HR"></script>
-    <script type="text/partytown">
+    <script is:inline type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-DY8LMP98HR"></script>
+    <script is:inline type="text/partytown">
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -41,7 +43,7 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
     </script>
 
     <!-- Microsoft Clarity -->
-    <script type="text/partytown">
+    <script is:inline type="text/partytown">
       (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
           t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -89,6 +91,7 @@ const { title, description, ogImage, ogType, article, noindex } = Astro.props;
       description={description}
       ogImage={ogImage}
       ogType={ogType}
+      schema={schema}
       article={article}
       noindex={noindex}
     />

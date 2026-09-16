@@ -1,13 +1,12 @@
 ---
 title: Celestial Rhythms Over the Pines
 category: night
-image: /photos/night/celestial-rhythms-over-the-pines.jpg
+image: ../../assets/photos/night/celestial-rhythms-over-the-pines.jpg
 alt: A night photograph
 date: 2021-10-09T00:00:00.000Z
 location: ''
 originalFilename: IMG_5939.jpg
 featured: false
-order: 37
 cameraSpecs:
   body: Canon EOS 700D
   lens: EF-S18-55mm f/3.5-5.6 IS II

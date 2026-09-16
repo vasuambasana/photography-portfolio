@@ -1,13 +1,12 @@
 ---
 title: Grounded Speed and Airborne Dreams
 category: street
-image: /photos/street/grounded-speed-and-airborne-dreams.jpg
+image: ../../assets/photos/street/grounded-speed-and-airborne-dreams.jpg
 alt: A street photograph
 date: 2025-06-13T00:00:00.000Z
 location: ''
 originalFilename: 20250613_194230(0).jpg
 featured: false
-order: 15
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

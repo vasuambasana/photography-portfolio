@@ -1,13 +1,12 @@
 ---
 title: Sentinel of the Granite Coast
 category: architecture
-image: /photos/architecture/sentinel-of-the-granite-coast.jpg
+image: ../../assets/photos/architecture/sentinel-of-the-granite-coast.jpg
 alt: A architecture photograph
 date: 2024-08-18T00:00:00.000Z
 location: ''
 originalFilename: 20240818_130332.jpg
 featured: false
-order: 19
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Super Telephoto Camera

@@ -1,13 +1,12 @@
 ---
 title: "Mirrored Sky"
 category: "architecture"
-image: "/photos/architecture/mirrored-sky.jpg"
+image: ../../assets/photos/architecture/mirrored-sky.jpg
 alt: "A low-angle view looking up at a modern glass skyscraper reflecting a vibrant blue sky filled with white clouds."
 date: 2023-03-28
 location: ""
 originalFilename: "20230328_173155 (1).jpg"
 featured: false
-order: 9
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

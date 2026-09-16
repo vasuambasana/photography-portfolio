@@ -1,14 +1,12 @@
 ---
 title: "Ridge at Dusk"
 category: "nature"
-image: "/photos/nature/ridge-at-dusk.jpg"
+image: ../../assets/photos/nature/ridge-at-dusk.jpg
 alt: "A dark silhouette of a hillside lined with bare trees is framed against a muted blue and pink twilight sky."
 date: 2025-11-28
 location: ""
 originalFilename: "2P4A4403.jpg"
 featured: false
-order: 12
-
 cameraSpecs:
   body: "Unknown Body"
   lens: "Unknown Lens"

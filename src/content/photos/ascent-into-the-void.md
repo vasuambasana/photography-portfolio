@@ -1,13 +1,12 @@
 ---
 title: Ascent into the Void
 category: night
-image: /photos/night/ascent-into-the-void.jpg
+image: ../../assets/photos/night/ascent-into-the-void.jpg
 alt: A night photograph
 date: 2023-02-27T00:00:00.000Z
 location: ''
 originalFilename: 20230227_132002 (1).jpg
 featured: false
-order: 13
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

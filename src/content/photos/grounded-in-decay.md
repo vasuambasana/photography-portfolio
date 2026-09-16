@@ -1,13 +1,12 @@
 ---
 title: Grounded in Decay
 category: street
-image: /photos/street/grounded-in-decay.jpg
+image: ../../assets/photos/street/grounded-in-decay.jpg
 alt: A street photograph
 date: 2026-08-09T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8320.jpg
 featured: false
-order: 27
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF35mm F1.8 MACRO IS STM

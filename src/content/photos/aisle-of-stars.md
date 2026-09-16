@@ -1,13 +1,12 @@
 ---
 title: Aisle of Stars
 category: night
-image: /photos/night/aisle-of-stars.jpg
+image: ../../assets/photos/night/aisle-of-stars.jpg
 alt: A night photograph
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_020618.jpg
 featured: false
-order: 29
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

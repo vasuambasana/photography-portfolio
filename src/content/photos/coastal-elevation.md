@@ -1,13 +1,12 @@
 ---
 title: Coastal Elevation
 category: architecture
-image: /photos/architecture/coastal-elevation.jpg
+image: ../../assets/photos/architecture/coastal-elevation.jpg
 alt: A architecture photograph
 date: 2024-08-18T00:00:00.000Z
 location: ''
 originalFilename: 20240818_131146.jpg
 featured: false
-order: 21
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Super Telephoto Camera

@@ -1,13 +1,12 @@
 ---
 title: "Steel and Sky"
 category: "architecture"
-image: "/photos/architecture/steel-and-sky.jpg"
+image: ../../assets/photos/architecture/steel-and-sky.jpg
 alt: "A low-angle view looking up at a modern grid-patterned glass building against a deep blue sky, framed by bare winter tree branches catching warm sunlight."
 date: 2023-02-18
 location: ""
 originalFilename: "20230218_164232.jpg"
 featured: false
-order: 7
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

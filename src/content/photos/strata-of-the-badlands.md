@@ -1,13 +1,12 @@
 ---
 title: "Strata of the Badlands"
 category: "nature"
-image: "/photos/nature/strata-of-the-badlands.jpg"
+image: ../../assets/photos/nature/strata-of-the-badlands.jpg
 alt: "Textured, multi-colored desert ridges unfold under a blue dusk sky with subtle pink-lit clouds."
 date: 2023-04-23
 location: ""
 originalFilename: "20230423_061923 (1).jpg"
 featured: false
-order: 30
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Telephoto Camera"

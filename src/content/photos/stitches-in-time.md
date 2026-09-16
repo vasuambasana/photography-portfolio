@@ -1,13 +1,12 @@
 ---
 title: Stitches in Time
 category: street
-image: /photos/street/stitches-in-time.jpg
+image: ../../assets/photos/street/stitches-in-time.jpg
 alt: A street photograph
 date: 2025-12-24T00:00:00.000Z
 location: ''
 originalFilename: 20251224_150109.jpg
 featured: false
-order: 16
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

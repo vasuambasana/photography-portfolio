@@ -1,13 +1,12 @@
 ---
 title: Neon Alleyway
 category: street
-image: /photos/street/neon-alleyway.jpg
+image: ../../assets/photos/street/neon-alleyway.jpg
 alt: A street photograph
 date: 2026-05-03T00:00:00.000Z
 location: ''
 originalFilename: 20260502_221708.jpg
 featured: false
-order: 19
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

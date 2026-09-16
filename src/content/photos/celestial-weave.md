@@ -1,13 +1,12 @@
 ---
 title: Celestial Weave
 category: night
-image: /photos/night/celestial-weave.jpg
+image: ../../assets/photos/night/celestial-weave.jpg
 alt: A night photograph
 date: 2026-04-04T00:00:00.000Z
 location: ''
 originalFilename: 20260403_213602.jpg
 featured: false
-order: 31
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

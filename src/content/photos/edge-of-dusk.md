@@ -1,7 +1,7 @@
 ---
 title: Edge of Dusk
 category: nature
-image: /photos/nature/edge-of-dusk.jpg
+image: ../../assets/photos/nature/edge-of-dusk.jpg
 alt: >-
   Silhouetted blue mountain layers sit under a dark sky punctuated by a vivid
   strip of orange light at the horizon.
@@ -9,7 +9,6 @@ date: 2025-11-29T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4842 (1).jpg
 featured: false
-order: 14
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

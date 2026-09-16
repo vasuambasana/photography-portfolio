@@ -1,49 +1,46 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 
-const projectsCollection = defineCollection({
-  type: 'content',
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    summary: z.string(),
-    category: z.enum(['landscape', 'architecture', 'editorial', 'documentary', 'fine-art']),
-    coverImage: image(),
-    coverAlt: z.string(),
-    date: z.date(),
-    location: z.string(),
-    clientOrContext: z.string().optional(),
-    featured: z.boolean().default(false),
-    order: z.number().default(99),
-    cameraSpecs: z.object({
-      body: z.string().default('Canon R5 Mark II'),
-      lenses: z.array(z.string()).optional(),
-    }).optional(),
-    gallery: z.array(z.object({
-      src: image(),
-      alt: z.string(),
-      caption: z.string().optional(),
-      aspectRatio: z.enum(['3:2', '4:5', '1:1', '16:9', '65:24']).default('3:2'),
-      exif: z.object({
-        focalLength: z.string().optional(),
-        aperture: z.string().optional(),
-        shutterSpeed: z.string().optional(),
-        iso: z.string().optional(),
-      }).optional(),
-    })).optional(),
-  }),
-});
+export const PHOTO_CATEGORIES = [
+  'architecture',
+  'nature',
+  'street',
+  'night',
+  'people',
+  'portrait',
+  'travel',
+  'abstract',
+] as const;
+
+export const JOURNAL_TYPE_KEYS = [
+  'field-notes',
+  'location-guide',
+  'essay',
+  'behind-the-lens',
+] as const;
+
+export type JournalType = (typeof JOURNAL_TYPE_KEYS)[number];
+
+export const JOURNAL_TYPE_LABELS: Record<JournalType, string> = {
+  'field-notes': 'Field Notes',
+  'location-guide': 'Location Guide',
+  essay: 'Essay',
+  'behind-the-lens': 'Behind the Lens',
+};
 
 const photosCollection = defineCollection({
   type: 'content',
   schema: ({ image }) => z.object({
     title: z.string(),
-    category: z.enum(['architecture', 'nature', 'street', 'night', 'people', 'portrait', 'travel', 'abstract']),
-    image: z.union([image(), z.string()]),
+    category: z.enum(PHOTO_CATEGORIES),
+    image: image(),
     alt: z.string(),
     date: z.date(),
     location: z.string().optional(),
     originalFilename: z.string().optional(),
     featured: z.boolean().default(false),
-    order: z.number().default(99),
+    // Optional manual pin. Photos with `order` sort first, ascending; everything
+    // else falls back to newest-first by date.
+    order: z.number().optional(),
     cameraSpecs: z.object({
       body: z.string().optional(),
       lens: z.string().optional(),
@@ -60,22 +57,18 @@ const journalCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     subtitle: z.string().optional(),
-    type: z.enum(['field-notes', 'location-guide', 'essay', 'behind-the-lens']).default('field-notes'),
+    type: z.enum(JOURNAL_TYPE_KEYS).default('field-notes'),
     date: z.date(),
-    coverImage: z.string(),
-    coverAlt: z.string().default(''),
+    coverImage: reference('photos'),
     location: z.string().optional(),
     tags: z.array(z.string()).default([]),
     excerpt: z.string(),
-    readingTime: z.number().optional(),
     featured: z.boolean().default(false),
-    relatedPhotos: z.array(z.string()).default([]),
+    relatedPhotos: z.array(reference('photos')).default([]),
   }),
 });
 
 export const collections = {
-  projects: projectsCollection,
   photos: photosCollection,
   journal: journalCollection,
 };
-

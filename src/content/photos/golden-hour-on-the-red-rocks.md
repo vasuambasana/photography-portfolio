@@ -1,7 +1,7 @@
 ---
 title: Golden Hour on the Red Rocks
 category: nature
-image: /photos/nature/golden-hour-on-the-red-rocks.jpg
+image: ../../assets/photos/nature/golden-hour-on-the-red-rocks.jpg
 alt: Golden Hour on the Red Rocks
 date: 2026-08-21T00:00:00.000Z
 originalFilename: 2P4A5568.jpg

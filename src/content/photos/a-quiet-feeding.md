@@ -1,13 +1,12 @@
 ---
 title: "A Quiet Feeding"
 category: "nature"
-image: "/photos/nature/a-quiet-feeding.jpg"
+image: ../../assets/photos/nature/a-quiet-feeding.jpg
 alt: "An adult house sparrow feeds a young bird beak-to-beak on a wooden patio ledge near scattered seeds."
 date: 2024-08-06
 location: ""
 originalFilename: "20240806_183059.jpg"
 featured: false
-order: 38
 cameraSpecs:
   body: "samsung Galaxy S24 Ultra"
   lens: "Samsung Galaxy S24 Ultra Rear Telephoto Camera"

@@ -1,13 +1,12 @@
 ---
 title: A Symphony of Holiday Lights
 category: night
-image: /photos/night/a-symphony-of-holiday-lights.jpg
+image: ../../assets/photos/night/a-symphony-of-holiday-lights.jpg
 alt: A night photograph
 date: 2025-11-29T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4523 (1).jpg
 featured: false
-order: 33
 cameraSpecs:
   body: Unknown Body
   lens: Unknown Lens

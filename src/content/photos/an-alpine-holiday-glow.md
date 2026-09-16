@@ -1,13 +1,12 @@
 ---
 title: An Alpine Holiday Glow
 category: people
-image: /photos/people/an-alpine-holiday-glow.jpg
+image: ../../assets/photos/people/an-alpine-holiday-glow.jpg
 alt: A people photograph
 date: 2025-11-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4408 (1).jpg
 featured: false
-order: 6
 cameraSpecs:
   body: Unknown Body
   lens: Unknown Lens

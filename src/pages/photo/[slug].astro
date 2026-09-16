@@ -1,102 +1,94 @@
 ---
+import { getImage } from 'astro:assets';
 import PhotoLayout from '../../layouts/PhotoLayout.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import ClickableImage from '../../components/portfolio/ClickableImage';
+import { neighbours, photosInCategory, sortPhotos } from '../../utils/photos';
 
 export async function getStaticPaths() {
-  const photos = await getCollection('photos');
+  const photos = sortPhotos(await getCollection('photos'));
 
-  return photos.map((photo) => {
-    // Get all photos in the same category
-    const categoryPhotos = photos
-      .filter((p) => p.data.category === photo.data.category)
-      .sort((a, b) => a.data.order - b.data.order)
-      .map(p => ({
-        slug: p.slug,
-        title: p.data.title,
-        imageSrc: typeof p.data.image === 'string' ? p.data.image : p.data.image.src,
-        alt: p.data.alt
-      }));
-
-    const allSorted = [...photos].sort((a, b) => a.data.order - b.data.order);
-    
-    // Map all sorted photos for the client
-    const allPhotosClient = allSorted.map(p => ({
+  // Built once for the whole route — every photo page shares the same filmstrip
+  // and lightbox payload, so the image transforms must not run per page.
+  const clientPhotos = await Promise.all(
+    photos.map(async (p) => ({
       slug: p.slug,
       title: p.data.title,
-      imageSrc: typeof p.data.image === 'string' ? p.data.image : p.data.image.src,
       alt: p.data.alt,
-      category: p.data.category
-    }));
+      category: p.data.category,
+      src: (await getImage({ src: p.data.image, width: 1800, format: 'webp' })).src,
+      thumb: (await getImage({ src: p.data.image, width: 200, format: 'webp' })).src,
+    }))
+  );
 
-    // Find prev/next for ALL photos
-    const allIdx = allSorted.findIndex(p => p.slug === photo.slug);
-    const prevPhotoAll = allIdx > 0 ? allSorted[allIdx - 1] : null;
-    const nextPhotoAll = allIdx < allSorted.length - 1 ? allSorted[allIdx + 1] : null;
+  return photos.map((photo) => {
+    const all = neighbours(photos, photo.slug);
+    const cat = neighbours(photosInCategory(photos, photo.data.category), photo.slug);
 
-    // Find prev/next for CATEGORY photos
-    const catIdx = categoryPhotos.findIndex(p => p.slug === photo.slug);
-    const prevPhotoCat = catIdx > 0 ? categoryPhotos[catIdx - 1] : null;
-    const nextPhotoCat = catIdx < categoryPhotos.length - 1 ? categoryPhotos[catIdx + 1] : null;
+    const summarise = (p: CollectionEntry<'photos'> | null) =>
+      p ? { slug: p.slug, title: p.data.title } : null;
 
     return {
       params: { slug: photo.slug },
       props: {
         photo,
-        allPhotosClient,
-        prevPhotoAll: prevPhotoAll ? { slug: prevPhotoAll.slug, title: prevPhotoAll.data.title } : null,
-        nextPhotoAll: nextPhotoAll ? { slug: nextPhotoAll.slug, title: nextPhotoAll.data.title } : null,
-        prevPhotoCat: prevPhotoCat ? { slug: prevPhotoCat.slug, title: prevPhotoCat.title } : null,
-        nextPhotoCat: nextPhotoCat ? { slug: nextPhotoCat.slug, title: nextPhotoCat.title } : null,
+        clientPhotos,
+        prevPhotoAll: summarise(all.prev),
+        nextPhotoAll: summarise(all.next),
+        prevPhotoCat: summarise(cat.prev),
+        nextPhotoCat: summarise(cat.next),
       },
     };
   });
 }
 
+export interface ClientPhoto {
+  slug: string;
+  title: string;
+  alt: string;
+  category: string;
+  src: string;
+  thumb: string;
+}
+
 interface Props {
   photo: CollectionEntry<'photos'>;
-  allPhotosClient: Array<{ slug: string; title: string; imageSrc: string; alt: string; category: string }>;
+  clientPhotos: ClientPhoto[];
   prevPhotoAll: { slug: string; title: string } | null;
   nextPhotoAll: { slug: string; title: string } | null;
   prevPhotoCat: { slug: string; title: string } | null;
   nextPhotoCat: { slug: string; title: string } | null;
 }
 
-const { photo, allPhotosClient, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
+const { photo, clientPhotos, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
 const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
-const imageSrc = typeof image === 'string' ? image : image.src;
-
-const galleryImages = allPhotosClient.map((p: any) => ({
-  src: p.imageSrc,
-  alt: p.alt,
-  caption: p.title,
-  slug: p.slug,
-  category: p.category
-}));
-const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug);
+const display = await getImage({ src: image, width: 1800, format: 'webp' });
+const initialIndex = clientPhotos.findIndex((p) => p.slug === photo.slug);
 ---
 
 <PhotoLayout
   title={title}
-  description={title}
+  description={alt}
   category={category}
   date={date.toISOString()}
-  coverImage={imageSrc}
+  coverImage={display.src}
   currentSlug={photo.slug}
-  allPhotosClient={allPhotosClient}
+  clientPhotos={clientPhotos}
 >
   <div class="section-container">
     <!-- Immersive Exhibition Theater Display -->
     <div class="relative rounded-2xl overflow-hidden bg-zinc-950 border border-white/10 shadow-2xl flex items-center justify-center p-2 sm:p-4 md:p-6">
-      <ClickableImage 
+      <ClickableImage
         client:load
-        src={imageSrc}
+        src={display.src}
+        width={display.attributes.width}
+        height={display.attributes.height}
         alt={alt}
         caption={title}
-        galleryImages={galleryImages}
+        galleryImages={clientPhotos}
         initialIndex={initialIndex}
         className="w-full h-auto max-h-[82vh] object-contain mx-auto rounded-lg"
       />
@@ -106,28 +98,28 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
     <nav class="flex items-center justify-between py-4" aria-label="Photo navigation">
       <a
         id="prev-link"
-        href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : "#"}
-        data-all-href={prevPhotoAll ? `/photo/${prevPhotoAll.slug}` : ""}
-        data-cat-href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : ""}
-        class={`inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline ${!prevPhotoCat ? 'hidden' : ''}`}
+        href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : '#'}
+        data-all-href={prevPhotoAll ? `/photo/${prevPhotoAll.slug}` : ''}
+        data-cat-href={prevPhotoCat ? `/photo/${prevPhotoCat.slug}` : ''}
+        class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline hidden"
       >
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4l-6 6 6 6" /></svg>
         Previous
       </a>
-      
+
       <a
         href="/gallery"
         class="text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline mx-auto"
       >
         All Photos
       </a>
-      
+
       <a
         id="next-link"
-        href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : "#"}
-        data-all-href={nextPhotoAll ? `/photo/${nextPhotoAll.slug}` : ""}
-        data-cat-href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : ""}
-        class={`inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline ${!nextPhotoCat ? 'hidden' : ''}`}
+        href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : '#'}
+        data-all-href={nextPhotoAll ? `/photo/${nextPhotoAll.slug}` : ''}
+        data-cat-href={nextPhotoCat ? `/photo/${nextPhotoCat.slug}` : ''}
+        class="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary text-body-sm font-mono uppercase tracking-wider transition-colors no-underline hidden"
       >
         Next
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 4l6 6-6 6" /></svg>
@@ -137,13 +129,13 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
     <!-- Metadata and Content: Balanced 2-Column Spread on Desktop -->
     <div class="mt-8 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        
+
         <!-- Left: Story & Narrative -->
         <div class="lg:col-span-7 space-y-6">
           <header>
             <h1 class="text-display-md font-display text-text-primary mb-3">{title}</h1>
             <div class="flex flex-wrap items-center gap-2.5 text-xs font-mono tracking-wider text-text-secondary uppercase">
-              <span class="px-2.5 py-0.5 rounded-full border border-subtle bg-surface-overlay">{category}</span>
+              <a href={`/gallery?filter=${category}`} class="px-2.5 py-0.5 rounded-full border border-subtle bg-surface-overlay no-underline hover:text-text-primary transition-colors">{category}</a>
               {location && (
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-overlay">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -157,7 +149,7 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
             </div>
           </header>
 
-          <!-- The markdown content / photographer's notes: Standard clean body font -->
+          <!-- The markdown content / photographer's notes -->
           <div class="prose prose-invert prose-zinc max-w-none text-text-secondary text-body-md font-body leading-relaxed [&>p]:mb-4">
             <Content />
           </div>
@@ -171,9 +163,9 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
                 <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
-              <h3 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">Technical Specs</h3>
+              <h2 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">Technical Specs</h2>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4 text-sm">
               {cameraSpecs.body && (
                 <div class="col-span-2 sm:col-span-1">
@@ -230,34 +222,20 @@ const initialIndex = allPhotosClient.findIndex((p: any) => p.slug === photo.slug
 </PhotoLayout>
 
 <script>
-  // Astro module scripts are deferred, so DOM is ready when this runs.
-  // No View Transitions in this project, so astro:page-load never fires.
-  (function initPrevNextLinks() {
-    const params = new URLSearchParams(window.location.search);
-    // Default to 'all' when no filter is specified (e.g. from home page)
-    const filter = params.get('filter') || 'all';
-    
-    const prevLink = document.getElementById('prev-link');
-    const nextLink = document.getElementById('next-link');
+  import { ALL_FILTER, getActiveFilter, withFilter } from '../../utils/filter';
 
-    if (prevLink) {
-      const href = (filter === 'all') ? prevLink.dataset.allHref : prevLink.dataset.catHref;
-      if (href) {
-        prevLink.href = href + '?filter=' + filter;
-        prevLink.classList.remove('hidden');
-      } else {
-        prevLink.classList.add('hidden');
-      }
-    }
+  const filter = getActiveFilter();
 
-    if (nextLink) {
-      const href = (filter === 'all') ? nextLink.dataset.allHref : nextLink.dataset.catHref;
-      if (href) {
-        nextLink.href = href + '?filter=' + filter;
-        nextLink.classList.remove('hidden');
-      } else {
-        nextLink.classList.add('hidden');
-      }
+  for (const id of ['prev-link', 'next-link']) {
+    const link = document.getElementById(id) as HTMLAnchorElement | null;
+    if (!link) continue;
+
+    const target = filter === ALL_FILTER ? link.dataset.allHref : link.dataset.catHref;
+    if (target) {
+      link.href = withFilter(target, filter);
+      link.classList.remove('hidden');
+    } else {
+      link.classList.add('hidden');
     }
-  })();
+  }
 </script>

@@ -1,13 +1,12 @@
 ---
 title: "Granite and Green"
 category: "nature"
-image: "/photos/nature/granite-and-green.jpg"
+image: ../../assets/photos/nature/granite-and-green.jpg
 alt: "Large granite boulders lie scattered across vibrant green hills under a bright sun and streaky blue sky."
 date: 2023-05-04
 location: ""
 originalFilename: "20230503_174849 (3).jpg"
 featured: false
-order: 34
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Ultrawide Camera"

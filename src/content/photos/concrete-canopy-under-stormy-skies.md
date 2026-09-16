@@ -1,13 +1,12 @@
 ---
 title: Concrete Canopy under Stormy Skies
 category: architecture
-image: /photos/architecture/concrete-canopy-under-stormy-skies.jpg
+image: ../../assets/photos/architecture/concrete-canopy-under-stormy-skies.jpg
 alt: A architecture photograph
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240831_185134.jpg
 featured: false
-order: 24
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Ultrawide Camera

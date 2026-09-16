@@ -1,13 +1,12 @@
 ---
 title: "Above the Salt Basin"
 category: "nature"
-image: "/photos/nature/above-the-salt-basin.jpg"
+image: ../../assets/photos/nature/above-the-salt-basin.jpg
 alt: "High-angle view of a vast desert valley with winding salt flats lit by a golden sunset under a deep blue cloud-filled sky."
 date: 2023-04-22
 location: ""
 originalFilename: "20230421_184900.jpg"
 featured: false
-order: 28
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

@@ -1,13 +1,12 @@
 ---
 title: Chinatown Gateway in Winter
 category: street
-image: /photos/street/chinatown-gateway-in-winter.jpg
+image: ../../assets/photos/street/chinatown-gateway-in-winter.jpg
 alt: A street photograph
 date: 2026-01-19T00:00:00.000Z
 location: ''
 originalFilename: 20260118_194909.jpg
 featured: false
-order: 18
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

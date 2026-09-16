@@ -1,13 +1,12 @@
 ---
 title: Pixels and Panes
 category: architecture
-image: /photos/architecture/pixels-and-panes.jpg
+image: ../../assets/photos/architecture/pixels-and-panes.jpg
 alt: A architecture photograph
 date: 2023-03-28T00:00:00.000Z
 location: ''
 originalFilename: 20230328_173456.jpg
 featured: false
-order: 10
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Telephoto Camera

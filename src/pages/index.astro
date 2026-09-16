@@ -1,24 +1,18 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoCard from '../components/portfolio/PhotoCard.astro';
+import JournalCard from '../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
+import { sortPhotos } from '../utils/photos';
+import { decorate, sortJournal } from '../utils/journal';
 
 const allPhotos = await getCollection('photos');
-const featuredPhotos = allPhotos
-  .filter((p) => p.data.featured)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 12);
+const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slice(0, 12);
 
-const allJournal = await getCollection('journal');
-const latestJournal = allJournal
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 2);
+const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
 
-const typeLabels: Record<string, string> = {
-  'field-notes': 'Field Notes',
-  'location-guide': 'Location Guide',
-  'essay': 'Essay',
-  'behind-the-lens': 'Behind the Lens',
-};
+const latestJournal = await decorate(sortJournal(await getCollection('journal')).slice(0, 2));
 ---
 
 <BaseLayout
@@ -30,9 +24,13 @@ const typeLabels: Record<string, string> = {
     <div class="relative w-full min-h-[72vh] md:min-h-[80vh] rounded-3xl overflow-hidden flex flex-col justify-between p-6 sm:p-8 md:p-14 shadow-2xl border border-white/10">
       
       <!-- Hero Background Photography -->
-      <img
-        src="/photos/architecture/twilight-over-manhattan.jpg"
-        alt="Twilight Over Manhattan skyline"
+      <Image
+        src={heroPhoto.data.image}
+        alt={heroPhoto.data.alt}
+        width={2400}
+        widths={[800, 1600, 2400]}
+        sizes="100vw"
+        loading="eager"
         fetchpriority="high"
         class="absolute inset-0 w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out"
       />
@@ -83,10 +81,10 @@ const typeLabels: Record<string, string> = {
       <div class="relative z-10 pt-4 border-t border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-white/75">
         <div class="flex items-center gap-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>Featured: Twilight Over Manhattan, NY</span>
+          <span>Featured: {heroPhoto.data.title}{heroPhoto.data.location && `, ${heroPhoto.data.location}`}</span>
         </div>
         <div class="flex items-center gap-4 text-white/60 text-[11px]">
-          <span>35+ WORKS</span>
+          <span>{allPhotos.length} WORKS</span>
           <span>&bull;</span>
           <span>LOCATION GUIDES</span>
           <span>&bull;</span>
@@ -122,28 +120,13 @@ const typeLabels: Record<string, string> = {
         <!-- Masonry Grid with natural aspect ratios -->
         <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 md:gap-4 stagger-children">
           {featuredPhotos.map((photo) => (
-            <div class="group relative overflow-hidden rounded-2xl bg-surface-overlay mb-3 md:mb-4 break-inside-avoid shadow-sm hover:shadow-xl transition-all duration-500">
-              <a href={`/photo/${photo.slug}`} class="block w-full">
-                <img
-                  src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
-                  alt={photo.data.alt}
-                  loading="lazy"
-                  class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                
-                <!-- Atmospheric hover overlay -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
-                  <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-white/70 mb-1">{photo.data.category}</span>
-                  <span class="text-white text-base font-display font-medium leading-snug">{photo.data.title}</span>
-                  {photo.data.location && (
-                    <span class="text-white/60 text-xs font-mono mt-1 flex items-center gap-1">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                      {photo.data.location}
-                    </span>
-                  )}
-                </div>
-              </a>
-            </div>
+            <PhotoCard
+              photo={photo}
+              rounded="rounded-2xl"
+              class="shadow-sm hover:shadow-xl transition-all duration-500"
+              showCategory
+              showLocation
+            />
           ))}
         </div>
       </div>
@@ -172,42 +155,8 @@ const typeLabels: Record<string, string> = {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {latestJournal.map((entry) => (
-            <article class="group bg-surface-card border border-subtle rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
-              <a href={`/journal/${entry.slug}`} class="block">
-                <div class="relative overflow-hidden aspect-[16/9]">
-                  <img
-                    src={entry.data.coverImage}
-                    alt={entry.data.coverAlt}
-                    loading="lazy"
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span class="absolute top-3 left-3 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.15em] bg-black/50 backdrop-blur-md text-white rounded-full border border-white/20">
-                    {typeLabels[entry.data.type] || entry.data.type}
-                  </span>
-                </div>
-
-                <div class="p-6 space-y-2.5">
-                  <div class="flex items-center gap-3 text-xs font-mono tracking-wider text-text-secondary uppercase">
-                    {entry.data.location && (
-                      <span class="flex items-center gap-1">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        {entry.data.location}
-                      </span>
-                    )}
-                    <span>{entry.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</span>
-                    {entry.data.readingTime && <span>&bull; {entry.data.readingTime} min read</span>}
-                  </div>
-                  <h3 class="text-xl font-display font-semibold text-text-primary group-hover:text-text-accent transition-colors duration-200">
-                    {entry.data.title}
-                  </h3>
-                  <p class="text-text-secondary text-body-sm font-body leading-relaxed line-clamp-2">
-                    {entry.data.excerpt}
-                  </p>
-                </div>
-              </a>
-            </article>
+          {latestJournal.map(({ entry, cover, minutes }) => (
+            <JournalCard entry={entry} cover={cover} minutes={minutes} variant="card" aspect="16/9" />
           ))}
         </div>
       </div>

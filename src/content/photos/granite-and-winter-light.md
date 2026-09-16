@@ -1,13 +1,12 @@
 ---
 title: "Granite and Winter Light"
 category: "nature"
-image: "/photos/nature/granite-and-winter-light.jpg"
+image: ../../assets/photos/nature/granite-and-winter-light.jpg
 alt: "A dramatic snow-covered granite mountain peak with scattered evergreen trees under a clear blue sky."
 date: 2023-04-23
 location: ""
 originalFilename: "20230423_164803.jpg"
 featured: false
-order: 32
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Super Telephoto Camera"

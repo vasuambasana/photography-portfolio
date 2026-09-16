@@ -1,13 +1,12 @@
 ---
 title: Starlit Sanctuary
 category: night
-image: /photos/night/starlit-sanctuary.jpg
+image: ../../assets/photos/night/starlit-sanctuary.jpg
 alt: A night photograph
 date: 2025-07-05T00:00:00.000Z
 location: ''
 originalFilename: 20250705_005134.jpg
 featured: false
-order: 27
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

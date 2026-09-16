@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import type { Photo } from '../../utils/photos';
+
+export interface Props {
+  photo: Photo;
+  /** Fixed aspect box (e.g. '4/3'). Omit to keep the photo's natural ratio for masonry. */
+  aspect?: string;
+  rounded?: string;
+  loading?: 'lazy' | 'eager';
+  widths?: number[];
+  sizes?: string;
+  showCategory?: boolean;
+  showLocation?: boolean;
+  class?: string;
+}
+
+const {
+  photo,
+  aspect,
+  rounded = 'rounded-card',
+  loading = 'lazy',
+  widths = [400, 800],
+  sizes = '(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 92vw',
+  showCategory = false,
+  showLocation = false,
+  class: className = '',
+} = Astro.props;
+
+const { title, alt, image, category, location } = photo.data;
+---
+
+<div
+  data-category={category}
+  class:list={[
+    'group relative overflow-hidden bg-surface-overlay mb-3 md:mb-4 break-inside-avoid',
+    rounded,
+    className,
+  ]}
+>
+  <a href={`/photo/${photo.slug}`} class="block w-full" data-photo-link>
+    <div class:list={[aspect ? 'relative w-full' : 'contents']} style={aspect ? `aspect-ratio:${aspect}` : undefined}>
+      <Image
+        src={image}
+        alt={alt}
+        width={widths[widths.length - 1]}
+        widths={widths}
+        sizes={sizes}
+        loading={loading}
+        class:list={[
+          'transition-transform duration-700 group-hover:scale-105',
+          aspect ? 'absolute inset-0 w-full h-full object-cover' : 'w-full h-auto',
+        ]}
+      />
+    </div>
+
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+      {showCategory && (
+        <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-white/70 mb-1">{category}</span>
+      )}
+      <span class="text-white text-sm md:text-base font-display font-medium leading-snug">{title}</span>
+      {showLocation && location && (
+        <span class="text-white/60 text-xs font-mono mt-1 flex items-center gap-1">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {location}
+        </span>
+      )}
+    </div>
+  </a>
+</div>

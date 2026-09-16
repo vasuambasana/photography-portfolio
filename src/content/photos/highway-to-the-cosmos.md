@@ -1,13 +1,12 @@
 ---
 title: Highway to the Cosmos
 category: night
-image: /photos/night/highway-to-the-cosmos.jpg
+image: ../../assets/photos/night/highway-to-the-cosmos.jpg
 alt: A night photograph
 date: 2023-04-22T00:00:00.000Z
 location: ''
 originalFilename: 20230422_002635 (1).jpg
 featured: false
-order: 14
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Wide Camera

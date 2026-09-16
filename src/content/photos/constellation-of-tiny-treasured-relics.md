@@ -1,13 +1,12 @@
 ---
 title: Constellation of Tiny Treasured Relics
 category: architecture
-image: /photos/architecture/constellation-of-tiny-treasured-relics.jpg
+image: ../../assets/photos/architecture/constellation-of-tiny-treasured-relics.jpg
 alt: A architecture photograph
 date: 2025-11-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4161 (1).jpg
 featured: false
-order: 29
 cameraSpecs:
   body: Unknown Body
   lens: Unknown Lens

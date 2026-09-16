@@ -1,13 +1,12 @@
 ---
 title: Moonlit Tapestry
 category: night
-image: /photos/night/moonlit-tapestry.jpg
+image: ../../assets/photos/night/moonlit-tapestry.jpg
 alt: A night photograph
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5030(1) (2).jpg
 featured: false
-order: 35
 cameraSpecs:
   body: Canon EOS R5m2
   focalLength: 200.0mm

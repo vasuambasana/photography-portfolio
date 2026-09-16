@@ -1,13 +1,12 @@
 ---
 title: Celestial Ascent
 category: night
-image: /photos/night/celestial-ascent.jpg
+image: ../../assets/photos/night/celestial-ascent.jpg
 alt: A night photograph
 date: 2025-07-04T00:00:00.000Z
 location: ''
 originalFilename: 20250704_023824.jpg
 featured: false
-order: 26
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

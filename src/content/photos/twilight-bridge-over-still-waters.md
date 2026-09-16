@@ -1,13 +1,12 @@
 ---
 title: Twilight Bridge Over Still Waters
 category: architecture
-image: /photos/architecture/twilight-bridge-over-still-waters.jpg
+image: ../../assets/photos/architecture/twilight-bridge-over-still-waters.jpg
 alt: A architecture photograph
 date: 2020-02-23T00:00:00.000Z
 location: ''
 originalFilename: IMG_20200223_173457.jpg
 featured: false
-order: 31
 cameraSpecs:
   body: OnePlus GM1917
   focalLength: 27mm (35mm eq)

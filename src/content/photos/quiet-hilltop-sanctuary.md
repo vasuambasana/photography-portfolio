@@ -1,13 +1,12 @@
 ---
 title: "Quiet Hilltop Sanctuary"
 category: "nature"
-image: "/photos/nature/quiet-hilltop-sanctuary.jpg"
+image: ../../assets/photos/nature/quiet-hilltop-sanctuary.jpg
 alt: "A wooden gazebo sits atop a grassy, sunlit hill against a deep blue sky with streaky white clouds."
 date: 2024-08-11
 location: ""
 originalFilename: "20240811_130454.jpg"
 featured: false
-order: 39
 cameraSpecs:
   body: "samsung Galaxy S24 Ultra"
   lens: "Samsung Galaxy S24 Ultra Rear Wide Camera"

@@ -1,13 +1,12 @@
 ---
 title: Portals to Twilight
 category: architecture
-image: /photos/architecture/portals-to-twilight.jpg
+image: ../../assets/photos/architecture/portals-to-twilight.jpg
 alt: A architecture photograph
 date: 2024-04-17T00:00:00.000Z
 location: ''
 originalFilename: 20240416_215442.jpg
 featured: false
-order: 17
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   focalLength: 23mm (35mm eq)

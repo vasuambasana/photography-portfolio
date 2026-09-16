@@ -1,13 +1,12 @@
 ---
 title: Silent Ascent
 category: architecture
-image: /photos/architecture/silent-ascent.jpg
+image: ../../assets/photos/architecture/silent-ascent.jpg
 alt: A architecture photograph
 date: 2023-09-22T00:00:00.000Z
 location: ''
 originalFilename: 20230922_170249.jpg
 featured: false
-order: 14
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

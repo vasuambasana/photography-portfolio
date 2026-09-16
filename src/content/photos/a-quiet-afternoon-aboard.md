@@ -1,13 +1,12 @@
 ---
 title: A Quiet Afternoon Aboard
 category: street
-image: /photos/street/a-quiet-afternoon-aboard.jpg
+image: ../../assets/photos/street/a-quiet-afternoon-aboard.jpg
 alt: A street photograph
 date: 2026-08-08T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8074.jpg
 featured: false
-order: 25
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

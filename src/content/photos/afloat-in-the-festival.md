@@ -1,13 +1,12 @@
 ---
 title: Afloat in the Festival
 category: street
-image: /photos/street/afloat-in-the-festival.jpg
+image: ../../assets/photos/street/afloat-in-the-festival.jpg
 alt: A street photograph
 date: 2026-07-31T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7017.jpg
 featured: false
-order: 21
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

@@ -1,13 +1,12 @@
 ---
 title: Neon Pulse of the Metropolis
 category: night
-image: /photos/night/neon-pulse-of-the-metropolis.jpg
+image: ../../assets/photos/night/neon-pulse-of-the-metropolis.jpg
 alt: A night photograph
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240830_232629.jpg
 featured: false
-order: 23
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Wide Camera

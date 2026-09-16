@@ -1,13 +1,12 @@
 ---
 title: Neon Devotion
 category: night
-image: /photos/night/neon-devotion.jpg
+image: ../../assets/photos/night/neon-devotion.jpg
 alt: A night photograph
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5000.jpg
 featured: false
-order: 34
 cameraSpecs:
   body: Canon EOS R5m2
   focalLength: 200.0mm

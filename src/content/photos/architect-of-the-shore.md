@@ -1,13 +1,12 @@
 ---
 title: Architect of the Shore
 category: people
-image: /photos/people/architect-of-the-shore.jpg
+image: ../../assets/photos/people/architect-of-the-shore.jpg
 alt: A people photograph
 date: 2026-08-11T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8458.jpg
 featured: false
-order: 23
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

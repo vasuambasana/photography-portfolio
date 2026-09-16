@@ -1,13 +1,12 @@
 ---
 title: "After the Rain"
 category: "nature"
-image: "/photos/nature/after-the-rain.jpg"
+image: ../../assets/photos/nature/after-the-rain.jpg
 alt: "Close-up of broad green hosta leaves covered in glistening raindrops after a shower."
 date: 2023-06-28
 location: ""
 originalFilename: "20230628_121311 (1).jpg"
 featured: false
-order: 35
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Lightbox from './Lightbox';
+import { ALL_FILTER, getActiveFilter } from '../../utils/filter';
 
 interface GalleryImage {
   src: string;
   alt: string;
-  caption?: string;
+  title?: string;
   slug?: string;
   category?: string;
 }
@@ -14,66 +15,47 @@ interface ClickableImageProps {
   alt: string;
   caption?: string;
   className?: string;
+  width?: number;
+  height?: number;
   galleryImages?: GalleryImage[];
   initialIndex?: number;
 }
 
-export default function ClickableImage({ 
-  src, 
-  alt, 
-  caption, 
+export default function ClickableImage({
+  src,
+  alt,
+  caption,
   className = '',
+  width,
+  height,
   galleryImages,
-  initialIndex = 0
+  initialIndex = 0,
 }: ClickableImageProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [images, setImages] = useState<GalleryImage[]>(galleryImages || [{ src, alt, caption }]);
-  const [idx, setIdx] = useState(initialIndex);
 
-  useEffect(() => {
-    if (!galleryImages) return;
-    
-    // Read filter from URL
-    const params = new URLSearchParams(window.location.search);
-    const filter = params.get('filter');
-    
-    let filtered = galleryImages;
-    if (filter && filter !== 'all') {
-      filtered = galleryImages.filter(img => img.category === filter);
-    } else if (!filter) {
-      // Default to the category of the current image if no filter is specified in URL
-      const currentSlugMatch = window.location.pathname.match(/\/photo\/([^\/]+)/);
-      if (currentSlugMatch) {
-        const slug = currentSlugMatch[1];
-        const currentCategory = galleryImages.find(img => img.slug === slug)?.category;
-        if (currentCategory) {
-          filtered = galleryImages.filter(img => img.category === currentCategory);
-        }
-      }
-    }
-    
-    // If filter results in empty list, fallback to all images
-    if (filtered.length === 0) filtered = galleryImages;
-    
-    setImages(filtered);
-    
-    // Find new initial index
-    // We assume the current page slug matches the one we want to start with
-    const currentSlugMatch = window.location.pathname.match(/\/photo\/([^\/]+)/);
-    if (currentSlugMatch) {
-      const slug = currentSlugMatch[1];
-      const newIdx = filtered.findIndex(img => img.slug === slug);
-      setIdx(newIdx >= 0 ? newIdx : 0);
-    } else {
-      setIdx(0);
-    }
-  }, [galleryImages]);
+  // The lightbox browses whatever set the gallery filter says the visitor is in,
+  // so it stays in step with the filmstrip and the prev/next links.
+  const { images, idx } = useMemo(() => {
+    const all = galleryImages ?? [{ src, alt, title: caption }];
+    const filter = typeof window === 'undefined' ? ALL_FILTER : getActiveFilter();
+
+    const scoped =
+      filter === ALL_FILTER ? all : all.filter((img) => img.category === filter);
+    const images = scoped.length > 0 ? scoped : all;
+
+    const current = all[initialIndex]?.slug;
+    const found = images.findIndex((img) => img.slug === current);
+
+    return { images, idx: found >= 0 ? found : 0 };
+  }, [galleryImages, src, alt, caption, initialIndex]);
 
   return (
     <>
       <img
         src={src}
         alt={alt}
+        width={width}
+        height={height}
         className={`cursor-zoom-in hover:opacity-90 transition-opacity ${className}`}
         onClick={() => setIsOpen(true)}
       />

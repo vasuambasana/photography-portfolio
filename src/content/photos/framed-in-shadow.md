@@ -1,13 +1,12 @@
 ---
 title: Framed in Shadow
 category: night
-image: /photos/night/framed-in-shadow.jpg
+image: ../../assets/photos/night/framed-in-shadow.jpg
 alt: A night photograph
 date: 2023-05-22T00:00:00.000Z
 location: ''
 originalFilename: 20230521_204302 (1).jpg
 featured: false
-order: 16
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Super Telephoto Camera

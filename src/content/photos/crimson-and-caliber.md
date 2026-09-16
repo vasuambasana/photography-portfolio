@@ -1,13 +1,12 @@
 ---
 title: Crimson and Caliber
 category: nature
-image: /photos/nature/crimson-and-caliber.jpg
+image: ../../assets/photos/nature/crimson-and-caliber.jpg
 alt: A nature photograph
 date: 2024-07-01T00:00:00.000Z
 location: ''
 originalFilename: 20240701_181815 (1).jpg
 featured: false
-order: 37
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Super Telephoto Camera

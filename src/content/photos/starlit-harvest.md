@@ -1,13 +1,12 @@
 ---
 title: Starlit Harvest
 category: night
-image: /photos/night/starlit-harvest.jpg
+image: ../../assets/photos/night/starlit-harvest.jpg
 alt: A night photograph
 date: 2025-07-04T00:00:00.000Z
 location: ''
 originalFilename: 20250704_003347.jpg
 featured: false
-order: 25
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

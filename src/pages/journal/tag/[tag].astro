@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import JournalCard from '../../../components/journal/JournalCard.astro';
+import { getCollection } from 'astro:content';
+import { collectTags, decorate, sortJournal } from '../../../utils/journal';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('journal');
+
+  return [...collectTags(entries).entries()].map(([slug, { tag, entries: tagged }]) => ({
+    params: { tag: slug },
+    props: { tag, entries: sortJournal(tagged) },
+  }));
+}
+
+const { tag, entries } = Astro.props;
+const decorated = await decorate(entries);
+---
+
+<BaseLayout
+  title={`${tag} — Journal`}
+  description={`Journal entries tagged ${tag} — field notes and location guides by Vasu Ambasana.`}
+>
+  <section class="section-container pt-4 pb-16">
+    <header class="mb-8 md:mb-10 max-w-2xl">
+      <a href="/journal" class="text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors no-underline">
+        &larr; All Journal
+      </a>
+      <div class="flex items-center gap-3 mt-3 mb-2">
+        <h1 class="text-display-lg font-display text-text-primary">#{tag}</h1>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-overlay text-text-secondary border border-subtle">
+          {decorated.length} {decorated.length === 1 ? 'Story' : 'Stories'}
+        </span>
+      </div>
+    </header>
+
+    <div class="space-y-8 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8">
+      {decorated.map(({ entry, cover, minutes }, index) => (
+        <JournalCard
+          entry={entry}
+          cover={cover}
+          minutes={minutes}
+          loading={index < 3 ? 'eager' : 'lazy'}
+          showSubtitle
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

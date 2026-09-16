@@ -1,13 +1,12 @@
 ---
 title: Neon Current
 category: night
-image: /photos/night/neon-current.jpg
+image: ../../assets/photos/night/neon-current.jpg
 alt: A night photograph
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240830_232651.jpg
 featured: false
-order: 24
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Telephoto Camera

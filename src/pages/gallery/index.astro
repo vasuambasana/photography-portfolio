@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/portfolio/GalleryGrid.astro';
+import PhotoCard from '../../components/portfolio/PhotoCard.astro';
 import { getCollection } from 'astro:content';
+import { sortPhotos } from '../../utils/photos';
 
 const allPhotos = await getCollection('photos');
-const sortedPhotos = allPhotos.sort((a, b) => a.data.order - b.data.order);
+const sortedPhotos = sortPhotos(allPhotos);
 
-// Extract unique categories for filter
 const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
 ---
 
@@ -38,8 +39,8 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
             <li>
               <button
                 data-filter="all"
-                class="filter-btn active px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle transition-all duration-200 bg-text-primary text-surface-main shadow-sm"
-                aria-pressed="true"
+                class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle transition-all duration-200 text-text-secondary hover:text-text-primary hover:bg-surface-overlay"
+                aria-pressed="false"
               >
                 All
               </button>
@@ -62,75 +63,57 @@ const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
       <!-- Photos grid -->
       <GalleryGrid>
         {sortedPhotos.map((photo) => (
-          <div data-category={photo.data.category} class="group relative overflow-hidden rounded-card bg-surface-overlay mb-3 md:mb-4 break-inside-avoid">
-            <a href={`/photo/${photo.slug}`} class="block w-full">
-              <img
-                src={typeof photo.data.image === 'string' ? photo.data.image : photo.data.image.src}
-                alt={photo.data.alt}
-                loading="lazy"
-                class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                <span class="p-4 text-white text-sm font-body font-medium">{photo.data.title}</span>
-              </div>
-            </a>
-          </div>
+          <PhotoCard photo={photo} showCategory />
         ))}
       </GalleryGrid>
+
+      <p id="gallery-empty" class="hidden text-center py-16 text-text-secondary text-body-md">
+        No photographs in this category yet.
+      </p>
     </div>
   </section>
 
   <script>
-    function initFilters() {
-      const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-      const items = document.querySelectorAll<HTMLElement>('[data-category]');
+    import { ALL_FILTER, getActiveFilter, matchesFilter, withFilter } from '../../utils/filter';
 
-      if (!buttons.length) return;
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const items = document.querySelectorAll<HTMLElement>('[data-category]');
+    const empty = document.getElementById('gallery-empty');
 
-      buttons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const filter = btn.dataset.filter;
-
-          // Update active states
-          buttons.forEach((b) => {
-            const isActive = b === btn;
-            b.setAttribute('aria-pressed', String(isActive));
-            if (isActive) {
-              b.classList.add('bg-text-primary', 'text-surface-main');
-              b.classList.remove('text-text-secondary');
-            } else {
-              b.classList.remove('bg-text-primary', 'text-surface-main');
-              b.classList.add('text-text-secondary');
-            }
-          });
-
-          // Filter items
-          items.forEach((item) => {
-            const a = item.querySelector('a');
-            if (a) {
-              const url = new URL(a.href, window.location.origin);
-              url.searchParams.set('filter', filter);
-              a.href = url.toString();
-            }
-
-            if (filter === 'all' || item.dataset.category === filter) {
-              item.style.display = '';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        });
+    function apply(filter: string, pushUrl: boolean) {
+      buttons.forEach((b) => {
+        const isActive = b.dataset.filter === filter;
+        b.setAttribute('aria-pressed', String(isActive));
+        b.classList.toggle('bg-text-primary', isActive);
+        b.classList.toggle('text-surface-main', isActive);
+        b.classList.toggle('shadow-sm', isActive);
+        b.classList.toggle('text-text-secondary', !isActive);
       });
 
-      // Run once on load to set initial URLs if default filter is active
-      const activeBtn = document.querySelector('.filter-btn.active');
-      if (activeBtn) {
-        // @ts-ignore
-        activeBtn.click();
+      let visible = 0;
+      items.forEach((item) => {
+        const shown = matchesFilter(item.dataset.category, filter);
+        item.style.display = shown ? '' : 'none';
+        if (shown) visible++;
+
+        const link = item.querySelector<HTMLAnchorElement>('[data-photo-link]');
+        if (link) link.href = withFilter(link.pathname, filter);
+      });
+
+      empty?.classList.toggle('hidden', visible > 0);
+
+      if (pushUrl) {
+        const url = new URL(window.location.href);
+        if (filter === ALL_FILTER) url.searchParams.delete('filter');
+        else url.searchParams.set('filter', filter);
+        history.replaceState(null, '', url);
       }
     }
 
-    initFilters();
-    document.addEventListener('astro:after-swap', initFilters);
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => apply(btn.dataset.filter || ALL_FILTER, true));
+    });
+
+    apply(getActiveFilter(), false);
   </script>
 </BaseLayout>

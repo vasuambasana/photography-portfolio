@@ -1,13 +1,12 @@
 ---
 title: Captured in the Geometry
 category: street
-image: /photos/street/captured-in-the-geometry.jpg
+image: ../../assets/photos/street/captured-in-the-geometry.jpg
 alt: A street photograph
 date: 2026-08-08T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8041.jpg
 featured: false
-order: 23
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

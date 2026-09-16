@@ -1,13 +1,12 @@
 ---
 title: Harbor Rhythm
 category: architecture
-image: /photos/architecture/harbor-rhythm.jpg
+image: ../../assets/photos/architecture/harbor-rhythm.jpg
 alt: A architecture photograph
 date: 2024-08-11T00:00:00.000Z
 location: ''
 originalFilename: 20240811_150056 (4).jpg
 featured: false
-order: 18
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   lens: Samsung Galaxy S24 Ultra Rear Telephoto Camera

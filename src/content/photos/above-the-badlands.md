@@ -1,13 +1,12 @@
 ---
 title: "Above the Badlands"
 category: "nature"
-image: "/photos/nature/above-the-badlands.jpg"
+image: ../../assets/photos/nature/above-the-badlands.jpg
 alt: "A lone hiker stands atop a towering, multi-colored rock ridge against a clear blue sky."
 date: 2023-04-23
 location: ""
 originalFilename: "20230423_070030.jpg"
 featured: false
-order: 31
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Telephoto Camera"

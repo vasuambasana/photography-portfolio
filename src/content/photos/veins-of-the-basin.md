@@ -1,13 +1,12 @@
 ---
 title: "Veins of the Basin"
 category: "nature"
-image: "/photos/nature/veins-of-the-basin.jpg"
+image: ../../assets/photos/nature/veins-of-the-basin.jpg
 alt: "High-angle view from a dark, rugged mountain ridge looking down at a winding white salt stream on a vast desert floor."
 date: 2023-04-22
 location: ""
 originalFilename: "20230421_184410.jpg"
 featured: false
-order: 27
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Super Telephoto Camera"

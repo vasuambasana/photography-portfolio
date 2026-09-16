@@ -1,13 +1,12 @@
 ---
 title: Midnight Canopy
 category: night
-image: /photos/night/midnight-canopy.jpg
+image: ../../assets/photos/night/midnight-canopy.jpg
 alt: A night photograph
 date: 2024-02-18T00:00:00.000Z
 location: ''
 originalFilename: 20240218_031711.jpg
 featured: false
-order: 18
 cameraSpecs:
   body: samsung Galaxy S24 Ultra
   focalLength: 23mm (35mm eq)

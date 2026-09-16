@@ -1,13 +1,12 @@
 ---
 title: A Family Outing Against Blue Ridges
 category: people
-image: /photos/people/a-family-outing-against-blue-ridges.jpg
+image: ../../assets/photos/people/a-family-outing-against-blue-ridges.jpg
 alt: A people photograph
 date: 2025-11-29T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4545 (1).jpg
 featured: false
-order: 7
 cameraSpecs:
   body: Unknown Body
   lens: Unknown Lens

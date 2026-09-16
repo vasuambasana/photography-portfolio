@@ -3,12 +3,10 @@ title: "Waiting for the Blue Hour Over Manhattan"
 subtitle: "There's a twelve-minute window where the city stops looking like concrete and starts glowing from the inside."
 type: behind-the-lens
 date: 2024-09-01T19:39:00.000Z
-coverImage: /photos/architecture/twilight-over-manhattan.jpg
-coverAlt: "Manhattan skyline at dusk glowing with orange horizon and illuminated skyscrapers"
+coverImage: twilight-over-manhattan
 location: "New York City"
 tags: [manhattan, architecture, blue-hour, skyline, new-york]
 excerpt: "Shooting New York from an elevated perch teaches you one lesson very quickly: golden hour is fool's gold. The real photograph happens fifteen minutes after everyone else puts their cameras away."
-readingTime: 4
 featured: true
 relatedPhotos: [twilight-over-manhattan, twilight-over-the-back-bay, neon-horizon-over-manhattan, beacon-of-the-skyline]
 ---

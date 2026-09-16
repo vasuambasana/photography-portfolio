@@ -1,13 +1,12 @@
 ---
 title: Amber Reflections on Concrete
 category: architecture
-image: /photos/architecture/amber-reflections-on-concrete.jpg
+image: ../../assets/photos/architecture/amber-reflections-on-concrete.jpg
 alt: A architecture photograph
 date: 2021-11-03T00:00:00.000Z
 location: ''
 originalFilename: IMG_20211103_172040.jpg
 featured: false
-order: 32
 cameraSpecs:
   body: OnePlus GM1917
   focalLength: 74mm (35mm eq)

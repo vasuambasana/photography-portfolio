@@ -1,13 +1,12 @@
 ---
 title: "Clear Light Over Yosemite"
 category: "nature"
-image: "/photos/nature/clear-light-over-yosemite.jpg"
+image: ../../assets/photos/nature/clear-light-over-yosemite.jpg
 alt: "A wide view of Yosemite Valley showcasing the granite face of El Capitan, Bridalveil Fall, and distant snow-dusted peaks under a clear blue sky."
 date: 2023-04-16
 location: ""
 originalFilename: "20230415_152917 (2).jpg"
 featured: false
-order: 24
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Wide Camera"

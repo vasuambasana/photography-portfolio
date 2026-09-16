@@ -1,13 +1,12 @@
 ---
 title: "Winter on the Headland"
 category: "nature"
-image: "/photos/nature/winter-on-the-headland.jpg"
+image: ../../assets/photos/nature/winter-on-the-headland.jpg
 alt: "Golden sunset light illuminates a rugged, icy rocky shoreline where evergreen trees and a lighthouse stand above the sea."
 date: 2024-02-18
 location: ""
 originalFilename: "20240218_165223.jpg"
 featured: false
-order: 36
 cameraSpecs:
   body: "samsung Galaxy S24 Ultra"
   focalLength: "23mm (35mm eq)"

@@ -1,7 +1,7 @@
 ---
 title: Crimson Spray
 category: nature
-image: /photos/nature/crimson-spray.jpg
+image: ../../assets/photos/nature/crimson-spray.jpg
 alt: >-
   A vibrant orange flamingo shakes its ruffled feathers in dark water, sending a
   spray of fine droplets into the air.
@@ -9,7 +9,6 @@ date: 2026-02-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5260.jpg
 featured: false
-order: 19
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

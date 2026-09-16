@@ -1,13 +1,12 @@
 ---
 title: Spring's Velvet Tapestry
 category: nature
-image: /photos/nature/spring-s-velvet-tapestry.jpg
+image: ../../assets/photos/nature/spring-s-velvet-tapestry.jpg
 alt: A nature photograph
 date: 2026-04-24T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6505.jpg
 featured: false
-order: 40
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

@@ -1,13 +1,12 @@
 ---
 title: Cosmic Gateway
 category: night
-image: /photos/night/cosmic-gateway.jpg
+image: ../../assets/photos/night/cosmic-gateway.jpg
 alt: A night photograph
 date: 2026-04-04T00:00:00.000Z
 location: ''
 originalFilename: 20260403_220637.jpg
 featured: false
-order: 32
 cameraSpecs:
   body: samsung Galaxy Z Fold7
   lens: Samsung Galaxy Z Fold7 Rear Wide Camera

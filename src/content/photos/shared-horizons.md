@@ -1,13 +1,12 @@
 ---
 title: Shared Horizons
 category: people
-image: /photos/people/shared-horizons.jpg
+image: ../../assets/photos/people/shared-horizons.jpg
 alt: A people photograph
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8023.CR3
 featured: false
-order: 22
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

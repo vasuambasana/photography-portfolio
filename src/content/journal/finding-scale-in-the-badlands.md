@@ -3,12 +3,10 @@ title: "Finding Scale in the Badlands"
 subtitle: "Desert canyons are notorious liars on camera until a human walks into the frame."
 type: field-notes
 date: 2023-04-23T07:00:00.000Z
-coverImage: /photos/nature/above-the-badlands.jpg
-coverAlt: "A lone hiker stands atop a towering multi-colored desert ridge under a clear morning sky"
+coverImage: above-the-badlands
 location: "Southwest Badlands"
 tags: [desert, scale, badlands, landscape, southwest]
 excerpt: "Desert canyons are notorious liars through a camera lens. Without something human for your eyes to latch onto, a six-hundred-foot cliff looks like a mound of dirt in someone's backyard."
-readingTime: 4
 featured: true
 relatedPhotos: [above-the-badlands, vastness-of-the-canyon, above-the-salt-basin, peaks-of-wonder]
 ---

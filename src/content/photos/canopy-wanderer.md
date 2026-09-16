@@ -1,7 +1,7 @@
 ---
 title: Canopy Wanderer
 category: nature
-image: /photos/nature/canopy-wanderer.jpg
+image: ../../assets/photos/nature/canopy-wanderer.jpg
 alt: >-
   A red panda walks carefully along a thick tree branch against a soft blue
   background.
@@ -9,7 +9,6 @@ date: 2026-02-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5198.jpg
 featured: false
-order: 16
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

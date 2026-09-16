@@ -1,13 +1,12 @@
 ---
 title: Brushstrokes of Summer
 category: people
-image: /photos/people/brushstrokes-of-summer.jpg
+image: ../../assets/photos/people/brushstrokes-of-summer.jpg
 alt: A people photograph
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6807.CR3
 featured: false
-order: 14
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

@@ -1,13 +1,12 @@
 ---
 title: Sunflowers in the Summer Shade
 category: people
-image: /photos/people/sunflowers-in-the-summer-shade.jpg
+image: ../../assets/photos/people/sunflowers-in-the-summer-shade.jpg
 alt: A people photograph
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6735.CR3
 featured: false
-order: 12
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

@@ -1,13 +1,12 @@
 ---
 title: "Golden Hour Shoreline"
 category: "people"
-image: "/photos/people/golden-hour-shoreline.jpg"
+image: ../../assets/photos/people/golden-hour-shoreline.jpg
 alt: "High-angle view of a sandy beach at sunset, with scattered people and dogs walking near the breaking waves."
 date: 2022-09-18
 location: ""
 originalFilename: "20220918_183803.jpg"
 featured: false
-order: 2
 cameraSpecs:
   body: "samsung SM-N976U"
   focalLength: "52mm (35mm eq)"

@@ -1,13 +1,12 @@
 ---
 title: "In Parallel Motion"
 category: "nature"
-image: "/photos/nature/in-parallel-motion.jpg"
+image: ../../assets/photos/nature/in-parallel-motion.jpg
 alt: "A tall agave bloom stalk stands against a muted blue sky alongside a vertical line of pelicans in flight."
 date: 2023-05-02
 location: ""
 originalFilename: "20230502_193004 (3).jpg"
 featured: false
-order: 33
 cameraSpecs:
   body: "samsung SM-S908U1"
   lens: "Samsung Galaxy S22 Ultra Rear Super Telephoto Camera"

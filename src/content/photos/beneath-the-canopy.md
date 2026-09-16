@@ -1,13 +1,12 @@
 ---
 title: Beneath the Canopy
 category: street
-image: /photos/street/beneath-the-canopy.jpg
+image: ../../assets/photos/street/beneath-the-canopy.jpg
 alt: A street photograph
 date: 2026-08-09T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8136.jpg
 featured: true
-order: 5
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

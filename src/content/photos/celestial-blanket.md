@@ -1,13 +1,12 @@
 ---
 title: Celestial Blanket
 category: architecture
-image: /photos/architecture/celestial-blanket.jpg
+image: ../../assets/photos/architecture/celestial-blanket.jpg
 alt: A architecture photograph
 date: 2023-11-13T00:00:00.000Z
 location: ''
 originalFilename: 20231113_132202.jpg
 featured: false
-order: 15
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Telephoto Camera

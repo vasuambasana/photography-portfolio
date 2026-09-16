@@ -1,7 +1,7 @@
 ---
 title: Unwavering Gaze
 category: nature
-image: /photos/nature/unwavering-gaze.jpg
+image: ../../assets/photos/nature/unwavering-gaze.jpg
 alt: >-
   A mountain lion sits upright on a wooden platform, staring directly into the
   camera with a blurred forest background.
@@ -9,7 +9,6 @@ date: 2026-02-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5210.jpg
 featured: false
-order: 17
 cameraSpecs:
   body: Canon EOS R5m2
   lens: RF70-200mm F2.8 L IS USM

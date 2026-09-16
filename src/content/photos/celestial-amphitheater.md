@@ -1,13 +1,12 @@
 ---
 title: Celestial Amphitheater
 category: night
-image: /photos/night/celestial-amphitheater.jpg
+image: ../../assets/photos/night/celestial-amphitheater.jpg
 alt: A night photograph
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_000827 (1).jpg
 featured: false
-order: 28
 cameraSpecs:
   body: samsung Galaxy Z Fold6
   lens: Samsung Galaxy Z Fold6 Rear Wide Camera

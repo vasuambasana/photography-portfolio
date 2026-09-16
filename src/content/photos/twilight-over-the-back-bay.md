@@ -1,13 +1,12 @@
 ---
 title: Twilight Over the Back Bay
 category: architecture
-image: /photos/architecture/twilight-over-the-back-bay.jpg
+image: ../../assets/photos/architecture/twilight-over-the-back-bay.jpg
 alt: A architecture photograph
 date: 2024-01-01T00:00:00.000Z
 location: ''
 originalFilename: 20240101_162637.jpg
 featured: false
-order: 16
 cameraSpecs:
   body: samsung SM-S908U1
   lens: Samsung Galaxy S22 Ultra Rear Wide Camera

@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { JOURNAL_TYPE_LABELS } from '../../content/config';
+import { tagSlug } from '../../utils/journal';
+import type { Photo } from '../../utils/photos';
+
+export interface Props {
+  entry: CollectionEntry<'journal'>;
+  cover: Photo;
+  minutes: number;
+  aspect?: string;
+  /** 'card' draws a bordered surface (home page); 'bare' is the journal index treatment. */
+  variant?: 'card' | 'bare';
+  prominent?: boolean;
+  showSubtitle?: boolean;
+  showTags?: boolean;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const {
+  entry,
+  cover,
+  minutes,
+  aspect = '16/10',
+  variant = 'bare',
+  prominent = false,
+  showSubtitle = false,
+  showTags = false,
+  loading = 'lazy',
+  class: className = '',
+} = Astro.props;
+
+const { title, subtitle, type, date, location, tags, excerpt } = entry.data;
+const isCard = variant === 'card';
+---
+
+<article
+  class:list={[
+    'group relative',
+    isCard && 'bg-surface-card border border-subtle rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300',
+    className,
+  ]}
+>
+  <a href={`/journal/${entry.slug}`} class="block no-underline">
+    <div
+      class:list={['relative overflow-hidden', !isCard && 'rounded-xl mb-5']}
+      style={`aspect-ratio:${aspect}`}
+    >
+      <Image
+        src={cover.data.image}
+        alt={cover.data.alt}
+        width={1200}
+        widths={[600, 1200]}
+        sizes="(min-width: 768px) 50vw, 92vw"
+        loading={loading}
+        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+      <span class="absolute top-4 left-4 px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.15em] bg-black/50 backdrop-blur-md text-white rounded-full border border-white/20">
+        {JOURNAL_TYPE_LABELS[type]}
+      </span>
+    </div>
+
+    <div class:list={['space-y-2.5', isCard && 'p-6']}>
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono tracking-wider text-text-secondary uppercase">
+        {location && (
+          <span class="flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {location}
+          </span>
+        )}
+        <span>{date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+        <span>{minutes} min read</span>
+      </div>
+
+      <h3
+        class:list={[
+          'font-display font-semibold text-text-primary group-hover:text-text-accent transition-colors duration-200',
+          prominent ? 'text-2xl md:text-3xl' : 'text-xl',
+        ]}
+      >
+        {title}
+      </h3>
+
+      {showSubtitle && subtitle && (
+        <p class="text-text-secondary text-body-sm italic font-display">{subtitle}</p>
+      )}
+
+      <p class:list={['text-text-secondary text-body-md leading-relaxed', prominent ? 'line-clamp-3' : 'line-clamp-2']}>
+        {excerpt}
+      </p>
+    </div>
+  </a>
+
+  {showTags && tags.length > 0 && (
+    <div class:list={['flex flex-wrap gap-2 pt-1', isCard && 'px-6 pb-6']}>
+      {tags.slice(0, 4).map((tag) => (
+        <a
+          href={`/journal/tag/${tagSlug(tag)}`}
+          class="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-text-secondary/70 bg-surface-overlay rounded-md no-underline hover:text-text-primary hover:bg-surface-overlay/80 transition-colors"
+        >
+          {tag}
+        </a>
+      ))}
+    </div>
+  )}
+</article>
