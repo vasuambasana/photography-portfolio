@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run check)",
+      "Bash(npm run validate)",
+      "Bash(npm run dev)",
+      "Bash(npm run preview)",
+      "Bash(npm run lint)",
+      "Bash(npm run slugs:*)",
+      "Bash(npm run exif:*)",
+      "Bash(npm run backfill-ai:*)",
+      "Bash(npx astro check)",
+      "Bash(npx astro build)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/no-fat-images.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/typecheck-changed.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

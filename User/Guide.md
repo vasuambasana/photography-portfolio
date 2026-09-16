@@ -1,3 +1,12 @@
+> **Historical document.** This was the onboarding checklist written when the site was first
+> scaffolded, and most of it is now done. It describes a dark editorial theme (the site is
+> light by default) and files that have since been renamed or removed.
+>
+> Current documentation: [`README.md`](../README.md), [`CLAUDE.md`](../CLAUDE.md),
+> [`docs/`](../docs/).
+
+---
+
 # Photography Portfolio: User Guide & To-Do
 
 Welcome to your new Astro-powered photography portfolio! The site has been fully scaffolded with a high-performance architecture and a dark editorial theme. 

@@ -14,11 +14,12 @@ export function getActiveFilter(search: string = window.location.search): string
   return new URLSearchParams(search).get('filter') || ALL_FILTER;
 }
 
-/** Returns `href` with the filter query param applied. */
+/** Returns `href` with the filter query param applied. Relative paths only. */
 export function withFilter(href: string, filter: string): string {
-  const url = new URL(href, window.location.origin);
-  url.searchParams.set('filter', filter);
-  return url.pathname + url.search;
+  const [path, query = ''] = href.split('?');
+  const params = new URLSearchParams(query);
+  params.set('filter', filter);
+  return `${path}?${params}`;
 }
 
 export function matchesFilter(category: string | undefined, filter: string): boolean {

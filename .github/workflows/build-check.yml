@@ -24,6 +24,9 @@ jobs:
       - name: Validate content
         run: npm run validate
 
+      - name: Test
+        run: npm run test
+
       - name: Type check
         run: npm run check
 
