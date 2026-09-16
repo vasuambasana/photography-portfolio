@@ -1,36 +1,54 @@
 # Photography Portfolio
 
-A high-performance, accessible, and gallery-grade photography portfolio built with [Astro](https://astro.build).
+Personal photography portfolio for Vasu Ambasana — a static, image-led showcase built with
+[Astro](https://astro.build) and deployed to Cloudflare Pages at
+[vasuambasana.com](https://vasuambasana.com).
 
-## Features
-- **Astro SSG:** Fast, static HTML delivery.
-- **Dark Editorial Theme:** Custom design tokens built on Tailwind CSS.
-- **Accessible Lightbox:** React-powered island with focus traps and keyboard support.
-- **Content Collections:** Type-safe markdown-based project management.
-- **Performance First:** Strict JS budgets, responsive images, no heavy client-side routers.
+127 photographs, a journal, and no CMS: everything is markdown in the repo.
+
+## Stack
+
+- **Astro 4** (SSG, `output: 'static'`) with Tailwind for styling
+- **React** for exactly one island — the lightbox
+- **Partytown** to keep analytics off the main thread
+- **Astro image pipeline** for responsive WebP with intrinsic dimensions
+- TypeScript, strict
 
 ## Setup
 
-1. Make sure Node.js (v20+) is installed.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy the environment variables template and fill in your details:
-   ```bash
-   cp .env.example .env
-   ```
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm install
+cp .env.example .env    # only needed for the photo-ingest scripts
+npm run dev
+```
 
-## Development Commands
+## Commands
 
-- `npm run dev`: Starts the local dev server.
-- `npm run build`: Builds the static site to the `dist/` directory.
-- `npm run preview`: Previews the built site locally.
-- `npm run check`: Runs Astro type checking.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Local dev server |
+| `npm run build` | Static build into `dist/` (~6 min — it generates ~500 image variants) |
+| `npm run preview` | Serve the built site |
+| `npm run check` | Astro / TypeScript type check |
+| `npm run validate` | Content integrity checks |
+| `npm run add-photo` | Ingest new photos from `PHOTO_SOURCE_DIR` |
+| `npm run backfill-ai` | Regenerate placeholder alt text / descriptions |
+| `npm run exif audit` \| `fix` | Report / backfill camera metadata |
+| `npm run slugs check` \| `fix` | Report / repair slugs that drifted from titles |
+| `npm run optimize` | Shrink oversized source JPEGs |
 
-## Architecture & Documentation
-For a complete overview of the architecture, design tokens, and deployment runbook, refer to the documentation in the `docs/` folder (to be added in future phases).
+Run `validate`, `check` and `build` before pushing. CI runs all three.
+
+## Branches
+
+`main` is live. `dev` is where changes get validated first — **don't merge `dev` into
+`main` without the owner's go-ahead.**
+
+## Documentation
+
+- [Content model](docs/content-model.md) — the two collections, their fields, and why
+  `order` is a pin rather than a sort key
+- [Image workflow](docs/image-workflow.md) — from RAW on disk to responsive `<picture>`
+- [Deployment runbook](docs/deployment-runbook.md) — Cloudflare setup, build budget, rollback
+
+[`CLAUDE.md`](CLAUDE.md) holds the conventions that are easy to rediscover the hard way.

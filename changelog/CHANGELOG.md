@@ -4,6 +4,77 @@ This log tracks all architectural, specification, and prompt changes made throug
 
 ---
 
+## [0.5.0] - 2026-09-15
+
+Workflow and maintainability pass on `dev`, alongside the Journal section.
+
+### Added
+- **`npm run validate`** — content integrity checks Zod can't express: unresolvable images,
+  orphaned files, placeholder alt text, duplicate titles, `order` collisions, dangling
+  journal references.
+- **CI** (`.github/workflows/build-check.yml`) — validate + type check + build on PRs to
+  `main`/`dev`. The first automated gate this repo has had.
+- **`CLAUDE.md`** and `docs/` (content model, image workflow, deployment runbook). The README
+  had pointed at a `docs/` folder that never existed.
+- **Journal tag pages** (`/journal/tag/<tag>`) and an **RSS feed** (`/journal/rss.xml`).
+  Tags had been rendering as inert pills.
+- `npm run backfill-ai` — regenerates placeholder alt text and descriptions from the
+  web-sized JPEG, so it no longer depends on the Drive originals.
+
+### Changed
+- **Photos moved from `public/photos/` to `src/assets/photos/`**, so Astro processes them at
+  build time: responsive WebP `srcset` and intrinsic `width`/`height` on every image. Fixes
+  masonry reflow and the missed LCP budget.
+- **`order` is now an optional pin, not a sort key.** Canonical ordering is newest-first by
+  `date`. The `order` field was stripped from all 127 photos.
+- **Journal references are typed.** `coverImage` and `relatedPhotos` use `reference('photos')`,
+  so a bad slug fails the build instead of silently vanishing.
+- **Reading time and cover alt text are derived**, not stored. `readingTime` and `coverAlt`
+  fields removed.
+- Filter state consolidated into `src/utils/filter.ts`; sorting into `src/utils/photos.ts`.
+  Shared `PhotoCard` and `JournalCard` components replace four and two copies respectively.
+- Scripts consolidated: `exif.mjs <audit|fix>`, `slugs.mjs <check|fix>`. Machine-specific
+  paths moved to `PHOTO_SOURCE_DIR` in `.env`; Gemini model pinned via `.env` instead of an
+  eight-model probe loop.
+- JSON-LD now carries a real author and emits `BlogPosting` for journal entries,
+  `Photograph` for photos.
+- `profile-photo.jpg` reduced from 7.2 MB to 0.21 MB.
+
+### Removed
+- The `projects` collection, `/portfolio/[slug]` pages, `ProjectCard`/`ProjectHeader`/
+  `ProjectLayout` — placeholder content building pages nothing linked to. The
+  `/portfolio` → `/gallery` redirect stays.
+- Dead code: `utils/seo.ts`, `utils/images.ts`, `EXIFBadge`, `ImageWithRatio` (zero usages).
+- `npm.cmd` / `npx.cmd` root wrappers (see 0.4.0 — these were a local PATH workaround that
+  had no business being committed).
+- Three EXIF library spikes (`test-exif`, `test-exifreader`, `test-exiftool`); the decision
+  they existed to make is baked into `add-photo.mjs`.
+
+### Lessons Learned & Mistakes Avoided
+- **A default on every row makes a sort key meaningless.** `order` was assigned per-category
+  but sorted globally, so the "All" view interleaved categories by a number with no
+  cross-category meaning — and two photos silently shared `order: 4`. *Lesson:* if a field
+  is set on every record, it can't also be the exception mechanism. Make the pin optional and
+  let a real attribute (`date`) carry the ordering.
+- **`public/` opts an image out of every optimization the framework offers.** 129 MB of
+  full-size JPEGs were served with no `srcset` and no intrinsic dimensions, which is also
+  what made the masonry grid reflow while loading. *Lesson:* in Astro, `src/assets` is the
+  default and `public/` is the exception, not the other way round.
+- **Astro's `<Image widths={...}>` still emits a full-resolution fallback `src` unless you
+  also pass `width`.** The first build produced a 211 MB `dist/` with 3.7 MB "thumbnails".
+  *Lesson:* check the generated markup, not just that the build exited 0.
+- **Untyped cross-collection references fail silently.** `relatedPhotos` resolved with
+  `.map(find).filter(Boolean)`, so a typo'd slug just disappeared from the page.
+  *Lesson:* `reference()` converts a silent content bug into a build error.
+- **Duplicated client state diverges on defaults, not on logic.** Four implementations of
+  "read `?filter=`" disagreed about what to do when the param was absent, which cost three
+  separate bug-fix commits. *Lesson:* extract the *default*, not just the getter.
+- **Ingest fallbacks are invisible without a check for them.** 92 of 127 photos were sitting
+  on `alt: "A people photograph"` — the AI fallback text — with nothing surfacing it.
+  *Lesson:* when a pipeline degrades gracefully, something must report how often it degraded.
+
+---
+
 ## [0.4.0] - 2026-08-04
 
 ### Added / Completed

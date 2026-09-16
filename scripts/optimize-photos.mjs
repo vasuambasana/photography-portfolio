@@ -1,64 +1,74 @@
 #!/usr/bin/env node
 
+/**
+ * optimize-photos.mjs — shrink oversized source JPEGs in src/assets/photos.
+ *
+ *   node scripts/optimize-photos.mjs             # optimize anything over 2 MB
+ *   node scripts/optimize-photos.mjs --dry-run
+ *   node scripts/optimize-photos.mjs --threshold 1.5
+ *
+ * Astro already generates responsive variants at build time, so this is only about
+ * keeping the committed originals sane — every run rewrites files in place and adds
+ * another copy to git history, so don't run it habitually.
+ */
+
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
-import { fileURLToPath } from 'node:url';
+import { PHOTOS_DIR, VALID_CATEGORIES } from './lib/config.mjs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ROOT = path.resolve(__dirname, '..');
+const args = process.argv.slice(2);
+const dryRun = args.includes('--dry-run');
+const thresholdArg = args.indexOf('--threshold');
+const thresholdMB = thresholdArg !== -1 ? Number(args[thresholdArg + 1]) : 2;
+const THRESHOLD = thresholdMB * 1024 * 1024;
 
-const photosBaseDir = path.join(ROOT, 'public', 'photos');
-const driveBaseDir = `G:\\My Drive\\photography-portfolio`;
+const MAX_WIDTH = 2560;
+const mb = (bytes) => (bytes / 1024 / 1024).toFixed(2);
 
-const CATEGORIES = ['nature', 'architecture', 'street', 'people', 'night'];
+let optimized = 0;
+let savedBytes = 0;
 
-async function optimizeCategory(category) {
-  const categoryDir = path.join(photosBaseDir, category);
-  if (!fs.existsSync(categoryDir)) {
-    console.log(`\n⏭️  Skipping ${category} — no folder found`);
-    return;
-  }
+for (const category of VALID_CATEGORIES) {
+  const categoryDir = path.join(PHOTOS_DIR, category);
+  if (!fs.existsSync(categoryDir)) continue;
 
-  const files = fs.readdirSync(categoryDir).filter(f => /\.(jpg|jpeg)$/i.test(f));
-  console.log(`\n📁 ${category.toUpperCase()}: Found ${files.length} JPEG(s)`);
+  const files = fs.readdirSync(categoryDir).filter((f) => /\.(jpg|jpeg)$/i.test(f));
+  const oversized = files.filter((f) => fs.statSync(path.join(categoryDir, f)).size > THRESHOLD);
 
-  for (const file of files) {
+  console.log(`\n${category}: ${files.length} file(s), ${oversized.length} over ${thresholdMB} MB`);
+
+  for (const file of oversized) {
     const filePath = path.join(categoryDir, file);
-    const stats = fs.statSync(filePath);
+    const before = fs.statSync(filePath).size;
 
-    if (stats.size > 2 * 1024 * 1024) {
-      console.log(`  Optimizing ${file} (${(stats.size / 1024 / 1024).toFixed(1)} MB)...`);
-      const tempPath = filePath + '.tmp';
+    if (dryRun) {
+      console.log(`  would optimize ${file} (${mb(before)} MB)`);
+      continue;
+    }
 
-      try {
-        await sharp(filePath)
-          .resize({ width: 2560, withoutEnlargement: true })
-          .jpeg({ quality: 85, mozjpeg: true })
-          .toFile(tempPath);
+    const tempPath = `${filePath}.tmp`;
+    try {
+      await sharp(filePath)
+        .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+        .jpeg({ quality: 85, mozjpeg: true })
+        .toFile(tempPath);
 
-        fs.renameSync(tempPath, filePath);
-        const newStats = fs.statSync(filePath);
-        console.log(`    ✅ ${(stats.size / 1024 / 1024).toFixed(1)} MB → ${(newStats.size / 1024 / 1024).toFixed(2)} MB`);
-      } catch (err) {
-        console.error(`    ❌ Failed: ${err.message}`);
-        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
-      }
-    } else {
-      console.log(`  Skipping ${file} (${(stats.size / 1024 / 1024).toFixed(2)} MB — already small)`);
+      fs.renameSync(tempPath, filePath);
+      const after = fs.statSync(filePath).size;
+
+      console.log(`  ${file}: ${mb(before)} MB -> ${mb(after)} MB`);
+      optimized++;
+      savedBytes += before - after;
+    } catch (err) {
+      console.error(`  failed ${file}: ${err.message}`);
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
     }
   }
 }
 
-async function main() {
-  console.log('🚀 Photo Optimizer — Processing all categories\n');
-
-  for (const category of CATEGORIES) {
-    await optimizeCategory(category);
-  }
-
-  console.log('\n\n🎉 All categories optimized!');
-}
-
-main();
+console.log(
+  dryRun
+    ? '\nDry run — nothing written.'
+    : `\nOptimized ${optimized} file(s), saved ${mb(savedBytes)} MB.`
+);

@@ -11,7 +11,7 @@
  *   node scripts/add-photo.mjs "C:\Photos\architecture\" --category architecture
  *
  * What it does:
- *   1. Copies the image to public/photos/<category>/
+ *   1. Copies the image to src/assets/photos/<category>/
  *   2. Reads EXIF data (camera, lens, focal length, aperture, shutter, ISO)
  *   3. Calls Gemini API to generate a title, alt text, and artistic description
  *   4. Creates a markdown file in src/content/photos/
@@ -19,27 +19,17 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import {
+  CONTENT_DIR,
+  GEMINI_MODELS,
+  PHOTOS_DIR,
+  SOURCE_DIR,
+  VALID_CATEGORIES,
+  frontmatterImagePath,
+} from './lib/config.mjs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ROOT = path.resolve(__dirname, '..');
-
-// Load .env if present
-const envPath = path.join(ROOT, '.env');
 let quotaExceeded = false;
-if (fs.existsSync(envPath)) {
-  const envContent = fs.readFileSync(envPath, 'utf-8');
-  for (const line of envContent.split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const [key, ...val] = trimmed.split('=');
-    if (key && !process.env[key.trim()]) {
-      process.env[key.trim()] = val.join('=').trim().replace(/^["']|["']$/g, '');
-    }
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Parse CLI arguments
@@ -52,16 +42,16 @@ function getArg(name) {
   return null;
 }
 
-const inputPath = args.find(a => !a.startsWith('--'));
+const inputPath = args.find(a => !a.startsWith('--')) || SOURCE_DIR;
 const category = getArg('category');
 const skipAI = args.includes('--skip-ai');
 const featured = args.includes('--featured');
 
-const VALID_CATEGORIES = ['architecture', 'nature', 'street', 'night', 'people', 'portrait', 'travel', 'abstract'];
-
 if (!inputPath) {
   console.error(`
-  Usage: node scripts/add-photo.mjs <path-to-image-or-folder> [--category <category>]
+  Usage: node scripts/add-photo.mjs [path-to-image-or-folder] [--category <category>]
+
+  With no path, uses PHOTO_SOURCE_DIR from .env (see .env.example).
 
   Options:
     --category    Optional if path is a category folder or parent folder with category subfolders.
@@ -70,14 +60,14 @@ if (!inputPath) {
     --featured    Mark the photo as featured on the homepage
 
   Examples:
-    # Process entire Google Drive photography-portfolio folder (auto-detects categories from subfolders):
-    node scripts/add-photo.mjs "G:\\My Drive\\photography-portfolio"
+    # Process everything under PHOTO_SOURCE_DIR (auto-detects categories from subfolders):
+    node scripts/add-photo.mjs
 
-    # Process specific category subfolder:
-    node scripts/add-photo.mjs "G:\\My Drive\\photography-portfolio\\architecture" --category architecture
+    # Process a specific category subfolder:
+    node scripts/add-photo.mjs "D:\\photos\\architecture" --category architecture
 
-    # Process single image:
-    node scripts/add-photo.mjs "C:\\Photos\\my-shot.jpg" --category people
+    # Process a single image:
+    node scripts/add-photo.mjs "D:\\photos\\my-shot.jpg" --category people
   `);
   process.exit(1);
 }
@@ -182,11 +172,8 @@ async function collectImages(inputPath) {
       seenExifSigs.set(exifSig, { path: filePath, isRaw: RAW_EXTENSIONS.includes(ext) });
     }
 
-    // 3. Exact stem RAW+JPG pair check (e.g. IMG_0001.CR3 vs IMG_0001.JPG)
-    const exactStem = baseName.toLowerCase();
-    const isCopyFilename = /[\s\-_]*(copy|edit|\(\d+\)|_\d+|\-\d+)$/i.test(baseName);
-
-    // If filename has a copy pattern like " (1)", but its EXIF signature was unique, keep it!
+    // A filename like "shot (1).jpg" still gets kept when its EXIF signature was unique —
+    // a copy-pattern name alone isn't evidence of a duplicate frame.
     seenHashes.add(hash);
     resultFiles.push(filePath);
   }
@@ -425,19 +412,8 @@ Analyze this ${category} photograph and provide:
 Respond in this exact JSON format, no markdown:
 {"title": "...", "alt": "...", "description": "..."}`;
 
-    const modelsToTry = [
-      'gemini-3.5-flash-lite',
-      'gemini-3.1-flash-lite',
-      'gemini-3.6-flash',
-      'gemini-3.7-flash',
-      'gemini-3.5-flash',
-      'gemini-3-flash',
-      'gemini-2.5-flash-lite',
-      'gemini-2.5-flash'
-    ];
-
     let lastError;
-    for (const modelName of modelsToTry) {
+    for (const modelName of GEMINI_MODELS) {
         try {
             const model = genAI.getGenerativeModel({ model: modelName });
             const result = await model.generateContent([
@@ -478,36 +454,16 @@ function toSlug(str) {
 }
 
 // ---------------------------------------------------------------------------
-// Determine the next order number for a category
-// ---------------------------------------------------------------------------
-function getNextOrder(category) {
-  const photosDir = path.join(ROOT, 'src', 'content', 'photos');
-  if (!fs.existsSync(photosDir)) return 1;
-
-  let maxOrder = 0;
-  for (const file of fs.readdirSync(photosDir)) {
-    if (!file.endsWith('.md')) continue;
-    const content = fs.readFileSync(path.join(photosDir, file), 'utf-8');
-    const catMatch = content.match(/^category:\s*"?(\w+)"?/m);
-    const orderMatch = content.match(/^order:\s*(\d+)/m);
-    if (catMatch && catMatch[1] === category && orderMatch) {
-      maxOrder = Math.max(maxOrder, parseInt(orderMatch[1], 10));
-    }
-  }
-  return maxOrder + 1;
-}
-
-// ---------------------------------------------------------------------------
 // Process a single image
 // ---------------------------------------------------------------------------
-async function processImage(filePath, targetCategory, orderStart) {
+async function processImage(filePath, targetCategory) {
   const ext = path.extname(filePath).toLowerCase();
   const originalName = path.basename(filePath, ext);
   const isRaw = RAW_EXTENSIONS.includes(ext);
   const rawSlug = toSlug(originalName);
 
   // Check if photo is already imported (by raw slug match)
-  const existingMd = path.join(ROOT, 'src', 'content', 'photos', `${rawSlug}.md`);
+  const existingMd = path.join(CONTENT_DIR, `${rawSlug}.md`);
   if (fs.existsSync(existingMd)) {
     console.log(`\n⏭️  Skipping [already imported]: ${path.basename(filePath)}`);
     return rawSlug;
@@ -515,7 +471,7 @@ async function processImage(filePath, targetCategory, orderStart) {
 
   // Check if photo was already imported under a different slug (by originalFilename)
   const currentBasename = path.basename(filePath);
-  const photosDir = path.join(ROOT, 'src', 'content', 'photos');
+  const photosDir = CONTENT_DIR;
   if (fs.existsSync(photosDir)) {
     for (const mdFile of fs.readdirSync(photosDir).filter(f => f.endsWith('.md'))) {
       const content = fs.readFileSync(path.join(photosDir, mdFile), 'utf-8');
@@ -551,11 +507,11 @@ async function processImage(filePath, targetCategory, orderStart) {
   const alt = aiData?.alt || `A ${targetCategory} photograph`;
   const description = aiData?.description || `A ${targetCategory} photograph. Replace this placeholder with your own description.`;
 
-  // 3. Save web image to public/photos/<targetCategory>/
+  // 3. Save web image to src/assets/photos/<targetCategory>/
   const slug = toSlug(title);
   const outputExt = isRaw ? '.jpg' : ext;
   const destFileName = `${slug}${outputExt}`;
-  const destDir = path.join(ROOT, 'public', 'photos', targetCategory);
+  const destDir = path.join(PHOTOS_DIR, targetCategory);
   const destPath = path.join(destDir, destFileName);
 
   fs.mkdirSync(destDir, { recursive: true });
@@ -571,7 +527,7 @@ async function processImage(filePath, targetCategory, orderStart) {
         .resize({ width: 2560, withoutEnlargement: true })
         .jpeg({ quality: 85, mozjpeg: true })
         .toFile(destPath);
-      console.log(`   🖼️  Extracted & optimized RAW to JPEG: public/photos/${targetCategory}/${destFileName}`);
+      console.log(`   🖼️  Extracted & optimized RAW to JPEG: src/assets/photos/${targetCategory}/${destFileName}`);
     } catch (rawErr) {
       console.log(`   ⚠️  Sharp failed on RAW buffer for ${path.basename(filePath)}: ${rawErr.message} — skipping`);
       return null;
@@ -581,7 +537,7 @@ async function processImage(filePath, targetCategory, orderStart) {
       .resize({ width: 2560, withoutEnlargement: true })
       .jpeg({ quality: 85, mozjpeg: true })
       .toFile(destPath);
-    console.log(`   📁 Optimized & copied to: public/photos/${targetCategory}/${destFileName}`);
+    console.log(`   📁 Optimized & copied to: src/assets/photos/${targetCategory}/${destFileName}`);
   }
 
   // 4. Determine date
@@ -606,20 +562,19 @@ async function processImage(filePath, targetCategory, orderStart) {
   const mdContent = `---
 title: "${title}"
 category: "${targetCategory}"
-image: "/photos/${targetCategory}/${destFileName}"
+image: ${frontmatterImagePath(targetCategory, destFileName)}
 alt: "${alt}"
 date: ${photoDate}
 location: ""
 originalFilename: "${path.basename(filePath)}"
 featured: ${featured}
-order: ${orderStart}
 ${cameraBlock}
 ---
 
 ${description}
 `;
 
-  const mdPath = path.join(ROOT, 'src', 'content', 'photos', `${slug}.md`);
+  const mdPath = path.join(CONTENT_DIR, `${slug}.md`);
   fs.writeFileSync(mdPath, mdContent, 'utf-8');
   console.log(`   📝 Created: src/content/photos/${slug}.md`);
 
@@ -686,8 +641,7 @@ async function main() {
 
   for (let i = 0; i < tasks.length; i++) {
     const { img, cat } = tasks[i];
-    const order = getNextOrder(cat);
-    const slug = await processImage(img, cat, order);
+    const slug = await processImage(img, cat);
     processedSlugs.push(slug);
 
     // Wait 4.2s between photos to stay within Gemini Free Tier rate limits
