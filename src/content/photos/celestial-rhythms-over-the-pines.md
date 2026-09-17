@@ -2,7 +2,10 @@
 title: Celestial Rhythms Over the Pines
 category: night
 image: ../../assets/photos/night/celestial-rhythms-over-the-pines.jpg
-alt: A night photograph
+alt: >-
+  Concentric arcs of star trails sweeping across a dark blue night sky during a
+  long exposure, above a ridge of pine trees, the nearest of which are lit warm
+  orange by artificial light.
 date: 2021-10-09T00:00:00.000Z
 location: ''
 originalFilename: IMG_5939.jpg

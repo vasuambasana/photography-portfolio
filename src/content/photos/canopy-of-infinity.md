@@ -2,7 +2,10 @@
 title: Canopy of Infinity
 category: night
 image: ../../assets/photos/night/canopy-of-infinity.jpg
-alt: A night photograph
+alt: >-
+  The Milky Way core rising as a dense band of dust and starlight through a sky
+  crowded with stars, above the silhouetted tops of conifers along the lower
+  edge.
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_022724.jpg
