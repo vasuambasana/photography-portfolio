@@ -98,6 +98,13 @@ a new label treatment.
 - One `<h1>` per page; don't skip heading levels for styling.
 - Contrast ≥ 4.5:1 for body text in both themes.
 
+## Voice
+
+This is a personal archive, not a business. No copy should imply anything is for sale.
+No "Inquire", "prints", "licensing", "commissions", "book a session", "client", "rates",
+or "fine art" as a market label. No third-person agency voice. First person and plain
+warmth — "Say Hello", not "Get a Quote". See the root `CLAUDE.md`.
+
 ## Banned
 
 Carousels. Autoplay anything. Heavy drop shadows (`shadow-sm`/`shadow-lg` on cards is the

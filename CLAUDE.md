@@ -8,6 +8,24 @@ island (the lightbox), deployed to Cloudflare Pages at https://vasuambasana.com.
 `main` is the deployed branch. **Never merge `dev` into `main` directly** — changes
 get validated on `dev` first, and promotion to `main` is the owner's call.
 
+## This is a personal project, not a business
+
+Nothing on this site sells anything, and no copy should imply otherwise. There are no
+prints, no licensing, no commissions, no bookings, no client work, no rate card — and the
+language should never suggest a service waiting to be purchased.
+
+Avoid: "inquire", "inquiry", "licensing", "prints", "commission", "client", "booking",
+"rates", "hire", "studio", "fine art" (a print-market label), "portfolio" in the
+looking-for-work sense, and third-person agency voice ("the work spans…", "based in a
+studio…").
+
+Prefer first person and plain warmth: "Say Hello" rather than "Inquire", "I'd like to hear
+about it" rather than "Interested in prints, licensing, or collaborating?".
+
+The original spec (`prompts/initial_prompt.md`) describes assignment inquiries, print
+catalogues and client galleries. **That direction was abandoned.** Don't reintroduce it
+from that document.
+
 ## Content safety (non-negotiable)
 
 Never invent awards, clients, testimonials, credentials, exhibitions, publications, prices,

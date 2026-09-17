@@ -3,6 +3,10 @@
 > This is the prompt the site was originally generated from, kept as a record of intent.
 > The built site has diverged from it deliberately. Known differences:
 >
+> - **Commercial direction: abandoned.** This document describes assignment inquiries,
+>   client outreach, fine-art prints, workshops, digital products and client galleries. The
+>   site is a **personal archive with nothing for sale**, and no copy should imply otherwise.
+>   `npm run validate` fails on commercial language. Do not reintroduce any of it from here.
 > - **Theme:** the spec says dark-first; the site is **light by default** with `.dark` as
 >   the variant.
 > - **Projects:** the `projects` collection and `/portfolio/[slug]` pages described here

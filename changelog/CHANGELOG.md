@@ -4,6 +4,55 @@ This log tracks all architectural, specification, and prompt changes made throug
 
 ---
 
+## [0.5.2] - 2026-09-17
+
+Removed commercial framing site-wide. This is a personal archive, not a business.
+
+### Changed
+- **"Inquire →" on every photo page is now "Say Hello →".**
+- **The photo-page CTA** read *"Interested in prints, licensing, or collaborating?"* — now
+  *"If this one reminds you of somewhere, I'd like to hear about it."*
+- **The contact form** had an "Inquiry Type" selector with a `licensing` option value. Now
+  "What's this about?" with plain-language choices. Privacy wording changed from "respond to
+  your inquiry" to "reply to you".
+- **The About page** was written in third-person agency voice — *"The work spans architecture,
+  landscape, and editorial portraiture"*, *"Based in a studio that prioritizes simplicity"*.
+  Rewritten in first person, opening by stating plainly that this is a personal archive.
+  "Formats" became "Subjects"; "editorial" and "documentary" dropped; equipment now reads
+  "A Canon R5 Mark II, and whatever phone is in my pocket", which is also what the EXIF says.
+- **"Fine Art · Architecture · Nature"** in the hero is now "Architecture · Nature · Night".
+  *Fine art* is a print-market label.
+- Home and About meta descriptions rewritten; "Get in Touch" unified to "Say Hello".
+
+### Added
+- **`validate` now fails on commercial language** anywhere in `src/` — `inquire`, `licensing`,
+  `commission`, `for sale`, `fine art`, `rate card`, `book a session`. "print" and "client"
+  are deliberately excluded: they have legitimate code meanings (`clientPhotos`, `client:load`).
+- A standing rule in `CLAUDE.md` and the `design-system` skill, plus a warning at the top of
+  `prompts/initial_prompt.md`, which is where all of this language originally came from.
+
+### Removed
+- `InquirySuccess.astro` — unused, and named after the thing being removed.
+
+### Lessons Learned & Mistakes Avoided
+- **The spec keeps leaking.** Every piece of commercial wording traced back to one line in
+  `prompts/initial_prompt.md`: *"generates assignment inquiries, supports direct client
+  outreach, and provides a foundation for fine-art prints, workshops, digital products,
+  client galleries."* Marking that document historical wasn't enough — the phrasing had
+  already been copied into eight files. *Lesson:* when a direction is abandoned, grep for
+  its vocabulary, not just its features.
+- **A check that passes proves nothing until you've seen it fail.** The first version of the
+  commercial scan reported zero errors and looked correct. It was pointed at `src/content`
+  instead of `src`, so it was scanning markdown only and would never have caught "Inquire" in
+  a `.astro` file. Injecting a deliberate violation exposed it immediately. *Lesson:* test
+  the failure path of every new guardrail before trusting a green result.
+- **Tone is a feature, and it hides in small words.** No single phrase here was egregious, but
+  "inquire", "studio", "fine art" and "editorial" together made a personal archive read like a
+  practice touting for work. *Lesson:* voice drifts one noun at a time, which is exactly why
+  it belongs in an automated check rather than a style note.
+
+---
+
 ## [0.5.1] - 2026-09-15
 
 Corrections and follow-ups from the first review of the revamped `dev` branch.

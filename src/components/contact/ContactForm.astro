@@ -51,10 +51,10 @@ const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
     </p>
   </div>
 
-  <!-- Inquiry type -->
+  <!-- Message topic -->
   <div>
     <label for="contact-type" class="block text-body-sm text-text-primary font-medium mb-2">
-      Inquiry Type
+      What’s this about?
     </label>
     <select
       id="contact-type"
@@ -62,9 +62,9 @@ const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
       class="w-full px-4 py-3 bg-surface-card border border-subtle rounded-card text-text-primary text-body-md focus:outline-none focus:ring-2 focus:ring-text-accent focus:border-transparent transition-all duration-200 appearance-none"
     >
       <option value="general">Just saying hi</option>
-      <option value="project">Photography discussion</option>
-      <option value="licensing">Location inquiry</option>
-      <option value="other">Other</option>
+      <option value="project">Talking photography</option>
+      <option value="location">A place in one of the photos</option>
+      <option value="other">Something else</option>
     </select>
   </div>
 
@@ -90,7 +90,7 @@ const { contactEmail = 'ambasana.vasu@gmail.com' } = Astro.props;
   <p class="text-caption text-text-secondary">
     By submitting this form, you agree to the
     <a href="/privacy" class="underline hover:text-text-primary">privacy policy</a>.
-    Your information will only be used to respond to your inquiry.
+    Your details are only used to reply to you, and nothing else.
   </p>
 
   <!-- Submit -->

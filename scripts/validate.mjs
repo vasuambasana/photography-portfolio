@@ -15,7 +15,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { CONTENT_DIR, JOURNAL_DIR, PHOTOS_DIR, VALID_CATEGORIES } from './lib/config.mjs';
+import { CONTENT_DIR, JOURNAL_DIR, PHOTOS_DIR, ROOT, VALID_CATEGORIES } from './lib/config.mjs';
 
 const errors = [];
 const warnings = [];
@@ -177,6 +177,51 @@ for (const { file, data, content } of journal) {
     tagSlugs.set(slug, tag);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Commercial language
+//
+// The site is a personal archive and nothing on it is for sale. The original spec
+// described print catalogues and assignment inquiries, so this wording keeps drifting
+// back in from that document. Only unambiguous terms are listed — "print" and "client"
+// are omitted because they have legitimate code meanings (clientPhotos, client:load).
+// ---------------------------------------------------------------------------
+const COMMERCIAL = [
+  /\binquir(e|y|ies)\b/i,
+  /\blicensing\b/i,
+  /\bcommissions?\b/i,
+  /\bfor sale\b/i,
+  /\bfine[- ]art\b/i,
+  /\brate card\b/i,
+  /\bbook a (session|shoot)\b/i,
+];
+
+function scanForCommercial(dir) {
+  if (!fs.existsSync(dir)) return;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      scanForCommercial(full);
+      continue;
+    }
+    if (!/\.(astro|tsx?|md)$/.test(entry.name)) continue;
+    if (entry.name === 'CLAUDE.md') continue; // it documents the banned words
+
+    const lines = fs.readFileSync(full, 'utf-8').split('\n');
+    lines.forEach((line, i) => {
+      for (const pattern of COMMERCIAL) {
+        if (pattern.test(line)) {
+          const rel = path.relative(ROOT, full).replace(/\\/g, '/');
+          error(`${rel}:${i + 1}: commercial language — "${line.trim().slice(0, 70)}"`);
+          return;
+        }
+      }
+    });
+  }
+}
+
+scanForCommercial(path.join(ROOT, 'src'));
 
 // ---------------------------------------------------------------------------
 // Report
