@@ -1,30 +1,47 @@
 ---
 title: "Finding Scale in Death Valley"
-subtitle: "Desert canyons are notorious liars on camera until a human walks into the frame."
+subtitle: "Five frames from two April mornings, and the one thing that made the rock look big."
 type: field-notes
 date: 2023-04-23T07:00:00.000Z
 coverImage: above-the-desert-ridge
 location: "Death Valley National Park, California"
 tags: [desert, scale, death-valley, landscape, california]
-excerpt: "Desert canyons are notorious liars through a camera lens. Without something human for your eyes to latch onto, a six-hundred-foot cliff looks like a mound of dirt in someone's backyard."
+excerpt: "A desert canyon photographs as nothing. Six hundred feet of banded rock flattens into a pile of coloured dirt unless there is something in the frame your eye already knows the size of."
 featured: true
 relatedPhotos: [above-the-desert-ridge, strata-at-first-light, above-the-salt-basin, painted-earth-trails, veins-of-the-basin]
 ---
 
-Desert canyons have a way of humiliating wide-angle lenses.
+Five frames from Death Valley across two April mornings, every one of them on a Samsung
+Galaxy S22 Ultra.
 
-You hike out before sunrise, stare out over miles of eroded clay ridges and ancient volcanic silt, and your jaw drops. It feels immense, prehistoric, like you’re looking at the raw crust of the planet before anything lived on it. You bring the camera up to your eye, press the shutter, and when you look at the back of the screen, it looks like a close-up photo of a driveway gravel pile.
+The problem with a desert canyon is that it photographs as nothing. You stand on the rim
+looking down at several hundred feet of banded rock, raise anything to your eye, and the
+whole thing flattens into a pile of coloured dirt. There is no tree in it, no building,
+nothing your eye already knows the size of.
 
-The camera has no depth perception when the sky is bald blue and there are no trees or houses around. Every cliff looks small.
+[*Above the Desert Ridge*](/photo/above-the-desert-ridge) is where that stops being a
+problem. One hiker standing on top of the ridge, small against the banding, and the moment a
+person is in there the rock behind them acquires a height. 69mm equivalent, 1/550s at ISO
+40. Nothing clever about it, just far enough back that a human being and the thing they are
+standing on fit in the same frame.
 
-I had been sitting near the trailhead overlook for about an hour on this morning in late April. The air was bone-dry and smelled like dust and sagebrush. The sun had cleared the eastern bluffs, hitting the exposed rock bands at a low rake angle that carved razor-sharp shadows into the sediment gullies. The colors were incredible: yellow sulfur bands bleeding into rust and deep terracotta.
+[*Painted Earth Trails*](/photo/painted-earth-trails) does it again with a group, walking a
+trail that winds between turquoise, ochre and purple ground. Same 69mm, 1/140s.
 
-Still, the compositions felt empty. There was texture, but no tension.
+Four of the five frames are at 69mm or longer, which surprised me when I went back through
+the metadata. The instinct in a landscape that big is to go wide and take all of it, and
+going wide is exactly what makes it look small. [*Veins of the Basin*](/photo/veins-of-the-basin)
+is the far end of that, 230mm equivalent at f/4.9, looking down from a dark ridge at the
+basin winding away below.
 
-Then I caught movement out on the opposite ridge. A lone hiker with a red daypack was slowly working their way up the narrow knife-edge spine toward the high saddle.
+The one genuinely wide frame is [*Above the Salt Basin*](/photo/above-the-salt-basin), 23mm
+equivalent at 1/1900s and ISO 12. ISO 12 is a sensor with more light than it knows what to
+do with, which is April in Death Valley in a sentence.
 
-I waited about ten minutes for them to reach the small outcrop at the crest. When they stopped, put their hands on their hips, and stood silhouetted against the sky, everything in the frame clicked into place.
+[*Strata at First Light*](/photo/strata-at-first-light) is the outlier, a blue dusk sky with
+pink caught on the cloud, at 1/220s. No people in it at all, and it works differently
+because of that: it stops being about how big the place is and becomes about the colour of
+the rock.
 
-Suddenly, that ridge wasn't just a diagonal line of compressed dirt. It became a six-hundred-foot wall of stone. The small gullies underneath them revealed themselves as massive ravines carved out by millions of years of flash floods. The human silhouette gave the geology its true weight. It turned an abstract pattern of rocks into an honest story about how small we are when we step off the pavement.
-
-I didn't yell or wave. Out in the canyon, sound carries for miles, and that silence is half the reason you wake up at 5:00 AM in the first place. I took three frames, let the shutter settle, and just watched them stand there on the spine of the ridge until they turned back down the trail.
+The practical note is that none of this needed a camera. Every frame here is a phone at ISO
+40 or lower, in light so flat and hard that the only real decision was where to stand.
