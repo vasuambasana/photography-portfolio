@@ -18,7 +18,13 @@ const seo = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="msvalidate.01" content="062ABF0281B287FA3A1CE74049FCD292" />
+    <!-- Search engine ownership verification. Bing's token is committed because it
+         is not a secret and predates the env plumbing; Google's is read from the
+         build environment so adding it needs no code change. Both are inert if unset. -->
+    <meta name="msvalidate.01" content={import.meta.env.BING_SITE_VERIFICATION || '062ABF0281B287FA3A1CE74049FCD292'} />
+    {import.meta.env.GOOGLE_SITE_VERIFICATION && (
+      <meta name="google-site-verification" content={import.meta.env.GOOGLE_SITE_VERIFICATION} />
+    )}
 
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.clarity.ms https://*.bing.com; worker-src 'self' blob:;" />
