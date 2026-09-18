@@ -56,6 +56,10 @@ function walkImages(dir, base = dir) {
 // ---------------------------------------------------------------------------
 const photos = readAll(CONTENT_DIR);
 const photoSlugs = new Set(photos.map((p) => p.slug));
+/** Lower-cased title -> slug, for spotting journal mentions that aren't links. */
+const photoTitles = new Map(
+  photos.filter((p) => p.data.title).map((p) => [p.data.title.trim().toLowerCase(), p.slug])
+);
 const referencedImages = new Set();
 const titles = new Map();
 const pinsByCategory = new Map();
@@ -163,6 +167,18 @@ for (const { file, data, content } of journal) {
 
   if (!data.excerpt?.trim()) error(`${where}: missing excerpt`);
   if (!data.date) error(`${where}: missing date`);
+
+  // An entry that names a photograph should let the reader go and look at it.
+  // Titles are written in italics; the body is hard-wrapped, so a title can span
+  // a line break — matching without allowing that is exactly how one mention
+  // stayed unlinked after the first pass.
+  const unlinked = content.replace(/\[[^\]]*\]\([^)]*\)/g, ' ');
+  for (const [, label] of unlinked.matchAll(/(?<![*[\w])\*([^*]+?)\*(?!\*)/g)) {
+    const slug = photoTitles.get(label.replace(/\s+/g, ' ').trim().toLowerCase());
+    if (slug) {
+      warn(`${where}: mentions "${label.replace(/\s+/g, ' ')}" without linking it — /photo/${slug}`);
+    }
+  }
 
   for (const tag of data.tags || []) {
     const slug = tag.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

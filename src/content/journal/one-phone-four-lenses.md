@@ -83,6 +83,6 @@ here was shot in a dark restaurant or a dim gallery, which is where a small sens
 complain loudly. Given light, the phone wasn't the constraint on this day — reach, weather
 and crowds were.
 
-This is also the day that made me stop apologising for phone frames in the archive. *Beacon
-of the Skyline* hangs perfectly well next to anything shot on the Canon, and nobody who has
+This is also the day that made me stop apologising for phone frames in the archive. [*Beacon
+of the Skyline*](/photo/beacon-of-the-skyline) hangs perfectly well next to anything shot on the Canon, and nobody who has
 looked at it has asked what took it.
