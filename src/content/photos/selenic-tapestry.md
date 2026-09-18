@@ -2,7 +2,7 @@
 title: Selenic Tapestry
 category: night
 image: ../../assets/photos/night/selenic-tapestry.jpg
-alt: A night photograph
+alt: "A near-full moon filling the frame in close-up, its seas and craters clearly resolved against black sky."
 date: 2023-08-03T00:00:00.000Z
 location: ''
 originalFilename: 20230803_004705.jpg

@@ -2,7 +2,7 @@
 title: Crimson Horizon
 category: street
 image: ../../assets/photos/street/crimson-horizon.jpg
-alt: A street photograph
+alt: "The rooflines of two apartment buildings against a sky of intense red and orange cloud at sunset, one window reflecting the same colour."
 date: 2024-06-15T00:00:00.000Z
 location: ''
 originalFilename: 20240614_202701 (1).jpg

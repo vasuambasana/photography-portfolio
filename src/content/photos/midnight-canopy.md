@@ -2,7 +2,7 @@
 title: Midnight Canopy
 category: night
 image: ../../assets/photos/night/midnight-canopy.jpg
-alt: A night photograph
+alt: "Stars crowding a dark blue sky above the tops of spruce and bare branches lit faintly from below."
 date: 2024-02-18T00:00:00.000Z
 location: ''
 originalFilename: 20240218_031711.jpg

@@ -2,7 +2,7 @@
 title: Moonlit Tapestry
 category: night
 image: ../../assets/photos/night/moonlit-tapestry.jpg
-alt: A night photograph
+alt: "A full moon burning through the bare branches of a large tree, thin cloud lit around it in an otherwise dark sky."
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5030(1) (2).jpg

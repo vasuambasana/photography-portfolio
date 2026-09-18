@@ -2,7 +2,7 @@
 title: Celestial Weave
 category: night
 image: ../../assets/photos/night/celestial-weave.jpg
-alt: A night photograph
+alt: "A clear night sky over the tops of suburban trees, thin cloud lit orange along the left edge and a bright planet near the centre."
 date: 2026-04-04T00:00:00.000Z
 location: ''
 originalFilename: 20260403_213602.jpg

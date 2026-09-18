@@ -2,7 +2,7 @@
 title: Celestial Web
 category: architecture
 image: ../../assets/photos/architecture/celestial-web.jpg
-alt: A architecture photograph
+alt: "Looking straight up into a timber dome: pale wooden planks radiate from a dark glazed oculus while slender steel struts cross over them in a dense web."
 date: 2026-01-16T00:00:00.000Z
 location: ''
 originalFilename: 20260115_233759.jpg

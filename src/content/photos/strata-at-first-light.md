@@ -1,7 +1,7 @@
 ---
 title: Strata at First Light
 category: nature
-image: ../../assets/photos/nature/strata-of-the-badlands.jpg
+image: ../../assets/photos/nature/strata-at-first-light.jpg
 alt: >-
   Textured, multi-colored desert ridges unfold under a blue dusk sky with subtle
   pink-lit clouds.

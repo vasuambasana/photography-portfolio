@@ -2,7 +2,7 @@
 title: Neon Horizon Over Manhattan
 category: architecture
 image: ../../assets/photos/architecture/neon-horizon-over-manhattan.jpg
-alt: A architecture photograph
+alt: "Manhattan from above after sunset, an orange band of afterglow along the horizon, the avenues below picked out in traffic and window light."
 date: 2024-09-01T00:00:00.000Z
 location: ''
 originalFilename: 20240901_195938.jpg

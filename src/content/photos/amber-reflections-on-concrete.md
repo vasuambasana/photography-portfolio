@@ -2,7 +2,7 @@
 title: Amber Reflections on Concrete
 category: architecture
 image: ../../assets/photos/architecture/amber-reflections-on-concrete.jpg
-alt: A architecture photograph
+alt: "The corner of a glass-clad office tower, its windows lit orange by a low sun, against a blue sky of amber-underlit cloud."
 date: 2021-11-03T00:00:00.000Z
 location: ''
 originalFilename: IMG_20211103_172040.jpg

@@ -2,7 +2,7 @@
 title: Through the Canopy
 category: street
 image: ../../assets/photos/street/through-the-canopy.jpg
-alt: A street photograph
+alt: "An airliner seen out of focus through the bare branches of a tree against a deep blue sky, the twigs sharp in the foreground."
 date: 2024-01-15T00:00:00.000Z
 location: ''
 originalFilename: 20240115_101720.jpg

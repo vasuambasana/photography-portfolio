@@ -2,7 +2,7 @@
 title: Aisle of Stars
 category: night
 image: ../../assets/photos/night/aisle-of-stars.jpg
-alt: A night photograph
+alt: "The Milky Way running vertically through a gap between two black silhouetted treetops, dense with stars."
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_020618.jpg

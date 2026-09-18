@@ -2,7 +2,7 @@
 title: Crimson Ascent
 category: street
 image: ../../assets/photos/street/crimson-ascent.jpg
-alt: A street photograph
+alt: "A young woman in a full red ball gown and tiara climbing wide stone steps, another woman in a red sequinned dress waiting above holding a bouquet, the trees behind desaturated to grey."
 date: 2024-08-30T00:00:00.000Z
 location: ''
 originalFilename: 20240903_021344.jpg

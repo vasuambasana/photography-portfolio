@@ -2,7 +2,7 @@
 title: A Quiet Encounter in the Green
 category: people
 image: ../../assets/photos/people/a-quiet-encounter-in-the-green.jpg
-alt: A people photograph
+alt: "A squirrel standing on an exposed tree root in sharp focus, a woman sitting on the grass just behind it thrown out of focus, a pond and pavilion beyond."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7774.CR3

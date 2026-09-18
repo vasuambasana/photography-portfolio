@@ -2,7 +2,7 @@
 title: Cosmic Canopy
 category: night
 image: ../../assets/photos/night/cosmic-canopy.jpg
-alt: A night photograph
+alt: "A field of stars framed by the black silhouettes of spruce tops on both sides of the frame."
 date: 2024-02-19T00:00:00.000Z
 location: ''
 originalFilename: 20240219_013351.jpg

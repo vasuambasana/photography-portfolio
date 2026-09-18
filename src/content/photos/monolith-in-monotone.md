@@ -2,7 +2,7 @@
 title: Monolith in Monotone
 category: architecture
 image: ../../assets/photos/architecture/monolith-in-monotone.jpg
-alt: A architecture photograph
+alt: "A concrete tower shot from its base against churning grey cloud, one face smooth and the other stepped into a row of sharp triangular fins."
 date: 2023-06-07T00:00:00.000Z
 location: ''
 originalFilename: 20230607_125015.jpg

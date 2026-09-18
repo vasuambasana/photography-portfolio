@@ -2,7 +2,7 @@
 title: Neon Devotion
 category: night
 image: ../../assets/photos/night/neon-devotion.jpg
-alt: A night photograph
+alt: "Two stained glass panels lit from within at night, a robed figure in one and a crucifixion scene in the other, in saturated reds, greens and blues."
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5000.jpg

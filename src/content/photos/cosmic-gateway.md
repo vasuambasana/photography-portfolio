@@ -2,7 +2,7 @@
 title: Cosmic Gateway
 category: night
 image: ../../assets/photos/night/cosmic-gateway.jpg
-alt: A night photograph
+alt: "A blue-lit dome tent in the foreground under a wide starry sky, with a sunlit red rock ridge catching the last light behind it."
 date: 2026-04-04T00:00:00.000Z
 location: ''
 originalFilename: 20260403_220637.jpg

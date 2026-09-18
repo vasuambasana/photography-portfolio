@@ -2,7 +2,7 @@
 title: Twilight Bridge Over Still Waters
 category: architecture
 image: ../../assets/photos/architecture/twilight-bridge-over-still-waters.jpg
-alt: A architecture photograph
+alt: "A cable-stayed bridge in silhouette across still water at dusk, pink and blue cloud overhead, the stubs of old pier pilings standing in the foreground."
 date: 2020-02-23T00:00:00.000Z
 location: ''
 originalFilename: IMG_20200223_173457.jpg

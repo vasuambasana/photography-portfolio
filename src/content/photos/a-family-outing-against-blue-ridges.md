@@ -2,7 +2,7 @@
 title: A Family Outing Against Blue Ridges
 category: people
 image: ../../assets/photos/people/a-family-outing-against-blue-ridges.jpg
-alt: A people photograph
+alt: "A family gathered at a railed mountain overlook, a man holding a small girl by the hand and a woman carrying a toddler, ranges of blue ridges receding behind them."
 date: 2025-11-29T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4545 (1).jpg

@@ -2,7 +2,7 @@
 title: Highway to the Cosmos
 category: night
 image: ../../assets/photos/night/highway-to-the-cosmos.jpg
-alt: A night photograph
+alt: "A two-lane road running away from the camera under a dense field of stars, double yellow centre line leading toward distant hills."
 date: 2023-04-22T00:00:00.000Z
 location: 'Death Valley National Park, California'
 originalFilename: 20230422_002635 (1).jpg

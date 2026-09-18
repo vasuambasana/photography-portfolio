@@ -2,7 +2,7 @@
 title: A Sunny Day in the Park
 category: people
 image: ../../assets/photos/people/a-sunny-day-in-the-park.jpg
-alt: A people photograph
+alt: "People standing on grass under a large shade tree at an outdoor gathering, two girls with flower crowns in the foreground and a woman in a yellow dress holding a sheet of paper."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6701.CR3

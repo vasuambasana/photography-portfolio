@@ -2,7 +2,7 @@
 title: Midnight Downpour
 category: night
 image: ../../assets/photos/night/midnight-downpour.jpg
-alt: A night photograph
+alt: "Heavy rain falling in hard streaks through the glare of a single street lamp at night, bare branches behind it."
 date: 2024-03-03T00:00:00.000Z
 location: ''
 originalFilename: 20240302_223807.jpg

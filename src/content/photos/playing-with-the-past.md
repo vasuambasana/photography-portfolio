@@ -2,7 +2,7 @@
 title: Playing with the Past
 category: street
 image: ../../assets/photos/street/playing-with-the-past.jpg
-alt: A street photograph
+alt: "A girl in a yellow t-shirt playing with a hula hoop beside a life-size bronze statue of a child on a circular plinth, a park path and trees behind."
 date: 2026-08-08T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7835.jpg

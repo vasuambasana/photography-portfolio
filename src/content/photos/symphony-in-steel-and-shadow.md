@@ -2,7 +2,7 @@
 title: Symphony in Steel and Shadow
 category: architecture
 image: ../../assets/photos/architecture/symphony-in-steel-and-shadow.jpg
-alt: A architecture photograph
+alt: "The tower of a cable-stayed bridge at night, its pale cables fanning out symmetrically into an otherwise black frame."
 date: 2026-01-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5028(1) (1).jpg

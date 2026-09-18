@@ -2,7 +2,7 @@
 title: Reflections by the Waterside
 category: people
 image: ../../assets/photos/people/reflections-by-the-waterside.jpg
-alt: A people photograph
+alt: "A couple standing at the edge of a park pond with a small child between them, a willow hanging over the bank and their reflections in the water below."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7763.CR3

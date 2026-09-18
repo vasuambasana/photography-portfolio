@@ -2,7 +2,7 @@
 title: Concrete Canopy under Stormy Skies
 category: architecture
 image: ../../assets/photos/architecture/concrete-canopy-under-stormy-skies.jpg
-alt: A architecture photograph
+alt: "Midtown Manhattan from above under a low ceiling of grey storm cloud, the Empire State Building standing at the centre of the massed towers."
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240831_185134.jpg

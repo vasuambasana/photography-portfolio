@@ -2,7 +2,7 @@
 title: Guiding Light
 category: people
 image: ../../assets/photos/people/guiding-light.jpg
-alt: A people photograph
+alt: "A man looking up at a small girl balanced on top of a wooden fence post, holding her steady by the foot, a road and camp chairs behind them."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7009.CR3

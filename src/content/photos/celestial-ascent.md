@@ -2,7 +2,7 @@
 title: Celestial Ascent
 category: night
 image: ../../assets/photos/night/celestial-ascent.jpg
-alt: A night photograph
+alt: "The Milky Way standing upright over the dark hump of a hill, the sky graded from green to yellow near the horizon."
 date: 2025-07-04T00:00:00.000Z
 location: ''
 originalFilename: 20250704_023824.jpg

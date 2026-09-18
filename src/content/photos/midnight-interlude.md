@@ -2,7 +2,7 @@
 title: Midnight Interlude
 category: street
 image: ../../assets/photos/street/midnight-interlude.jpg
-alt: A street photograph
+alt: "A black SUV parked at the kerb at night between a lit brick wall and bare trees, a runner passing on the pavement behind it."
 date: 2026-01-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5078.jpg

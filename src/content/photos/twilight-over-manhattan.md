@@ -2,7 +2,7 @@
 title: Twilight Over Manhattan
 category: architecture
 image: ../../assets/photos/architecture/twilight-over-manhattan.jpg
-alt: A architecture photograph
+alt: "Manhattan at sunset from high above, a broad orange band along the horizon over the river, streets and towers already lit below."
 date: 2024-09-01T00:00:00.000Z
 location: ''
 originalFilename: 20240901_193912.jpg

@@ -2,7 +2,7 @@
 title: Coastal Strides in the Morning Sun
 category: people
 image: ../../assets/photos/people/coastal-strides-in-the-morning-sun.jpg
-alt: A people photograph
+alt: "Two runners in red on hard-packed sand at the waterline in early light, a blue beach umbrella and dunes to the right."
 date: 2026-08-11T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8481.jpg

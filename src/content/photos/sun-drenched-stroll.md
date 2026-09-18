@@ -2,7 +2,7 @@
 title: Sun-Drenched Stroll
 category: people
 image: ../../assets/photos/people/sun-drenched-stroll.jpg
-alt: A people photograph
+alt: "A young couple walking across grass at an outdoor event, hands linked, one wearing white over-ear headphones, a crowd blurred behind them."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6733.CR3

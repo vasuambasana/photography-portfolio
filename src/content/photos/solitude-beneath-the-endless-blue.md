@@ -2,7 +2,7 @@
 title: Solitude Beneath the Endless Blue
 category: people
 image: ../../assets/photos/people/solitude-beneath-the-endless-blue.jpg
-alt: A people photograph
+alt: "A person standing alone on the cracked white polygons of a salt flat, photographing back toward distant snow-topped mountains under a deep blue sky."
 date: 2023-04-23T00:00:00.000Z
 location: 'Death Valley National Park, California'
 originalFilename: 20230423_131041 (1).jpg

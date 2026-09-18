@@ -2,7 +2,7 @@
 title: Silent Ascent
 category: architecture
 image: ../../assets/photos/architecture/silent-ascent.jpg
-alt: A architecture photograph
+alt: "A dark church spire topped by a slender cross against a blank overcast sky, a single bird in flight off to the left."
 date: 2023-09-22T00:00:00.000Z
 location: ''
 originalFilename: 20230922_170249.jpg

@@ -2,7 +2,7 @@
 title: 'Urban Symmetry: Boston''s Transit Axis'
 category: architecture
 image: ../../assets/photos/architecture/urban-symmetry-boston-s-transit-axis.jpg
-alt: A architecture photograph
+alt: "A long straight avenue seen from high above, running dead centre to the horizon with train tracks down its median and a Citgo sign on a rooftop at right."
 date: 2023-06-10T00:00:00.000Z
 location: ''
 originalFilename: 20230610_154507.jpg

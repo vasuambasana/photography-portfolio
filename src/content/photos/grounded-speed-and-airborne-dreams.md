@@ -2,7 +2,7 @@
 title: Grounded Speed and Airborne Dreams
 category: street
 image: ../../assets/photos/street/grounded-speed-and-airborne-dreams.jpg
-alt: A street photograph
+alt: "A yellow sports car parked in an empty lot at sunset, a passenger jet on approach in the sky above it."
 date: 2025-06-13T00:00:00.000Z
 location: ''
 originalFilename: 20250613_194230(0).jpg

@@ -2,7 +2,7 @@
 title: Neon Current
 category: night
 image: ../../assets/photos/night/neon-current.jpg
-alt: A night photograph
+alt: "Times Square at night packed with people, surrounded on all sides by lit billboards and the yellow roofs of taxis."
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240830_232651.jpg

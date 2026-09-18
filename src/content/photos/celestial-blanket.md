@@ -2,7 +2,7 @@
 title: Celestial Blanket
 category: architecture
 image: ../../assets/photos/architecture/celestial-blanket.jpg
-alt: A architecture photograph
+alt: "The eaves of a clapboard house seen from below against a sky completely covered in fine rippled cloud, bare branches and rust-coloured leaves crowding the lower frame."
 date: 2023-11-13T00:00:00.000Z
 location: ''
 originalFilename: 20231113_132202.jpg

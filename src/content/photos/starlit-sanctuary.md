@@ -2,7 +2,7 @@
 title: Starlit Sanctuary
 category: night
 image: ../../assets/photos/night/starlit-sanctuary.jpg
-alt: A night photograph
+alt: "The Milky Way over a ring of dark treetops, with a red head torch marking a figure at the bottom of the frame."
 date: 2025-07-05T00:00:00.000Z
 location: ''
 originalFilename: 20250705_005134.jpg

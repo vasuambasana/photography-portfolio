@@ -2,7 +2,7 @@
 title: Monolith in Monochrome
 category: architecture
 image: ../../assets/photos/architecture/monolith-in-monochrome-2.jpg
-alt: A architecture photograph
+alt: "Boston from above under heavy cloud, a dark glass tower standing over warm-lit brick blocks in a nearly colourless frame."
 date: 2023-06-10T00:00:00.000Z
 location: ''
 originalFilename: 20230610_155243.jpg

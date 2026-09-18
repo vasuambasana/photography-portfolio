@@ -2,7 +2,7 @@
 title: Framed in Shadow
 category: night
 image: ../../assets/photos/night/framed-in-shadow.jpg
-alt: A night photograph
+alt: "A thin crescent moon in a deep blue sky, framed above and below by the black silhouettes of leafy branches."
 date: 2023-05-22T00:00:00.000Z
 location: ''
 originalFilename: 20230521_204302 (1).jpg

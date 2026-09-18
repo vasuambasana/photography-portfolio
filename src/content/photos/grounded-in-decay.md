@@ -2,7 +2,7 @@
 title: Grounded in Decay
 category: street
 image: ../../assets/photos/street/grounded-in-decay.jpg
-alt: A street photograph
+alt: "Looking straight down at a pair of white trainers on badly cracked asphalt, the cracks spreading across the whole frame."
 date: 2026-08-09T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8320.jpg

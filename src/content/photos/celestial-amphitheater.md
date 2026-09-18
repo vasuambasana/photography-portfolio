@@ -2,7 +2,7 @@
 title: Celestial Amphitheater
 category: night
 image: ../../assets/photos/night/celestial-amphitheater.jpg
-alt: A night photograph
+alt: "Great sweeping curtains of high cloud lit from below, curving across a starry sky above a low black treeline of conifers."
 date: 2025-07-06T00:00:00.000Z
 location: ''
 originalFilename: 20250706_000827 (1).jpg

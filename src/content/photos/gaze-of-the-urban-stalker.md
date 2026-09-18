@@ -2,7 +2,7 @@
 title: Gaze of the Urban Stalker
 category: street
 image: ../../assets/photos/street/gaze-of-the-urban-stalker.jpg
-alt: A street photograph
+alt: "A tabby cat lying stretched out on tarmac with its front paws extended, head lifted, looking up past the camera."
 date: 2024-06-29T00:00:00.000Z
 location: ''
 originalFilename: 20240630_190118 (1).jpg

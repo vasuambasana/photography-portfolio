@@ -2,7 +2,7 @@
 title: Strokes of Identity
 category: people
 image: ../../assets/photos/people/strokes-of-identity.jpg
-alt: A people photograph
+alt: "An artist in a brown hat and long black skirt working at an easel outdoors, painting two figures in pink on a large canvas, a finished portrait on display to the left."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6852.CR3

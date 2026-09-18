@@ -2,7 +2,7 @@
 title: Twilight Over the Back Bay
 category: architecture
 image: ../../assets/photos/architecture/twilight-over-the-back-bay.jpg
-alt: A architecture photograph
+alt: "Boston from above at dusk, a dark glass tower at the centre, pink and blue sky over low brick streets running out to the water."
 date: 2024-01-01T00:00:00.000Z
 location: ''
 originalFilename: 20240101_162637.jpg

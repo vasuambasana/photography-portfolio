@@ -2,7 +2,7 @@
 title: A Vibrant Marketplace Portrait
 category: people
 image: ../../assets/photos/people/a-vibrant-marketplace-portrait.jpg
-alt: A people photograph
+alt: "A man standing at his market stall looking straight at the camera, patterned handbags hung on a wire grid behind him, wearing a printed shirt and patchwork trousers."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6847.CR3

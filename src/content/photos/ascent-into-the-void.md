@@ -2,7 +2,7 @@
 title: Ascent into the Void
 category: night
 image: ../../assets/photos/night/ascent-into-the-void.jpg
-alt: A night photograph
+alt: "A high-altitude airliner lit white against a completely black sky, two long contrails running the full height of the frame behind it."
 date: 2023-02-27T00:00:00.000Z
 location: ''
 originalFilename: 20230227_132002 (1).jpg

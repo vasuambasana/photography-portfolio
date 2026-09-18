@@ -2,7 +2,7 @@
 title: Crimson and Caliber
 category: nature
 image: ../../assets/photos/nature/crimson-and-caliber.jpg
-alt: A nature photograph
+alt: "A bright red cardinal and a brown sparrow perched at opposite ends of a string of cafe lights, either side of a weathered timber post in a backyard."
 date: 2024-07-01T00:00:00.000Z
 location: ''
 originalFilename: 20240701_181815 (1).jpg

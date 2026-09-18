@@ -2,7 +2,7 @@
 title: Harbor Rhythm
 category: architecture
 image: ../../assets/photos/architecture/harbor-rhythm.jpg
-alt: A architecture photograph
+alt: "A small motorboat crossing the harbour in black and white, trailing a wake, the Boston skyline massed behind it under streaked cloud."
 date: 2024-08-11T00:00:00.000Z
 location: ''
 originalFilename: 20240811_150056 (4).jpg

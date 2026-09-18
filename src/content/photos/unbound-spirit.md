@@ -2,7 +2,7 @@
 title: Unbound Spirit
 category: people
 image: ../../assets/photos/people/unbound-spirit.jpg
-alt: A people photograph
+alt: "A small child in a white outfit running across grass with arms flung wide, a crowd of people standing under trees behind them."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6707.CR3

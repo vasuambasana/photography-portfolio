@@ -2,7 +2,7 @@
 title: Vista of the High Desert
 category: people
 image: ../../assets/photos/people/vista-of-the-high-desert.jpg
-alt: A people photograph
+alt: "A person in a backwards cap sitting on a boulder looking out over a high desert basin of scattered rock, a snow-covered range on the far side."
 date: 2023-04-23T00:00:00.000Z
 location: 'Death Valley National Park, California'
 originalFilename: 20230423_173524.jpg

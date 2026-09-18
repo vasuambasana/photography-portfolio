@@ -2,7 +2,7 @@
 title: Neon Arteries
 category: night
 image: ../../assets/photos/night/neon-arteries.jpg
-alt: A night photograph
+alt: "A long exposure from above a highway at night, white headlight trails on one carriageway and red tail lights on the other converging toward the city."
 date: 2024-06-16T00:00:00.000Z
 location: ''
 originalFilename: 20240615_211855.jpg

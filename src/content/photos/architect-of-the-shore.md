@@ -2,7 +2,7 @@
 title: Architect of the Shore
 category: people
 image: ../../assets/photos/people/architect-of-the-shore.jpg
-alt: A people photograph
+alt: "A boy sitting on a wide beach building a mound of sand, with distant figures at the waterline and buildings blurred along the shore behind."
 date: 2026-08-11T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8458.jpg

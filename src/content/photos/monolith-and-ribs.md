@@ -2,7 +2,7 @@
 title: Monolith and Ribs
 category: architecture
 image: ../../assets/photos/architecture/monolith-and-ribs.jpg
-alt: A architecture photograph
+alt: "One World Trade Center rising into heavy grey cloud, framed from below by the black steel ribs of the Oculus roof."
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240831_160415.jpg

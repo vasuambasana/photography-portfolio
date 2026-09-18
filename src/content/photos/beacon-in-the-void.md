@@ -2,7 +2,7 @@
 title: Beacon in the Void
 category: night
 image: ../../assets/photos/night/beacon-in-the-void.jpg
-alt: A night photograph
+alt: "The lit upper floors of the Prudential Tower at night, its red-lit mast above the roofline, the rest of the frame black."
 date: 2026-01-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5067.jpg

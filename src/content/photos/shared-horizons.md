@@ -2,7 +2,7 @@
 title: Shared Horizons
 category: people
 image: ../../assets/photos/people/shared-horizons.jpg
-alt: A people photograph
+alt: "A woman and a girl leaning side by side on a wooden railing, looking down, against a soft pale sky."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8023.CR3

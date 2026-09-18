@@ -2,7 +2,7 @@
 title: Afloat in the Festival
 category: street
 image: ../../assets/photos/street/afloat-in-the-festival.jpg
-alt: A street photograph
+alt: "Two small decorative hot air balloon spinners hanging in sharp focus, with real balloons, marquees and a crowd blurred on the grass behind them."
 date: 2026-07-31T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7017.jpg

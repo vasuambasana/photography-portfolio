@@ -1,7 +1,7 @@
 ---
 title: Above the Desert Ridge
 category: nature
-image: ../../assets/photos/nature/above-the-badlands.jpg
+image: ../../assets/photos/nature/above-the-desert-ridge.jpg
 alt: >-
   A lone hiker stands atop a towering, multi-colored rock ridge against a clear
   blue sky.

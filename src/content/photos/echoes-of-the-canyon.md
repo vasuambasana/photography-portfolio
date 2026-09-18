@@ -2,7 +2,7 @@
 title: Echoes of the Canyon
 category: people
 image: ../../assets/photos/people/echoes-of-the-canyon.jpg
-alt: A people photograph
+alt: "A woman in a straw hat sitting on a red sandstone ledge looking down at a green river curving through a deep canyon under a clear blue sky."
 date: 2026-04-05T00:00:00.000Z
 location: ''
 originalFilename: IMG_5324 (1).jpg

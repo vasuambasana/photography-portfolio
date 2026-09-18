@@ -2,7 +2,7 @@
 title: Beneath the Canopy
 category: street
 image: ../../assets/photos/street/beneath-the-canopy.jpg
-alt: A street photograph
+alt: "A woman walking away down a narrow shaded path carrying a bag, dense dark foliage arching overhead and closing in from both sides."
 date: 2026-08-09T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8136.jpg

@@ -2,7 +2,7 @@
 title: Neon Alleyway
 category: street
 image: ../../assets/photos/street/neon-alleyway.jpg
-alt: A street photograph
+alt: "A covered brick alleyway with every wall, beam and roof panel covered in dense multicoloured graffiti, the passage opening onto a lit street at the far end."
 date: 2026-05-03T00:00:00.000Z
 location: ''
 originalFilename: 20260502_221708.jpg

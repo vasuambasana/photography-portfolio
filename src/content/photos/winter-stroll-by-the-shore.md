@@ -2,7 +2,7 @@
 title: Winter Stroll by the Shore
 category: people
 image: ../../assets/photos/people/winter-stroll-by-the-shore.jpg
-alt: A people photograph
+alt: "A person in a tan coat walking a dog on a snow-covered shoreline, the dog running in a blue coat, a low green-and-white building across the water behind."
 date: 2024-01-20T00:00:00.000Z
 location: ''
 originalFilename: 20240120_125608.jpg

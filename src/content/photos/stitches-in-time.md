@@ -2,7 +2,7 @@
 title: Stitches in Time
 category: street
 image: ../../assets/photos/street/stitches-in-time.jpg
-alt: A street photograph
+alt: "A black and white shop interior: rows of vintage sewing machines on open shelving, a wool coat on a rail to the right and a leather armchair below."
 date: 2025-12-24T00:00:00.000Z
 location: ''
 originalFilename: 20251224_150109.jpg

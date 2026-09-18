@@ -2,7 +2,7 @@
 title: A Tower of Love
 category: people
 image: ../../assets/photos/people/a-tower-of-love.jpg
-alt: A people photograph
+alt: "A small boy in a red t-shirt riding on a woman's shoulders in a crowd at an outdoor event, a white marquee behind them."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6803.CR3

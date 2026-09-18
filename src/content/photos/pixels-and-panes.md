@@ -2,7 +2,7 @@
 title: Pixels and Panes
 category: architecture
 image: ../../assets/photos/architecture/pixels-and-panes.jpg
-alt: A architecture photograph
+alt: "The corner of a building where a facade of small blue and green mosaic tiles meets a plain grey glass curtain wall, under a bright sky of scattered cloud."
 date: 2023-03-28T00:00:00.000Z
 location: ''
 originalFilename: 20230328_173456.jpg

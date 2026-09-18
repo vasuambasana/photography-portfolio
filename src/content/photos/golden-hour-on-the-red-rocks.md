@@ -2,7 +2,7 @@
 title: Golden Hour on the Red Rocks
 category: nature
 image: ../../assets/photos/nature/golden-hour-on-the-red-rocks.jpg
-alt: Golden Hour on the Red Rocks
+alt: "A long red sandstone butte with its upper cliffs lit gold by low sun, dark juniper and rooftops in shadow along the valley below."
 date: 2026-04-02T00:00:00.000Z
 originalFilename: 2P4A5568.jpg
 featured: false

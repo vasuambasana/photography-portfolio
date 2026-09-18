@@ -2,7 +2,7 @@
 title: Rise from the Frost
 category: street
 image: ../../assets/photos/street/rise-from-the-frost.jpg
-alt: A street photograph
+alt: "A large illuminated phoenix lantern with outstretched wings and flame-shaped tail standing on snow at night, dark conifers behind it."
 date: 2026-01-18T00:00:00.000Z
 location: ''
 originalFilename: 20260117_204859.jpg

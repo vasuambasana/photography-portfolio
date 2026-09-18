@@ -2,7 +2,7 @@
 title: Spring's Velvet Tapestry
 category: nature
 image: ../../assets/photos/nature/spring-s-velvet-tapestry.jpg
-alt: A nature photograph
+alt: "A magnolia in full bloom filling the frame, hundreds of pink and white cupped flowers held on bare branches in low sun."
 date: 2026-04-24T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6505.jpg

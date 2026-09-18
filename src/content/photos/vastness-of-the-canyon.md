@@ -2,7 +2,7 @@
 title: Vastness of the Canyon
 category: nature
 image: ../../assets/photos/nature/vastness-of-the-canyon.jpg
-alt: Vastness of the Canyon
+alt: "Layered red and grey canyon walls receding to a flat rim on the horizon under heavy overcast, a scrub-covered promontory in the foreground."
 date: 2026-04-06T00:00:00.000Z
 originalFilename: 2P4A6269.jpg
 featured: true

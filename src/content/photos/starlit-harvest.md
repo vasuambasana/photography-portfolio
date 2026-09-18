@@ -2,7 +2,7 @@
 title: Starlit Harvest
 category: night
 image: ../../assets/photos/night/starlit-harvest.jpg
-alt: A night photograph
+alt: "A group of red barns under a star-filled sky, the last orange of dusk still showing at the horizon behind a dark treeline."
 date: 2025-07-04T00:00:00.000Z
 location: ''
 originalFilename: 20250704_003347.jpg

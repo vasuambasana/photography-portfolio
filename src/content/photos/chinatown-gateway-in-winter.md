@@ -2,7 +2,7 @@
 title: Chinatown Gateway in Winter
 category: street
 image: ../../assets/photos/street/chinatown-gateway-in-winter.jpg
-alt: A street photograph
+alt: "A Chinatown paifang gate at night in falling snow, lit by string lights and street lamps, with flags hung beneath the inscription and wet road reflecting the lights."
 date: 2026-01-19T00:00:00.000Z
 location: ''
 originalFilename: 20260118_194909.jpg

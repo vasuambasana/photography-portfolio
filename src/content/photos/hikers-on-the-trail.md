@@ -2,7 +2,7 @@
 title: Hikers on the Trail
 category: nature
 image: ../../assets/photos/nature/hikers-on-the-trail.jpg
-alt: Hikers on the Trail
+alt: "A line of small hiker figures strung out along a narrow switchback trail cut into a canyon wall, the opposite rim rising behind."
 date: 2026-04-06T00:00:00.000Z
 originalFilename: 2P4A6453.jpg
 featured: false

@@ -2,7 +2,7 @@
 title: Solitude in the Shade
 category: people
 image: ../../assets/photos/people/solitude-in-the-shade.jpg
-alt: A people photograph
+alt: "A person in a sun hat sitting against the trunk of a large tree reading a book, park lawn and willows sunlit beyond the shade."
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A7769.CR3

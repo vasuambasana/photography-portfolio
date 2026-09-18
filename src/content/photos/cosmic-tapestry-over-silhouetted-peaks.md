@@ -2,7 +2,7 @@
 title: Cosmic Tapestry Over Silhouetted Peaks
 category: night
 image: ../../assets/photos/night/cosmic-tapestry-over-silhouetted-peaks.jpg
-alt: A night photograph
+alt: "The Milky Way core low over a dark desert ridge, small clouds scattered beneath it and a band of airglow along the horizon."
 date: 2023-04-23T00:00:00.000Z
 location: 'Death Valley National Park, California'
 originalFilename: 20230423_043656.jpg

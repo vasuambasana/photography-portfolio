@@ -9,6 +9,11 @@ export default defineConfig({
   output: 'static',
   redirects: {
     '/portfolio': '/gallery',
+    // These two shipped to production as "badlands" before the shoot was
+    // identified as Death Valley. The slugs are corrected; the old URLs are
+    // already indexed and linked, so they keep resolving.
+    '/photo/above-the-badlands': '/photo/above-the-desert-ridge',
+    '/photo/strata-of-the-badlands': '/photo/strata-at-first-light',
   },
   integrations: [
     tailwind(),

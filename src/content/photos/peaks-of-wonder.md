@@ -2,7 +2,7 @@
 title: Peaks of Wonder
 category: people
 image: ../../assets/photos/people/peaks-of-wonder.jpg
-alt: A people photograph
+alt: "A woman in a wide sun hat carrying a baby on her hip, standing among green scrub with blurred red rock formations behind them in warm light."
 date: 2026-04-03T00:00:00.000Z
 location: ''
 originalFilename: 2P4A5555.CR3

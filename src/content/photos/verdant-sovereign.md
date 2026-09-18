@@ -2,7 +2,7 @@
 title: Verdant Sovereign
 category: architecture
 image: ../../assets/photos/architecture/verdant-sovereign.jpg
-alt: A architecture photograph
+alt: "The Statue of Liberty from the chest up against grey cloud, oxidised green copper, the gold flame of the torch raised overhead."
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240831_134417 (1).jpg

@@ -2,7 +2,7 @@
 title: Monolith in Monochrome
 category: architecture
 image: ../../assets/photos/architecture/monolith-in-monochrome.jpg
-alt: A architecture photograph
+alt: "The upper floors and rooftop mast of the Prudential Tower in black and white, bare winter branches reaching across the foreground."
 date: 2023-03-22T00:00:00.000Z
 location: ''
 originalFilename: 20230322_185858.jpg
