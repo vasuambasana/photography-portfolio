@@ -2,7 +2,10 @@
 title: Neon Pulse of the Metropolis
 category: night
 image: ../../assets/photos/night/neon-pulse-of-the-metropolis.jpg
-alt: A night photograph
+alt: >-
+  Times Square at night seen from the red steps at Duffy Square, Broadway
+  billboards stacked up both sides of the avenue above a dense crowd, with a
+  wedge of black sky above the buildings.
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240830_232629.jpg

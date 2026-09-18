@@ -6,7 +6,14 @@ import { collectTags, decorate, publishedJournal, sortJournal } from '../../util
 
 const allEntries = publishedJournal(await getCollection('journal'));
 const entries = await decorate(sortJournal(allEntries));
-const tags = [...collectTags(allEntries).entries()].sort((a, b) => b[1].entries.length - a[1].entries.length);
+
+// Only tags that actually group something appear in the filter row. A tag used once
+// narrows ten stories down to the one you can already see, which is what made the
+// original tag list read as noise. Single-use tags still have pages, still get linked
+// from inside their entry, and reappear here as soon as a second entry uses them.
+const tags = [...collectTags(allEntries).entries()]
+  .filter(([, { entries: tagged }]) => tagged.length > 1)
+  .sort((a, b) => b[1].entries.length - a[1].entries.length || a[1].tag.localeCompare(b[1].tag));
 ---
 
 <BaseLayout

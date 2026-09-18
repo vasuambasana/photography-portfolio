@@ -2,7 +2,10 @@
 title: Beacon of the Skyline
 category: architecture
 image: ../../assets/photos/architecture/beacon-of-the-skyline.jpg
-alt: A architecture photograph
+alt: >-
+  One World Trade Center rising alone above a bank of trees, its chamfered glass
+  faces forming a long pale chevron up the tower, with the antenna spire against
+  a bruised pink and grey sky.
 date: 2024-08-31T00:00:00.000Z
 location: ''
 originalFilename: 20240903_023443.jpg

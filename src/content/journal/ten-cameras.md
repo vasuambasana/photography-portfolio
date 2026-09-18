@@ -7,7 +7,7 @@ coverImage: canopy-of-infinity
 tags: [gear, archive, phones]
 excerpt: "There are 127 photographs on this site, taken over six and a half years on ten different cameras. Forty-three came from a Canon. Seventy-eight came from a phone that happened to be in a pocket."
 featured: false
-draft: true
+draft: false
 relatedPhotos:
   [
     canopy-of-infinity,
@@ -47,8 +47,8 @@ Three are Canon R5 Mark II frames. **Two were shot on folding phones**: *Canopy 
 on a Z Fold6 — a twenty-five second night-sky exposure — and *Celestial Web* on a Z Fold7,
 at 1/120s. Neither announces what took it.
 
-That selection wasn't weighted by camera. The frames were picked first; the metadata was
-only checked afterwards.
+Nothing about the featured set was chosen by camera — the split just falls where it falls,
+and you only find out which is which by opening the metadata.
 
 ## One frame from a camera that appears once
 

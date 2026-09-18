@@ -4,6 +4,53 @@ This log tracks all architectural, specification, and prompt changes made throug
 
 ---
 
+## [0.5.4] - 2026-09-17
+
+Journal goes from 5 published entries to 10, with no drafts left outstanding.
+
+### Added
+- **Three entries completed from scaffolds** by looking at the photographs rather than
+  guessing at them. All three had their premise corrected in the process:
+  - *What the Mesh Tells You* (was "a morning at two hundred millimetres") — the scaffold
+    assumed wild animals and asked how long the wait was. The frames are a peregrine
+    falcon, a red panda, a flamingo, two wolves and a mountain lion, in one February
+    morning. That list doesn't exist in the wild. Aviary netting is visible behind the
+    falcon and the cougar sits on a wooden platform. The entry says so.
+  - *One Phone, Four Lenses* (was "shooting a skyline on a phone") — not just a skyline.
+    One World Trade Center at 115mm and Times Square at 23mm, same day, and all four of the
+    S24 Ultra's cameras used from 13mm to 115mm.
+  - *A Day at the Art Fair* (was "a day of portraits in the park") — an outdoor art fair,
+    not a park: vendor tents, easels, artists at work. Twelve of fifteen frames on the
+    70-200.
+- **Two essays published** — *Ten Cameras* and *Two Ways to Photograph the Dark* were
+  already finished; one inferred claim about how the featured set was chosen was reworded
+  before publishing.
+- Real alt text for three more photographs. Placeholder count 85 → 82.
+
+### Changed
+- **The journal tag filter now shows only tags used by more than one entry.** At ten
+  entries there were 31 tags, 23 of them used once — a filter row where most options narrow
+  ten stories to the one already visible. Single-use tags keep their pages and stay linked
+  from inside their entry, and rejoin the filter row as soon as a second entry uses them.
+
+### Lessons Learned & Mistakes Avoided
+- **A scaffold can encode a wrong premise and make it look researched.** The wildlife
+  scaffold asked "how close did you get?" and "how long did you wait?" — reasonable
+  questions, formatted confidently, and both nonsense once you look at the pictures and see
+  the mesh. *Lesson:* placeholders don't only leave gaps, they assert a shape for the
+  answer. Check the shape before filling them.
+- **The thing that makes a photograph honest is often the thing you'd instinctively crop.**
+  At 200mm and f/2.8 the aviary netting could have been removed with a step sideways.
+  Keeping it is what makes the frame true rather than merely good. *Lesson worth keeping
+  for this archive specifically:* the EXIF is already published on every photo page, so the
+  site is committed to being checkable — the pictures should hold the same standard.
+- **Fixing a symptom at one scale can recreate it at another.** The tag row was made useful
+  at three entries by filtering in place instead of navigating. At ten entries it had
+  quietly become noise again by a different route — 23 single-use tags. *Lesson:* any
+  display that grows with content needs a rule, not a one-time tidy.
+
+---
+
 ## [0.5.3] - 2026-09-17
 
 ### Fixed

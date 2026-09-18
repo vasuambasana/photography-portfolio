@@ -2,7 +2,10 @@
 title: Brushstrokes of Summer
 category: people
 image: ../../assets/photos/people/brushstrokes-of-summer.jpg
-alt: A people photograph
+alt: >-
+  An artist in a black beret works on a large acrylic portrait propped on an
+  easel at an outdoor art fair, prints pegged to a grid display behind her and
+  white vendor tents beyond.
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 2P4A6807.CR3
