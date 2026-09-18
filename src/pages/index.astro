@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PhotoCard from '../components/portfolio/PhotoCard.astro';
 import JournalCard from '../components/journal/JournalCard.astro';
@@ -13,11 +13,17 @@ const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slic
 const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
 
 const latestJournal = await decorate(sortJournal(publishedJournal(await getCollection('journal'))).slice(0, 2));
+
+// Sharing the site showed the logo on a blank card. Lead with the picture.
+const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
 ---
 
 <BaseLayout
   title="Vasu Ambasana — Photography"
   description="A personal photography archive by Vasu Ambasana - architecture, coastlines, street and night sky, with the camera settings left in."
+  ogImage={social.src}
+  ogImageSize={{ width: 1200, height: 630 }}
+  ogImageAlt={heroPhoto.data.alt}
 >
   <!-- Immersive Cinematic Hero -->
   <section class="relative px-3 sm:px-4 md:px-6 pt-2 pb-6 md:pb-8" aria-labelledby="hero-heading">

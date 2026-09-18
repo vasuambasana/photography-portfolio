@@ -40,8 +40,23 @@ const { prev: newerEntry, next: olderEntry } = neighbours(allEntries, entry.slug
   title={title}
   description={entry.data.excerpt}
   ogImage={ogImage.src}
+  ogImageSize={{ width: ogImage.attributes.width, height: ogImage.attributes.height }}
+  ogImageAlt={cover.data.alt}
   ogType="article"
   schema="BlogPosting"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Journal', path: '/journal' },
+    { name: title, path: `/journal/${entry.slug}` },
+  ]}
+  schemaProps={{
+    dateModified: date.toISOString(),
+    wordCount: entry.body.split(/\s+/).filter(Boolean).length,
+    keywords: tags,
+    inLanguage: 'en-US',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': new URL(`/journal/${entry.slug}`, Astro.site).toString() },
+    ...(location ? { contentLocation: { '@type': 'Place', name: location } } : {}),
+  }}
   article={{
     publishedTime: date.toISOString(),
     section: JOURNAL_TYPE_LABELS[type],

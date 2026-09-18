@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/portfolio/GalleryGrid.astro';
 import PhotoCard from '../../components/portfolio/PhotoCard.astro';
@@ -9,11 +10,34 @@ const allPhotos = await getCollection('photos');
 const sortedPhotos = sortPhotos(allPhotos);
 
 const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
+
+// A generic "browse the gallery" line competes with every other gallery on the web.
+// The real counts and categories are what make the snippet specific.
+const description = `${sortedPhotos.length} photographs by Vasu Ambasana - ${categories.join(', ')} - each one listed with the camera and settings it was made on.`;
+
+// The most recent photograph stands in for the gallery on social cards.
+const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
 ---
 
 <BaseLayout
   title="Gallery"
-  description="Browse the complete photography gallery by category."
+  description={description}
+  ogImage={social.src}
+  ogImageSize={{ width: 1200, height: 630 }}
+  ogImageAlt={sortedPhotos[0].data.alt}
+  schema="CollectionPage"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Gallery', path: '/gallery' },
+  ]}
+  schemaProps={{
+    mainEntity: {
+      '@type': 'ImageGallery',
+      name: 'Photography Gallery',
+      numberOfItems: sortedPhotos.length,
+      about: categories,
+    },
+  }}
 >
   <section class="pt-2 pb-12" aria-labelledby="gallery-heading">
     <div class="section-container">

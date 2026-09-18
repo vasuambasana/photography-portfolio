@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import ClickableImage from '../../components/portfolio/ClickableImage';
 import { neighbours, photosInCategory, sortPhotos } from '../../utils/photos';
+import { exifData, metaDescription } from '../../utils/seo';
 
 export async function getStaticPaths() {
   const photos = sortPhotos(await getCollection('photos'));
@@ -67,16 +68,43 @@ const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
 const display = await getImage({ src: image, width: 1800, format: 'webp' });
 const initialIndex = clientPhotos.findIndex((p) => p.slug === photo.slug);
+
+// WebP still trips up some crawlers (LinkedIn, WhatsApp), which then show no card
+// at all. Social previews get their own JPEG at the size the platforms expect.
+const social = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
+const description = metaDescription(photo.body, alt);
 ---
 
 <PhotoLayout
   title={title}
-  description={alt}
+  description={description}
   category={category}
   date={date.toISOString()}
-  coverImage={display.src}
+  coverImage={social.src}
+  ogImageSize={{ width: 1200, height: 630 }}
+  ogImageAlt={alt}
   currentSlug={photo.slug}
   clientPhotos={clientPhotos}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Gallery', path: '/gallery' },
+    { name: title, path: `/photo/${photo.slug}` },
+  ]}
+  schemaProps={{
+    '@type': 'Photograph',
+    contentUrl: new URL(display.src, Astro.site).toString(),
+    thumbnailUrl: new URL(social.src, Astro.site).toString(),
+    width: display.attributes.width,
+    height: display.attributes.height,
+    dateCreated: date.toISOString(),
+    caption: alt,
+    keywords: [category, ...(location ? [location] : [])],
+    copyrightHolder: { '@type': 'Person', name: 'Vasu Ambasana' },
+    copyrightNotice: `© ${date.getUTCFullYear()} Vasu Ambasana`,
+    creditText: 'Vasu Ambasana',
+    ...(location ? { contentLocation: { '@type': 'Place', name: location } } : {}),
+    ...(exifData(cameraSpecs).length ? { exifData: exifData(cameraSpecs) } : {}),
+  }}
 >
   <div class="section-container">
     <!-- Immersive Exhibition Theater Display -->

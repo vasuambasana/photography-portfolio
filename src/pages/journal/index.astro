@@ -20,6 +20,23 @@ const tags = [...collectTags(allEntries).entries()]
   title="Journal"
   description="Stories from the field — location guides, photographer's notes, and visual essays by Vasu Ambasana."
   ogType="website"
+  schema="CollectionPage"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Journal', path: '/journal' },
+  ]}
+  schemaProps={{
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: entries.length,
+      itemListElement: entries.map(({ entry }, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: new URL(`/journal/${entry.slug}`, Astro.site).toString(),
+        name: entry.data.title,
+      })),
+    },
+  }}
 >
   <section class="section-container pt-4 pb-16">
     <!-- Header -->

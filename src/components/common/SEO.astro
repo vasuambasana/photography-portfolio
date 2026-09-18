@@ -1,12 +1,21 @@
 ---
+import { breadcrumbList, type Crumb } from '../../utils/seo';
+
 export interface Props {
   title: string;
   description: string;
   canonical?: string;
   ogImage?: string;
+  /** Rendered dimensions of `ogImage`. Crawlers that get these skip a fetch. */
+  ogImageSize?: { width: number; height: number };
+  ogImageAlt?: string;
   ogType?: 'website' | 'article';
   /** Overrides the JSON-LD @type; defaults to Article for `ogType="article"`. */
-  schema?: 'BlogPosting' | 'Photograph';
+  schema?: 'BlogPosting' | 'Photograph' | 'CollectionPage' | 'AboutPage' | 'ContactPage';
+  /** Extra top-level properties merged into the main JSON-LD node. */
+  schemaProps?: Record<string, unknown>;
+  /** Trail from the site root to this page, root first. */
+  breadcrumbs?: Crumb[];
   article?: {
     publishedTime?: string;
     section?: string;
@@ -20,8 +29,12 @@ const {
   description,
   canonical,
   ogImage,
+  ogImageSize,
+  ogImageAlt,
   ogType = 'website',
   schema,
+  schemaProps,
+  breadcrumbs,
   article,
   noindex = false,
 } = Astro.props;
@@ -39,36 +52,8 @@ const AUTHOR = {
 };
 
 const schemaType = schema || (ogType === 'article' ? 'Article' : 'WebSite');
----
 
-<!-- Primary Meta -->
-<title>{title} | {siteName}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={canonicalUrl} />
-{noindex && <meta name="robots" content="noindex, nofollow" />}
-
-<!-- Open Graph -->
-<meta property="og:type" content={ogType} />
-<meta property="og:url" content={canonicalUrl} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={socialImage} />
-<meta property="og:site_name" content={siteName} />
-{article?.publishedTime && (
-  <meta property="article:published_time" content={article.publishedTime} />
-)}
-{article?.section && (
-  <meta property="article:section" content={article.section} />
-)}
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={socialImage} />
-
-<!-- JSON-LD Structured Data -->
-<script is:inline type="application/ld+json" set:html={JSON.stringify([
+const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': schemaType,
@@ -82,6 +67,48 @@ const schemaType = schema || (ogType === 'article' ? 'Article' : 'WebSite');
     ...(article?.publishedTime ? { datePublished: article.publishedTime } : {}),
     ...(article?.section ? { articleSection: article.section } : {}),
     ...(article?.readingTime ? { timeRequired: `PT${article.readingTime}M` } : {}),
+    ...schemaProps,
   },
   { '@context': 'https://schema.org', ...AUTHOR },
-])} />
+  ...(breadcrumbs?.length ? [breadcrumbList(breadcrumbs, siteUrl)] : []),
+];
+---
+
+<!-- Primary Meta -->
+<title>{title} | {siteName}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:image:alt" content={ogImageAlt || description} />
+{ogImageSize && (
+  <>
+    <meta property="og:image:width" content={String(ogImageSize.width)} />
+    <meta property="og:image:height" content={String(ogImageSize.height)} />
+  </>
+)}
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="en_US" />
+{article?.publishedTime && (
+  <meta property="article:published_time" content={article.publishedTime} />
+)}
+{article?.section && (
+  <meta property="article:section" content={article.section} />
+)}
+{ogType === 'article' && <meta property="article:author" content="Vasu Ambasana" />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={socialImage} />
+<meta name="twitter:image:alt" content={ogImageAlt || description} />
+
+<!-- JSON-LD Structured Data -->
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

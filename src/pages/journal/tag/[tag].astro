@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import JournalCard from '../../../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
-import { collectTags, decorate, publishedJournal, sortJournal } from '../../../utils/journal';
+import { collectTags, decorate, publishedJournal, sortJournal, tagSlug } from '../../../utils/journal';
 
 export async function getStaticPaths() {
   const entries = publishedJournal(await getCollection('journal'));
@@ -15,11 +15,22 @@ export async function getStaticPaths() {
 
 const { tag, entries } = Astro.props;
 const decorated = await decorate(entries);
+
+// Most tags carry a single entry, so the page is a near-duplicate of that entry
+// with none of its substance. Keep it crawlable for the links, out of the index
+// for the thin content; a tag earns indexing once it collects a few entries.
+const MIN_ENTRIES_TO_INDEX = 2;
 ---
 
 <BaseLayout
   title={`${tag} — Journal`}
-  description={`Journal entries tagged ${tag} — field notes and location guides by Vasu Ambasana.`}
+  description={`${entries.length} journal ${entries.length === 1 ? 'entry' : 'entries'} tagged ${tag} - field notes and location guides by Vasu Ambasana.`}
+  noindex={entries.length < MIN_ENTRIES_TO_INDEX}
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Journal', path: '/journal' },
+    { name: `#${tag}`, path: `/journal/tag/${tagSlug(tag)}` },
+  ]}
 >
   <section class="section-container pt-4 pb-16">
     <header class="mb-8 md:mb-10 max-w-2xl">

@@ -5,6 +5,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout
   title="About Vasu Ambasana"
   description="About Vasu Ambasana and this personal photography archive - how the pictures get made, and what they get made on."
+  schema="AboutPage"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+  ]}
 >
   <section class="py-section" aria-labelledby="about-heading">
     <div class="section-container">

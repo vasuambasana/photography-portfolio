@@ -5,7 +5,12 @@ import ContactForm from '../components/contact/ContactForm.astro';
 
 <BaseLayout
   title="Contact"
-  description="Say hello or ask a question."
+  description="Say hello or ask a question about a photograph, a location, or how something was made."
+  schema="ContactPage"
+  breadcrumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact' },
+  ]}
 >
   <section class="py-section" aria-labelledby="contact-heading">
     <div class="section-container">

@@ -2,11 +2,10 @@
 import BaseLayout from './BaseLayout.astro';
 import ThumbnailStrip from '../components/portfolio/ThumbnailStrip.astro';
 
+import type { Props as SEOProps } from '../components/common/SEO.astro';
 import type { ClientPhoto } from '../pages/photo/[slug].astro';
 
-export interface Props {
-  title: string;
-  description: string;
+export interface Props extends Pick<SEOProps, 'title' | 'description' | 'ogImageSize' | 'ogImageAlt' | 'breadcrumbs' | 'schemaProps'> {
   category: string;
   date: string;
   coverImage?: string;
@@ -14,12 +13,11 @@ export interface Props {
   clientPhotos: ClientPhoto[];
 }
 
-const { title, description, category, date, coverImage, currentSlug, clientPhotos } = Astro.props;
+const { category, date, coverImage, currentSlug, clientPhotos, ...seo } = Astro.props;
 ---
 
 <BaseLayout
-  title={title}
-  description={description}
+  {...seo}
   ogType="article"
   schema="Photograph"
   ogImage={coverImage}
