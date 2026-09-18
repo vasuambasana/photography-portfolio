@@ -53,7 +53,7 @@ glass against a deep blue sky with branches catching the sun at the edge.
 
 Then there is the exception. The single Canon frame in the category is
 [*Symphony in Steel and Shadow*](/photo/symphony-in-steel-and-shadow), from a January night,
-at **ISO 5000**. It is the highest ISO anywhere in this archive. The bridge tower is almost
+at ISO 5000. It is the highest ISO anywhere in this archive. The bridge tower is almost
 entirely black and the cables fan out of the dark as thin pale lines.
 
 Which is the actual pattern, once you line the numbers up. The phone covers buildings in

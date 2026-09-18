@@ -14,23 +14,23 @@ relatedPhotos: [coastal-strides-in-the-morning-sun, architect-of-the-shore, grou
 Three frames from a few days in August, all on the Canon R5 Mark II, all at ISO 100. What
 separates them is only how far back I was.
 
-[*Architect of the Shore*](/photo/architect-of-the-shore) is **200mm at f/2.8, 1/4000s**. A
+[*Architect of the Shore*](/photo/architect-of-the-shore) is 200mm at f/2.8, 1/4000s. A
 boy on a wide beach building a mound of sand, figures at the waterline behind him gone soft,
 buildings along the shore softer still. At 200mm I was far enough away that he had no reason
 to know a camera existed, and the whole frame is about a child absorbed in something.
 
 [*Coastal Strides in the Morning Sun*](/photo/coastal-strides-in-the-morning-sun) is
-**70mm at f/3.2**, also 1/4000s. Two runners in red on hard sand at the waterline, a blue
+70mm at f/3.2, also 1/4000s. Two runners in red on hard sand at the waterline, a blue
 umbrella and dunes off to the right. Seventy millimetres puts the beach back into the
 picture. You can see where they are running, which is most of the point.
 
-Then there is [*Grounded in Decay*](/photo/grounded-in-decay), **35mm at f/1.8, 1/1000s**,
+Then there is [*Grounded in Decay*](/photo/grounded-in-decay), 35mm at f/1.8, 1/1000s,
 looking straight down at a pair of white trainers on badly cracked asphalt. The cracks run
 right across the frame.
 
-Out of one hundred and twenty-seven photographs on this site, it is the only one aimed
-straight down at a pair of shoes, and it took 35mm to do it. At any longer focal length you
-physically cannot get shoes and the ground around them into the same frame.
+Those are my shoes. Out of one hundred and twenty-seven photographs on this site, it is the
+only frame where the camera is pointed at the person holding it, and it took 35mm to do it.
+At any longer focal length you physically cannot get your own feet into the shot.
 
 Two of the three are at 1/4000s, which says how hard August light on sand is. Neither
 needed to be that fast. It is just what f/2.8 and f/3.2 cost at ISO 100 when everything in

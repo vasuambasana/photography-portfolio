@@ -18,11 +18,11 @@ relatedPhotos:
   ]
 ---
 
-This is the biggest single day in the archive: **fifteen frames on 23 August 2026**, at an
+This is the biggest single day in the archive: fifteen frames on 23 August 2026, at an
 outdoor art fair on grass. White vendor tents, easels, prints pegged to grid displays, and
 families spread across the lawn in late-afternoon light.
 
-Almost all of it was shot long. **Twelve of the fifteen** were made on the RF 70-200mm f/2.8,
+Almost all of it was shot long. Twelve of the fifteen were made on the RF 70-200mm f/2.8,
 seven of those at 200mm exactly. Two frames on the RF 35mm. One on a phone.
 
 ## Why the long lens at a crowded event
@@ -37,7 +37,7 @@ and slightly to the side, working on a large acrylic portrait propped on an ease
 with an ice pop against an orange sky, the paint still wet-looking. Prints hang on a grid
 frame behind her, tents and other visitors dissolving into the background.
 
-It was shot at 89mm and **1/5000s**. That shutter speed has nothing to do with motion; it's
+It was shot at 89mm and 1/5000s. That shutter speed has nothing to do with motion; it's
 what f/3.2 costs in full sun at ISO 100. But the distance is the point. she is entirely
 absorbed, and she stayed that way, because the camera was far enough back not to be part of
 the situation.
@@ -51,7 +51,7 @@ argument for the lens.
 ## The two wide frames
 
 Only two frames came from the 35mm: [*A Sunny Day in the Park*](/photo/a-sunny-day-in-the-park) at 1/2000s and [*Unbound Spirit*](/photo/unbound-spirit)
-at **1/4000s, f/1.8, ISO 100**.
+at 1/4000s, f/1.8, ISO 100.
 
 Wide means close, and close means participating. [*Unbound Spirit*](/photo/unbound-spirit) is a child in a pinstriped
 baseball uniform mid-motion, the kind of frame you only get from a few feet away, where
@@ -65,7 +65,7 @@ people who never knew.
 ISO 100 on nine frames, 200 on four, and shutter speeds from 1/5000s down to 1/250s. Hard
 late-summer sun, and no lack of light anywhere.
 
-The interesting outlier is [*Guiding Light*](/photo/guiding-light): 200mm, f/2.8, **1/250s at ISO 320**. Slower
+The interesting outlier is [*Guiding Light*](/photo/guiding-light): 200mm, f/2.8, 1/250s at ISO 320. Slower
 shutter, higher ISO, wide open. That's deep shade, or the light had dropped considerably by
 the time it was taken. It's a man steadying a small child beside a wooden post, and it's the
 only frame where the camera was clearly working for it.
@@ -73,7 +73,7 @@ only frame where the camera was clearly working for it.
 ## The one that isn't from the fair
 
 [*Amber Moon*](/photo/amber-moon) also carries this date, and it doesn't belong with the rest. A gibbous moon
-in full black sky, amber-coloured, shot at **1/30s and ISO 400**, and not on the Canon at
+in full black sky, amber-coloured, shot at 1/30s and ISO 400, and not on the Canon at
 all, but on the phone's periscope telephoto.
 
 Fourteen frames on the ground in bright sun, and then, hours later, the moon on a phone.

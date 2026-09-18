@@ -19,7 +19,7 @@ relatedPhotos:
 Three frames survive from this afternoon. What they have in common isn't the subject: a
 lighthouse, an old mill building, a row of houses. It's the focal length.
 
-All three were shot at **115mm equivalent**, the longest lens on a Galaxy S24 Ultra, from
+All three were shot at 115mm equivalent, the longest lens on a Galaxy S24 Ultra, from
 across open water. ISO 32 on every frame, shutter speeds between 1/700s and 1/1500s. Bright,
 flat, overcast light, and no possibility of walking closer to anything.
 
@@ -47,8 +47,8 @@ three.
 A red clapboard building at the waterline, paint gone chalky and peeling, with two lines
 painted across it in letters big enough to read from the other side of the water:
 
-**MANUFACTORY**  
-**ESTABLISHED 1863**
+> MANUFACTORY  
+> ESTABLISHED 1863
 
 Moored directly in front of it, filling the bottom left of the frame, is a modern white motor
 yacht. Clean fibreglass against failing timber.

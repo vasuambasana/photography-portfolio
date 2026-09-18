@@ -27,13 +27,13 @@ Two of them were taken on the same day, both in daylight, and there are nine and
 stops between them.
 
 [*Echoes of the Canyon*](/photo/echoes-of-the-canyon) is the iPhone, 33mm equivalent at
-f/1.8, **1/5300s at ISO 80**. Someone in a straw hat sitting on a sandstone ledge with a
+f/1.8, 1/5300s at ISO 80. Someone in a straw hat sitting on a sandstone ledge with a
 green river a long way below. A shutter that fast is not a decision anybody makes. It is a
 camera reporting that the rim of a canyon at midday is one of the brightest things it will
 ever be pointed at.
 
 [*Light Through Sandstone*](/photo/light-through-sandstone) is the Canon, 35mm at f/2.8,
-**1/60s at ISO 1600**. Smooth orange walls, deep purple shadow, light arriving from
+1/60s at ISO 1600. Smooth orange walls, deep purple shadow, light arriving from
 somewhere above and bouncing its way down.
 
 Work those two exposures back to a common ISO and the gap is nine and a half stops. The
