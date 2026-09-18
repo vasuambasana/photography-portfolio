@@ -2,7 +2,7 @@
 
 Everything on the site comes from two Astro content collections, both plain markdown,
 both schema-validated in [`src/content/config.ts`](../src/content/config.ts). There is no
-CMS and no database — adding content means adding a markdown file.
+CMS and no database. Adding content means adding a markdown file.
 
 ## `photos`
 
@@ -34,13 +34,13 @@ The photographer's note about this frame, in first person.
 | --- | --- |
 | `title` | Also the hover label and lightbox caption. |
 | `category` | One of `architecture`, `nature`, `street`, `night`, `people`, `portrait`, `travel`, `abstract`. Drives the gallery filter. |
-| `image` | **Relative path** into `src/assets/photos/`. Not a `/public` URL — see below. |
+| `image` | **Relative path** into `src/assets/photos/`. Not a `/public` URL (see below). |
 | `alt` | Required, and must describe the image. `validate` rejects filenames masquerading as alt text. |
 | `date` | The capture date. This is the canonical sort key. |
 | `location` | Optional; shown as a pill on the photo page and on hover. |
 | `originalFilename` | Links the web JPEG back to the original, so `exif fix` can find it. |
 | `featured` | Puts the photo in the home page grid. |
-| `order` | **Optional pin** — see below. |
+| `order` | **Optional pin**: see below. |
 | `cameraSpecs` | All sub-fields optional; the specs plaque hides whatever's absent. |
 
 ### Why `image` is a relative path
@@ -48,7 +48,7 @@ The photographer's note about this frame, in first person.
 Photos live in `src/assets/photos/<category>/`, not `public/photos/`. Anything under
 `src/assets` goes through Astro's image pipeline at build time, which gives responsive
 `srcset`, WebP output, and intrinsic `width`/`height` on every `<img>`. Files in `public/`
-are copied verbatim and get none of that — which is why the masonry grid used to reflow
+are copied verbatim and get none of that, which is why the masonry grid used to reflow
 as images loaded.
 
 The path is relative to the markdown file, so from `src/content/photos/x.md` it is
@@ -97,7 +97,7 @@ relatedPhotos: [winter-on-the-headland, winter-stroll-by-the-shore]
 ### Derived, not stored
 
 - **Reading time** is computed from the body at build time (`readingTime()` in
-  `src/utils/journal.ts`). There is no `readingTime` field — a hand-entered one goes stale.
+  `src/utils/journal.ts`). There is no `readingTime` field; a hand-entered one goes stale.
 - **Cover alt text** comes from the referenced photo's `alt`. There is no `coverAlt` field.
 
 ### Drafts
@@ -113,7 +113,7 @@ the home page.
 ### Related photos should be from the same shoot
 
 `relatedPhotos` is a claim that these frames belong together. Check the capture dates before
-filling it in — the first version of the Death Valley entry linked two photos from 2023 and
+filling it in. The first version of the Death Valley entry linked two photos from 2023 and
 two from 2026 while describing a single morning.
 
 ### References fail loudly

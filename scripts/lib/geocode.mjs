@@ -27,7 +27,7 @@ export async function extractGps(filePath) {
   }
 }
 
-/** Builds "Town, State" / "Park, State" — deliberately coarser than the raw fix. */
+/** Builds "Town, State" / "Park, State". Deliberately coarser than the raw fix. */
 function formatPlace(address) {
   if (!address) return null;
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * backfill-ai.mjs — regenerate alt text and descriptions that were left as
+ * backfill-ai.mjs: regenerate alt text and descriptions that were left as
  * placeholders when the Gemini call failed or hit quota during ingest.
  *
  *   node scripts/backfill-ai.mjs            # fix everything that looks like a placeholder
@@ -35,9 +35,9 @@ const prompt = (category) => `You are a professional photography curator writing
 
 Analyze this ${category} photograph and provide:
 1. A short, evocative title (2-4 words, no quotes)
-2. A concise alt text description for accessibility — one sentence that describes what is
+2. A concise alt text description for accessibility. One sentence that describes what is
    actually visible in the frame, for someone who cannot see it. Be specific and concrete.
-3. A 2-3 sentence artistic description from the photographer's perspective — what drew them
+3. A 2-3 sentence artistic description from the photographer's perspective. What drew them
    to the shot, the lighting, the mood, or a small story behind it. First person. Genuine
    and understated, not flowery.
 
@@ -87,7 +87,7 @@ console.log(`${candidates.length} photo(s) need backfilling.`);
 
 if (dryRun) {
   for (const { file, needsAlt, needsBody } of candidates) {
-    console.log(`  ${file} — ${[needsAlt && 'alt', needsBody && 'description'].filter(Boolean).join(' + ')}`);
+    console.log(`  ${file}: ${[needsAlt && 'alt', needsBody && 'description'].filter(Boolean).join(' + ')}`);
   }
   process.exit(0);
 }
@@ -95,7 +95,7 @@ if (dryRun) {
 if (candidates.length === 0) process.exit(0);
 
 if (!process.env.GEMINI_API_KEY) {
-  console.error('GEMINI_API_KEY is not set — add it to .env (see .env.example).');
+  console.error('GEMINI_API_KEY is not set. Add it to .env (see .env.example).');
   process.exit(1);
 }
 
@@ -109,7 +109,7 @@ for (const [i, { file, filePath, parsed, needsAlt, needsBody }] of targets.entri
 
   const imagePath = path.resolve(CONTENT_DIR, data.image || '');
   if (!data.image || !fs.existsSync(imagePath)) {
-    console.log('   skip — image not found on disk');
+    console.log('   skip: image not found on disk');
     continue;
   }
 
@@ -117,7 +117,7 @@ for (const [i, { file, filePath, parsed, needsAlt, needsBody }] of targets.entri
   try {
     ai = await generate(genAI, imagePath, data.category || 'photography');
   } catch (err) {
-    console.error(`   stopping — all models failed: ${err.message}`);
+    console.error(`   stopping, all models failed: ${err.message}`);
     break;
   }
 

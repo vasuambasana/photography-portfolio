@@ -16,7 +16,7 @@ relatedPhotos:
   ]
 ---
 
-Three frames survive from this afternoon. What they have in common isn't the subject — a
+Three frames survive from this afternoon. What they have in common isn't the subject: a
 lighthouse, an old mill building, a row of houses. It's the focal length.
 
 All three were shot at **115mm equivalent**, the longest lens on a Galaxy S24 Ultra, from
@@ -31,8 +31,8 @@ move, because the subject is a building. All that's left is what you point at, a
 press.
 
 What you get back is compression. The lighthouse in [*Sentinel of the Granite Coast*](/photo/sentinel-of-the-granite-coast) sits with
-its keeper's houses stacked flat against it — white clapboard, red roofs, a low shelf of
-granite — and everything above it given over to an enormous empty sky. At 115mm the headland
+its keeper's houses stacked flat against it (white clapboard, red roofs, a low shelf of
+granite), and everything above it given over to an enormous empty sky. At 115mm the headland
 stops being somewhere you could walk onto and becomes a shape on the horizon.
 
 The haze helps. Across that much water there is always atmosphere in the way, and it does
@@ -47,7 +47,8 @@ three.
 A red clapboard building at the waterline, paint gone chalky and peeling, with two lines
 painted across it in letters big enough to read from the other side of the water:
 
-**MANUFACTORY — ESTABLISHED 1863**
+**MANUFACTORY**  
+**ESTABLISHED 1863**
 
 Moored directly in front of it, filling the bottom left of the frame, is a modern white motor
 yacht. Clean fibreglass against failing timber.
@@ -60,7 +61,7 @@ tied up.
 ## The third one
 
 [*Coastal Elevation*](/photo/coastal-elevation) is the quieter frame. Houses built out over the rocks on wooden pilings
-and steel legs — a yellow one set back in the trees, a white one with an enclosed porch, and
+and steel legs: a yellow one set back in the trees, a white one with an enclosed porch, and
 a newer grey-shingled storey on top with a yellow-striped awning, cantilevered out over the
 water.
 
@@ -72,7 +73,7 @@ structure that grew in stages.
 
 ## What I'd do again
 
-Shoot a whole outing at one focal length — though not as a discipline exercise. There was
+Shoot a whole outing at one focal length, though not as a discipline exercise. There was
 only one lens that could reach, so the decision was already made. Three frames in, I'd
 stopped thinking about the camera at all and was just looking for things worth pointing it
 at.

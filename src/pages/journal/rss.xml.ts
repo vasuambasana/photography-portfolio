@@ -7,9 +7,9 @@ export async function GET(context: APIContext) {
   const entries = sortJournal(publishedJournal(await getCollection('journal')));
 
   return rss({
-    title: 'Journal — Vasu Ambasana Photography',
+    title: 'Journal | Vasu Ambasana Photography',
     description:
-      "Stories from the field — location guides, photographer's notes, and visual essays by Vasu Ambasana.",
+      "Stories from the field: location guides, photographer's notes, and visual essays by Vasu Ambasana.",
     site: context.site!,
     // Browsers render raw XML otherwise, which reads as broken to anyone who clicks it.
     stylesheet: '/rss/styles.xsl',

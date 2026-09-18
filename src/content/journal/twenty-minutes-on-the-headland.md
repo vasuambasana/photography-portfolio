@@ -19,7 +19,7 @@ The sky had been a flat, depressing steel-gray all afternoon. No texture, no gra
 
 Then, around 4:40 PM, the very bottom of the cloud deck began to fray.
 
-It didn't clear out—the sky never went blue. But a gap opened up right above the water line, maybe three finger-widths wide, and the sun dropped through it like a hot coin.
+It didn't clear out. The sky never went blue. But a gap opened up right above the water line, maybe three finger-widths wide, and the sun dropped through it like a hot coin.
 
 For about twenty minutes, the entire mood flipped. That harsh, freezing granite turned deep amber. The patches of frozen sea spray along the rocks lit up like crushed glass. The evergreens behind me went from muddy green to rich bronze, and the water took on this deep, heavy indigo that you only ever get when the ocean is nearly freezing.
 

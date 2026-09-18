@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * slugs.mjs — keep photo filenames, slugs and image filenames aligned with titles.
+ * slugs.mjs: keep photo filenames, slugs and image filenames aligned with titles.
  *
  *   node scripts/slugs.mjs check   # report files whose slug doesn't match the title
  *   node scripts/slugs.mjs fix     # rename the markdown + image and rewrite frontmatter
@@ -63,14 +63,14 @@ let renamed = 0;
 for (const { mdPath, parsed, current, desired } of mismatched) {
   const imageRef = parsed.data.image;
   if (!imageRef) {
-    console.log(`skip ${current} — no image in frontmatter`);
+    console.log(`skip ${current}. No image in frontmatter`);
     continue;
   }
 
   // Frontmatter image paths are relative to the markdown file.
   const oldImagePath = path.resolve(CONTENT_DIR, imageRef);
   if (!fs.existsSync(oldImagePath)) {
-    console.log(`skip ${current} — image not found: ${imageRef}`);
+    console.log(`skip ${current}. Image not found: ${imageRef}`);
     continue;
   }
 
@@ -79,7 +79,7 @@ for (const { mdPath, parsed, current, desired } of mismatched) {
   const newMdPath = path.join(CONTENT_DIR, `${desired}.md`);
 
   if (fs.existsSync(newMdPath) || fs.existsSync(newImagePath)) {
-    console.log(`skip ${current} — ${desired} already exists`);
+    console.log(`skip ${current}: ${desired} already exists`);
     continue;
   }
 
@@ -100,4 +100,4 @@ for (const { mdPath, parsed, current, desired } of mismatched) {
 }
 
 console.log(`\nRenamed ${renamed} photo(s).`);
-console.log(`Journal entries referencing renamed slugs will now fail the build — run: npm run validate`);
+console.log(`Journal entries referencing renamed slugs will now fail the build. Run: npm run validate`);

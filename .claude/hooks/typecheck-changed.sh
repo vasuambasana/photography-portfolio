@@ -4,7 +4,7 @@
 #   content markdown  -> npm run validate   (~1s, catches broken refs immediately)
 #   .astro/.ts/.tsx   -> astro check        (~25s, so at most once a minute)
 #
-# Advisory only: always exits 0. A slow type check shouldn't block an edit mid-flow —
+# Advisory only: always exits 0. A slow type check shouldn't block an edit mid-flow.
 # CI and the pre-commit checklist in CLAUDE.md are the real gates.
 
 set -uo pipefail

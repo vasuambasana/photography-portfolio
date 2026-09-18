@@ -23,7 +23,7 @@ The window I actually care about doesn't begin until twenty minutes later. Photo
 
 For about twelve minutes, from 7:35 to roughly 7:48 PM on this particular evening, the balance was dead even.
 
-Suddenly the towers don't look like obstructions—they reveal their internal skeleton. You can see individual floor plates on the One Vanderbilt spire, the yellow desk lamps left on in legal offices fifty stories up, and the slow, crawling ribbon of red brake lights snaking down the avenues below. In the far distance, the Hudson River holds onto a pale violet reflection of the upper atmosphere, while the sky directly above the skyline shifts from burnt amber to cobalt.
+Suddenly the towers don't look like obstructions. They reveal their internal skeleton. You can see individual floor plates on the One Vanderbilt spire, the yellow desk lamps left on in legal offices fifty stories up, and the slow, crawling ribbon of red brake lights snaking down the avenues below. In the far distance, the Hudson River holds onto a pale violet reflection of the upper atmosphere, while the sky directly above the skyline shifts from burnt amber to cobalt.
 
 What always catches me by surprise from high up is how quiet the city looks compared to how loud it actually is down on the asphalt. Down on 42nd Street, sirens are bouncing off the brick, brakes are screeching, and crosswalks are overflowing. Up here, it looks like a living circuit board that someone slowly turned on with a dimmer switch.
 

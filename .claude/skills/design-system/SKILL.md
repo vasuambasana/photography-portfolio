@@ -3,7 +3,7 @@ name: design-system
 description: >
   Design tokens, type scale, spacing and visual rules for the photography portfolio.
   Load BEFORE writing or editing any .astro, .css or .tsx that affects layout, colour,
-  typography, spacing or motion — including new pages, new components, and any redesign
+  typography, spacing or motion, including new pages, new components, and any redesign
   work. Also load when reviewing UI for consistency.
 ---
 
@@ -12,13 +12,13 @@ description: >
 The photographs are the content. Everything here exists to get out of their way.
 
 Tokens are CSS custom properties in `src/styles/global.css`, surfaced as Tailwind tokens
-in `tailwind.config.mjs`. **Never hardcode a hex value or a raw Tailwind colour** —
+in `tailwind.config.mjs`. **Never hardcode a hex value or a raw Tailwind colour**:
 `bg-zinc-50` is wrong, `bg-surface-main` is right. Hardcoded colours don't theme.
 
 ## Colour
 
 **Light is the default.** `.dark` is the variant, toggled by a class on `<html>`.
-The original spec in `prompts/initial_prompt.md` says dark-first — that is out of date.
+The original spec in `prompts/initial_prompt.md` says dark-first; that is out of date.
 Don't "fix" it.
 
 | Token | Light | Dark | Use |
@@ -36,7 +36,7 @@ Colours are stored as space-separated RGB channels so Tailwind's `/<alpha-value>
 
 Extra CSS vars: `--glass-bg` (translucent nav background), `--selection-bg`.
 
-**Over a photograph**, tokens don't apply — use explicit `white/…` and `black/…` opacities,
+**Over a photograph**, tokens don't apply. Use explicit `white/…` and `black/…` opacities,
 since the surface underneath is the image, not the theme.
 
 ## Typography
@@ -59,14 +59,14 @@ Use the scale tokens, never raw `text-2xl`:
 | `text-body-lg` / `-md` / `-sm` | 1.125 / 1 / 0.875rem |
 | `text-caption` | 0.75rem, `0.05em` tracking |
 
-Small uppercase mono labels are the house signature — `text-[10px] font-mono uppercase
+Small uppercase mono labels are the house signature: `text-[10px] font-mono uppercase
 tracking-[0.15em]` (or `[0.2em]` for section eyebrows). Reach for this instead of inventing
 a new label treatment.
 
 ## Layout
 
 - `max-w-content` (104rem) for full-width sections; `max-w-prose` (42rem) for reading.
-- `.section-container` is the standard page gutter — use it rather than re-deriving padding.
+- `.section-container` is the standard page gutter. Use it rather than re-deriving padding.
 - `rounded-card` (0.75rem) for grid cards; `rounded-2xl`/`rounded-3xl` for hero and feature
   surfaces; `rounded-full` for pills and buttons.
 - Spacing tokens `spacing-section` and `spacing-content` are fluid `clamp()` values.
@@ -77,14 +77,14 @@ a new label treatment.
 - **Never crop or distort a photograph.** Native aspect ratio always. Masonry columns
   (`columns-*` + `break-inside-avoid`) exist precisely so photos keep their own shape.
   A fixed `aspect` on `PhotoCard` is only for secondary contexts like journal related-photos.
-- Always go through `<Image>` from `astro:assets` — never a bare `<img>` for a collection
+- Always go through `<Image>` from `astro:assets`. Never a bare `<img>` for a collection
   photo. Pass both `width` and `widths`, or Astro emits a full-resolution fallback `src`.
 - Hover treatment is `scale-105` over `duration-700` with a bottom-anchored gradient.
   Use `PhotoCard` rather than rebuilding it.
 
 ## Motion
 
-- Transitions 200–700ms, ease-out. `duration-700` for image scale, `duration-300` for
+- Transitions 200-700ms, ease-out. `duration-700` for image scale, `duration-300` for
   overlays and colour.
 - Everything must be wrapped by the existing `prefers-reduced-motion` guard in `global.css`.
 - No motion that competes with the photographs.
@@ -92,7 +92,7 @@ a new label treatment.
 ## Accessibility (non-negotiable)
 
 - Touch targets ≥ 44×44.
-- Visible focus rings — never `outline: none` without a replacement.
+- Visible focus rings. Never `outline: none` without a replacement.
 - Filter buttons carry `aria-pressed`; the current filmstrip thumb carries `aria-current`.
 - The lightbox traps focus, closes on Escape, and restores focus to the trigger.
 - One `<h1>` per page; don't skip heading levels for styling.
@@ -103,12 +103,12 @@ a new label treatment.
 This is a personal archive, not a business. No copy should imply anything is for sale.
 No "Inquire", "prints", "licensing", "commissions", "book a session", "client", "rates",
 or "fine art" as a market label. No third-person agency voice. First person and plain
-warmth — "Say Hello", not "Get a Quote". See the root `CLAUDE.md`.
+warmth. "Say Hello", not "Get a Quote". See the root `CLAUDE.md`.
 
 ## Banned
 
 Carousels. Autoplay anything. Heavy drop shadows (`shadow-sm`/`shadow-lg` on cards is the
-ceiling; `shadow-2xl` only on the hero). Multi-stop decorative gradients — gradients are for
+ceiling; `shadow-2xl` only on the hero). Multi-stop decorative gradients. Gradients are for
 legibility over photographs, not decoration. Fake social proof, invented testimonials, fake
 client logos. Parallax. Loading spinners on a static site.
 

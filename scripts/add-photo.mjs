@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * add-photo.mjs — Streamlined photo-adding script for the photography portfolio.
+ * add-photo.mjs: Streamlined photo-adding script for the photography portfolio.
  *
  * Usage:
  *   node scripts/add-photo.mjs <path-to-image-or-folder> --category <category>
@@ -173,8 +173,8 @@ async function collectImages(inputPath) {
       seenExifSigs.set(exifSig, { path: filePath, isRaw: RAW_EXTENSIONS.includes(ext) });
     }
 
-    // A filename like "shot (1).jpg" still gets kept when its EXIF signature was unique —
-    // a copy-pattern name alone isn't evidence of a duplicate frame.
+    // A filename like "shot (1).jpg" still gets kept when its EXIF signature was unique.
+    // A copy-pattern name alone isn't evidence of a duplicate frame.
     seenHashes.add(hash);
     resultFiles.push(filePath);
   }
@@ -332,7 +332,7 @@ async function getJpegBuffer(filePath) {
       return Buffer.from(thumb);
     }
   } catch (e) {
-    // exifr failed — try binary scan
+    // exifr failed. Try binary scan
   }
 
   // Method 2: Binary scan for embedded JPEG (works for CR3 / ISO BMFF containers)
@@ -372,14 +372,14 @@ async function getJpegBuffer(filePath) {
       // Pick the largest JPEG found (usually the full-resolution preview)
       jpegs.sort((a, b) => b.length - a.length);
       const best = jpegs[0];
-      console.log(`   📦 Found ${jpegs.length} embedded JPEG(s) — using largest (${(best.length / 1024 / 1024).toFixed(1)} MB)`);
+      console.log(`   📦 Found ${jpegs.length} embedded JPEG(s). Using largest (${(best.length / 1024 / 1024).toFixed(1)} MB)`);
       return best.buffer;
     }
   } catch (e) {
     console.warn(`   ⚠️  Binary JPEG scan failed: ${e.message}`);
   }
 
-  console.warn(`   ⚠️  No usable JPEG found in RAW file — cannot process`);
+  console.warn(`   ⚠️  No usable JPEG found in RAW file. Cannot process`);
   return null;
 }
 
@@ -408,7 +408,7 @@ async function generateDescription(filePath, category) {
 Analyze this ${category} photograph and provide:
 1. A short, evocative title (2-4 words, no quotes)
 2. A concise alt text description for accessibility (one sentence)
-3. A 2-3 sentence artistic description from the photographer's perspective — describe what drew them to the shot, the lighting, the mood, or a small story behind it. Write in first person. Keep it genuine and understated, not flowery.
+3. A 2-3 sentence artistic description from the photographer's perspective. Describe what drew them to the shot, the lighting, the mood, or a small story behind it. Write in first person. Keep it genuine and understated, not flowery.
 
 Respond in this exact JSON format, no markdown:
 {"title": "...", "alt": "...", "description": "..."}`;
@@ -520,7 +520,7 @@ async function processImage(filePath, targetCategory) {
   if (isRaw) {
     const jpegBuf = await getJpegBuffer(filePath);
     if (!jpegBuf || jpegBuf.length === 0) {
-      console.log(`   ⚠️  Could not extract usable JPEG from RAW — skipping ${path.basename(filePath)}`);
+      console.log(`   ⚠️  Could not extract usable JPEG from RAW. Skipping ${path.basename(filePath)}`);
       return null;
     }
     try {
@@ -530,7 +530,7 @@ async function processImage(filePath, targetCategory) {
         .toFile(destPath);
       console.log(`   🖼️  Extracted & optimized RAW to JPEG: src/assets/photos/${targetCategory}/${destFileName}`);
     } catch (rawErr) {
-      console.log(`   ⚠️  Sharp failed on RAW buffer for ${path.basename(filePath)}: ${rawErr.message} — skipping`);
+      console.log(`   ⚠️  Sharp failed on RAW buffer for ${path.basename(filePath)}: ${rawErr.message}. Skipping`);
       return null;
     }
   } else {

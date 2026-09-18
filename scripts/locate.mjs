@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * locate.mjs — assign locations to photos in batches.
+ * locate.mjs: assign locations to photos in batches.
  *
  *   node scripts/locate.mjs list                  # shoots by date, with location status
  *   node scripts/locate.mjs list --missing        # only shoots still missing a location
@@ -9,7 +9,7 @@
  *   node scripts/locate.mjs set "Boston, Massachusetts" --slugs steel-and-sky,harbor-rhythm
  *   node scripts/locate.mjs set "..." --dates 2024-08-31 --dry-run
  *
- * Why batches: none of the originals carry GPS (checked — 0 of 129), so location can't be
+ * Why batches: none of the originals carry GPS (checked: 0 of 129), so location can't be
  * derived. But photos cluster into shoots by capture date, and a shoot happens in one
  * place, so one command can label a whole trip.
  *
@@ -24,7 +24,7 @@ import { CONTENT_DIR } from './lib/config.mjs';
 const [mode, ...rest] = process.argv.slice(2);
 
 if (!['list', 'set', 'gps'].includes(mode)) {
-  console.error('Usage: node scripts/locate.mjs <list|set|gps> [...]  — see the header of this file.');
+  console.error('Usage: node scripts/locate.mjs <list|set|gps> [...]. See the header of this file.');
   process.exit(1);
 }
 
@@ -174,7 +174,7 @@ for (const { slug, filePath, parsed, date } of targets) {
 
   if (current === location) continue;
   if (current && !has('force')) {
-    console.log(`  skip ${slug} — already set to "${current}" (use --force to overwrite)`);
+    console.log(`  skip ${slug}. Already set to "${current}" (use --force to overwrite)`);
     continue;
   }
 
@@ -189,6 +189,6 @@ for (const { slug, filePath, parsed, date } of targets) {
 
 console.log(
   dryRun
-    ? `\nDry run — ${changed} photo(s) would change.`
+    ? `\nDry run: ${changed} photo(s) would change.`
     : `\nSet location on ${changed} photo(s). Run \`npm run validate\`.`
 );

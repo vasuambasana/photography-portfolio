@@ -24,8 +24,8 @@ export default defineConfig({
     tailwind(),
     react(),
     sitemap({
-      // Pages that carry `noindex` must not also be advertised in the sitemap —
-      // submitting a URL and then telling the crawler to drop it wastes budget
+      // Pages that carry `noindex` must not also be advertised in the sitemap.
+      // Submitting a URL and then telling the crawler to drop it wastes budget
       // and reads as a conflicting signal.
       //
       // Tag pages go out wholesale: most are noindexed for thin content, and the

@@ -11,31 +11,31 @@ Journal goes from 5 published entries to 10, with no drafts left outstanding.
 ### Added
 - **Three entries completed from scaffolds** by looking at the photographs rather than
   guessing at them. All three had their premise corrected in the process:
-  - *What the Mesh Tells You* (was "a morning at two hundred millimetres") — the scaffold
+  - *What the Mesh Tells You* (was "a morning at two hundred millimetres"). The scaffold
     assumed wild animals and asked how long the wait was. The frames are a peregrine
     falcon, a red panda, a flamingo, two wolves and a mountain lion, in one February
     morning. That list doesn't exist in the wild. Aviary netting is visible behind the
     falcon and the cougar sits on a wooden platform. The entry says so.
-  - *One Phone, Four Lenses* (was "shooting a skyline on a phone") — not just a skyline.
+  - *One Phone, Four Lenses* (was "shooting a skyline on a phone"), not just a skyline.
     One World Trade Center at 115mm and Times Square at 23mm, same day, and all four of the
     S24 Ultra's cameras used from 13mm to 115mm.
-  - *A Day at the Art Fair* (was "a day of portraits in the park") — an outdoor art fair,
+  - *A Day at the Art Fair* (was "a day of portraits in the park"). An outdoor art fair,
     not a park: vendor tents, easels, artists at work. Twelve of fifteen frames on the
     70-200.
-- **Two essays published** — *Ten Cameras* and *Two Ways to Photograph the Dark* were
+- **Two essays published**: *Ten Cameras* and *Two Ways to Photograph the Dark* were
   already finished; one inferred claim about how the featured set was chosen was reworded
   before publishing.
 - Real alt text for three more photographs. Placeholder count 85 → 82.
 
 ### Changed
 - **The journal tag filter now shows only tags used by more than one entry.** At ten
-  entries there were 31 tags, 23 of them used once — a filter row where most options narrow
+  entries there were 31 tags, 23 of them used once: a filter row where most options narrow
   ten stories to the one already visible. Single-use tags keep their pages and stay linked
   from inside their entry, and rejoin the filter row as soon as a second entry uses them.
 
 ### Lessons Learned & Mistakes Avoided
 - **A scaffold can encode a wrong premise and make it look researched.** The wildlife
-  scaffold asked "how close did you get?" and "how long did you wait?" — reasonable
+  scaffold asked "how close did you get?" and "how long did you wait?" Reasonable
   questions, formatted confidently, and both nonsense once you look at the pictures and see
   the mesh. *Lesson:* placeholders don't only leave gaps, they assert a shape for the
   answer. Check the shape before filling them.
@@ -43,10 +43,10 @@ Journal goes from 5 published entries to 10, with no drafts left outstanding.
   At 200mm and f/2.8 the aviary netting could have been removed with a step sideways.
   Keeping it is what makes the frame true rather than merely good. *Lesson worth keeping
   for this archive specifically:* the EXIF is already published on every photo page, so the
-  site is committed to being checkable — the pictures should hold the same standard.
+  site is committed to being checkable. The pictures should hold the same standard.
 - **Fixing a symptom at one scale can recreate it at another.** The tag row was made useful
   at three entries by filtering in place instead of navigating. At ten entries it had
-  quietly become noise again by a different route — 23 single-use tags. *Lesson:* any
+  quietly become noise again by a different route: 23 single-use tags. *Lesson:* any
   display that grows with content needs a rule, not a one-time tidy.
 
 ---
@@ -68,9 +68,9 @@ Journal goes from 5 published entries to 10, with no drafts left outstanding.
 ### Added
 - **Two journal entries**, both written after looking at the photographs and checking every
   figure against EXIF:
-  - *An Afternoon at One Focal Length* — three frames from 18 August 2024, all at 115mm
+  - *An Afternoon at One Focal Length*. Three frames from 18 August 2024, all at 115mm
     equivalent on a Galaxy S24 Ultra, ISO 32 throughout, shot across water.
-  - *Looking Down Instead of Across* — five frames from 8 August 2026 on the R5 Mark II, all
+  - *Looking Down Instead of Across*. Five frames from 8 August 2026 on the R5 Mark II, all
     shot from an elevated vantage looking down, ISO 200 throughout.
 - **`npm run exif audit` now compares frontmatter dates against EXIF capture dates**, in the
   camera's local time so a timezone offset doesn't read as drift. It lives in `exif.mjs`
@@ -83,17 +83,17 @@ Journal goes from 5 published entries to 10, with no drafts left outstanding.
   prose-lg prose-p:leading-relaxed` reads like carefully considered typography. Without the
   plugin installed it generated nothing, and had been generating nothing since the journal
   was built. *Lesson:* when styling doesn't apply, check the class exists before debugging
-  specificity — and grep `plugins: []` before trusting any `prose-*`, `line-clamp-*` or
+  specificity, and grep `plugins: []` before trusting any `prose-*`, `line-clamp-*` or
   `aspect-*` class that depends on one.
 - **A derived sort key hides its own corruption.** Three wrong dates produced no error, no
-  warning and no visual break — just three photographs quietly in the wrong place in a
+  warning and no visual break. Just three photographs quietly in the wrong place in a
   127-item grid. Nobody would ever have spotted it by looking. *Lesson:* any field that
   drives ordering deserves a check against its source of truth, because the failure mode is
   invisible rather than loud.
 - **Looking at the photograph is not the same as inventing the story.** Three attempts at
   adding journal entries stalled on the risk of fabrication. The way through was to write
-  only what is visible in the frame and what is recorded in EXIF — the words painted on a
-  wall, the focal length, the ISO — and to leave out everything that would require having
+  only what is visible in the frame and what is recorded in EXIF (the words painted on a
+  wall, the focal length, the ISO), and to leave out everything that would require having
   been there. *Lesson:* observation is evidence; memory is the thing I don't have.
 
 ---
@@ -104,12 +104,12 @@ Removed commercial framing site-wide. This is a personal archive, not a business
 
 ### Changed
 - **"Inquire →" on every photo page is now "Say Hello →".**
-- **The photo-page CTA** read *"Interested in prints, licensing, or collaborating?"* — now
+- **The photo-page CTA** read *"Interested in prints, licensing, or collaborating?"*. Now
   *"If this one reminds you of somewhere, I'd like to hear about it."*
 - **The contact form** had an "Inquiry Type" selector with a `licensing` option value. Now
   "What's this about?" with plain-language choices. Privacy wording changed from "respond to
   your inquiry" to "reply to you".
-- **The About page** was written in third-person agency voice — *"The work spans architecture,
+- **The About page** was written in third-person agency voice. *"The work spans architecture,
   landscape, and editorial portraiture"*, *"Based in a studio that prioritizes simplicity"*.
   Rewritten in first person, opening by stating plainly that this is a personal archive.
   "Formats" became "Subjects"; "editorial" and "documentary" dropped; equipment now reads
@@ -119,20 +119,20 @@ Removed commercial framing site-wide. This is a personal archive, not a business
 - Home and About meta descriptions rewritten; "Get in Touch" unified to "Say Hello".
 
 ### Added
-- **`validate` now fails on commercial language** anywhere in `src/` — `inquire`, `licensing`,
+- **`validate` now fails on commercial language** anywhere in `src/`: `inquire`, `licensing`,
   `commission`, `for sale`, `fine art`, `rate card`, `book a session`. "print" and "client"
   are deliberately excluded: they have legitimate code meanings (`clientPhotos`, `client:load`).
 - A standing rule in `CLAUDE.md` and the `design-system` skill, plus a warning at the top of
   `prompts/initial_prompt.md`, which is where all of this language originally came from.
 
 ### Removed
-- `InquirySuccess.astro` — unused, and named after the thing being removed.
+- `InquirySuccess.astro`. Unused, and named after the thing being removed.
 
 ### Lessons Learned & Mistakes Avoided
 - **The spec keeps leaking.** Every piece of commercial wording traced back to one line in
   `prompts/initial_prompt.md`: *"generates assignment inquiries, supports direct client
   outreach, and provides a foundation for fine-art prints, workshops, digital products,
-  client galleries."* Marking that document historical wasn't enough — the phrasing had
+  client galleries."* Marking that document historical wasn't enough. The phrasing had
   already been copied into eight files. *Lesson:* when a direction is abandoned, grep for
   its vocabulary, not just its features.
 - **A check that passes proves nothing until you've seen it fail.** The first version of the
@@ -159,21 +159,21 @@ Corrections and follow-ups from the first review of the revamped `dev` branch.
   carrying "Badlands" were retitled. The entry's `relatedPhotos` had also mixed two photos
   from 2023 with two from 2026 while describing a single morning; now all five are from the
   same shoot.
-- **RSS looked broken.** The feed was always valid and returned 200 — browsers just stopped
+- **RSS looked broken.** The feed was always valid and returned 200. Browsers just stopped
   rendering RSS, so clicking it showed raw XML. Added an XSL stylesheet
   (`public/rss/styles.xsl`) so it renders as a readable page, plus
   `<link rel="alternate">` autodiscovery, which was missing entirely.
 
 ### Added
-- **`npm run locate`** — `list` shows shoots by capture date with location status, `set`
+- **`npm run locate`**: `list` shows shoots by capture date with location status, `set`
   assigns a location to a whole shoot by date range or slug, `gps` backfills from EXIF.
 - **GPS → place name in `add-photo`**, via Nominatim. Coordinates are never written to the
   site; only a coarse place name, and sharp strips metadata from the published JPEG.
 - **`draft: true` on journal entries.** Renders in `astro dev`, stripped from production
   across index, tag pages, detail pages, RSS and the home page. `validate` now *fails* on a
   published entry still containing `[PLACEHOLDER`.
-- Three draft journal entries scaffolded from verified EXIF — real dates, gear, lenses and
-  exposure ranges — with every narrative claim left as an explicit placeholder.
+- Three draft journal entries scaffolded from verified EXIF. Real dates, gear, lenses and
+  exposure ranges, with every narrative claim left as an explicit placeholder.
 
 ### Changed
 - **Journal tags filter in place** instead of navigating away. With 3 entries and 14 tags
@@ -185,7 +185,7 @@ Corrections and follow-ups from the first review of the revamped `dev` branch.
 - **An empty field is an invitation to invent one.** All 127 photos had `location: ""`, so
   the ingest model filled the gap from the pixels and produced "Badlands" for Death Valley.
   *Lesson:* a generative pipeline will not leave a blank alone. Either supply the fact or
-  make its absence explicit — and check what got written before it ships.
+  make its absence explicit, and check what got written before it ships.
 - **Verify the premise before building the feature.** "Extract location when adding" sounded
   straightforward until the originals were actually checked: **0 of 129 carry GPS**. The
   extraction is built and correct, but it would have silently done nothing. *Lesson:* scan
@@ -207,16 +207,16 @@ Corrections and follow-ups from the first review of the revamped `dev` branch.
 Workflow and maintainability pass on `dev`, alongside the Journal section.
 
 ### Added
-- **`npm run validate`** — content integrity checks Zod can't express: unresolvable images,
+- **`npm run validate`**: content integrity checks Zod can't express: unresolvable images,
   orphaned files, placeholder alt text, duplicate titles, `order` collisions, dangling
   journal references.
-- **CI** (`.github/workflows/build-check.yml`) — validate + type check + build on PRs to
+- **CI** (`.github/workflows/build-check.yml`). Validate + type check + build on PRs to
   `main`/`dev`. The first automated gate this repo has had.
 - **`CLAUDE.md`** and `docs/` (content model, image workflow, deployment runbook). The README
   had pointed at a `docs/` folder that never existed.
 - **Journal tag pages** (`/journal/tag/<tag>`) and an **RSS feed** (`/journal/rss.xml`).
   Tags had been rendering as inert pills.
-- `npm run backfill-ai` — regenerates placeholder alt text and descriptions from the
+- `npm run backfill-ai`. Regenerates placeholder alt text and descriptions from the
   web-sized JPEG, so it no longer depends on the Drive originals.
 
 ### Changed
@@ -240,10 +240,10 @@ Workflow and maintainability pass on `dev`, alongside the Journal section.
 
 ### Removed
 - The `projects` collection, `/portfolio/[slug]` pages, `ProjectCard`/`ProjectHeader`/
-  `ProjectLayout` — placeholder content building pages nothing linked to. The
+  `ProjectLayout`. Placeholder content building pages nothing linked to. The
   `/portfolio` → `/gallery` redirect stays.
 - Dead code: `utils/seo.ts`, `utils/images.ts`, `EXIFBadge`, `ImageWithRatio` (zero usages).
-- `npm.cmd` / `npx.cmd` root wrappers (see 0.4.0 — these were a local PATH workaround that
+- `npm.cmd` / `npx.cmd` root wrappers (see 0.4.0. These were a local PATH workaround that
   had no business being committed).
 - Three EXIF library spikes (`test-exif`, `test-exifreader`, `test-exiftool`); the decision
   they existed to make is baked into `add-photo.mjs`.
@@ -251,7 +251,7 @@ Workflow and maintainability pass on `dev`, alongside the Journal section.
 ### Lessons Learned & Mistakes Avoided
 - **A default on every row makes a sort key meaningless.** `order` was assigned per-category
   but sorted globally, so the "All" view interleaved categories by a number with no
-  cross-category meaning — and two photos silently shared `order: 4`. *Lesson:* if a field
+  cross-category meaning, and two photos silently shared `order: 4`. *Lesson:* if a field
   is set on every record, it can't also be the exception mechanism. Make the pin optional and
   let a real attribute (`date`) carry the ordering.
 - **`public/` opts an image out of every optimization the framework offers.** 129 MB of
@@ -268,7 +268,7 @@ Workflow and maintainability pass on `dev`, alongside the Journal section.
   "read `?filter=`" disagreed about what to do when the param was absent, which cost three
   separate bug-fix commits. *Lesson:* extract the *default*, not just the getter.
 - **Ingest fallbacks are invisible without a check for them.** 92 of 127 photos were sitting
-  on `alt: "A people photograph"` — the AI fallback text — with nothing surfacing it.
+  on `alt: "A people photograph"` (the AI fallback text) with nothing surfacing it.
   *Lesson:* when a pipeline degrades gracefully, something must report how often it degraded.
 
 ---

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
-/** Minimal .env reader — real env vars always win. */
+/** Minimal .env reader, real env vars always win. */
 export function loadEnv() {
   const envPath = path.join(ROOT, '.env');
   if (!fs.existsSync(envPath)) return;
@@ -36,7 +36,7 @@ export function requireSourceDir() {
   if (!SOURCE_DIR) {
     console.error(
       'PHOTO_SOURCE_DIR is not set.\n' +
-        'Add it to .env — see .env.example. It should point at the folder holding your original photos.'
+        'Add it to .env (see .env.example). It should point at the folder holding your original photos.'
     );
     process.exit(1);
   }

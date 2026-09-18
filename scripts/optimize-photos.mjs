@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * optimize-photos.mjs — shrink oversized source JPEGs in src/assets/photos.
+ * optimize-photos.mjs: shrink oversized source JPEGs in src/assets/photos.
  *
  *   node scripts/optimize-photos.mjs             # optimize anything over 2 MB
  *   node scripts/optimize-photos.mjs --dry-run
  *   node scripts/optimize-photos.mjs --threshold 1.5
  *
  * Astro already generates responsive variants at build time, so this is only about
- * keeping the committed originals sane — every run rewrites files in place and adds
+ * keeping the committed originals sane. Every run rewrites files in place and adds
  * another copy to git history, so don't run it habitually.
  */
 
@@ -69,6 +69,6 @@ for (const category of VALID_CATEGORIES) {
 
 console.log(
   dryRun
-    ? '\nDry run — nothing written.'
+    ? '\nDry run. Nothing written.'
     : `\nOptimized ${optimized} file(s), saved ${mb(savedBytes)} MB.`
 );

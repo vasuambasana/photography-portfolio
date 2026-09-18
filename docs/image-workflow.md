@@ -6,8 +6,8 @@ From a RAW file on disk to a responsive `<picture>` on the site.
 
 | Location | Contents | Processed? |
 | --- | --- | --- |
-| `PHOTO_SOURCE_DIR` (outside the repo) | Originals — RAW + JPEG, untouched | No, never committed |
-| `src/assets/photos/<category>/` | Web-sized JPEG, one per published photo | **Yes** — Astro builds variants |
+| `PHOTO_SOURCE_DIR` (outside the repo) | Originals (RAW + JPEG), untouched | No, never committed |
+| `src/assets/photos/<category>/` | Web-sized JPEG, one per published photo | **Yes**: Astro builds variants |
 | `public/` | Favicons, logo, profile photo, robots.txt | No, copied verbatim |
 
 RAW files are gitignored (`*.CR3`, `*.ARW`, `*.NEF`, …) and must never be committed.
@@ -26,7 +26,7 @@ subfolder names.
 
 For each file it:
 
-1. **Deduplicates**, three ways — MD5 of the first 1 MB, an EXIF fingerprint
+1. **Deduplicates**, three ways: MD5 of the first 1 MB, an EXIF fingerprint
    (timestamp + camera + exposure settings), and RAW/JPEG stem pairing. When the same
    frame appears as both JPEG and RAW, the RAW wins.
 2. **Extracts EXIF** via `exifr`, falling back to carving the embedded JPEG out of CR3
@@ -72,13 +72,13 @@ build (several minutes). Two rules keep it from getting worse:
 ## Location
 
 `add-photo` reads GPS from the original and reverse-geocodes it through Nominatim
-(OpenStreetMap — free, keyless, one request per second). Only the resulting place name is
+(OpenStreetMap: free, keyless, one request per second). Only the resulting place name is
 written to frontmatter. **Coordinates are never published**: they stay in the original, and
 sharp strips metadata when it re-encodes, so the JPEGs in `src/assets` carry no location at
 all. Exact coordinates of where a photographer stood are sensitive in a way "Death Valley"
 is not. Set `GEOCODE=off` to skip the lookup.
 
-**Today this yields nothing.** None of the 129 originals carry GPS — the Canon R5 II has no
+**Today this yields nothing.** None of the 129 originals carry GPS. The Canon R5 II has no
 built-in receiver, and location tagging was off on the phone. So locations have to be
 assigned by hand, per shoot:
 
@@ -90,7 +90,7 @@ npm run locate gps                 # backfill from GPS, once photos have any
 ```
 
 Photos cluster into shoots by capture date and a shoot happens in one place, so one command
-labels a whole trip. Only label shoots you actually remember — an invented location is a
+labels a whole trip. Only label shoots you actually remember. An invented location is a
 false claim about a real photograph, and the site shipped one ("Southwest Badlands" for
 Death Valley) before this existed.
 
@@ -112,13 +112,13 @@ npm run validate       # integrity check across all content
 stripped by sharp.
 
 `slugs fix` **changes live URLs**. Run `check` first, and remember that journal entries
-reference photos by slug — run `validate` afterwards to catch anything left dangling.
+reference photos by slug. Run `validate` afterwards to catch anything left dangling.
 
 ## Repository size
 
 `src/assets/photos/` is ~129 MB across 127 files, and git history holds every prior
-version of each one (`.git` is ~137 MB). A git *move* is cheap — blobs are content-addressed,
-so relocating files doesn't duplicate storage — but re-running an optimiser over every photo
+version of each one (`.git` is ~137 MB). A git *move* is cheap. Blobs are content-addressed,
+so relocating files doesn't duplicate storage, but re-running an optimiser over every photo
 and committing the result does.
 
 If this becomes a problem, the option is to keep originals in R2 or similar and commit only

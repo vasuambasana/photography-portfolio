@@ -10,7 +10,7 @@ import { exifData, metaDescription } from '../../utils/seo';
 export async function getStaticPaths() {
   const photos = sortPhotos(await getCollection('photos'));
 
-  // Built once for the whole route — every photo page shares the same filmstrip
+  // Built once for the whole route. Every photo page shares the same filmstrip
   // and lightbox payload, so the image transforms must not run per page.
   const clientPhotos = await Promise.all(
     photos.map(async (p) => ({

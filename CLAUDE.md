@@ -1,17 +1,17 @@
-# Photography Portfolio — working notes
+# Photography Portfolio: working notes
 
 Static photography portfolio for Vasu Ambasana. Astro 4 SSG, Tailwind, one React
 island (the lightbox), deployed to Cloudflare Pages at https://vasuambasana.com.
 
 ## Branches
 
-`main` is the deployed branch. **Never merge `dev` into `main` directly** — changes
+`main` is the deployed branch. **Never merge `dev` into `main` directly**. Changes
 get validated on `dev` first, and promotion to `main` is the owner's call.
 
 ## This is a personal project, not a business
 
 Nothing on this site sells anything, and no copy should imply otherwise. There are no
-prints, no licensing, no commissions, no bookings, no client work, no rate card — and the
+prints, no licensing, no commissions, no bookings, no client work, no rate card, and the
 language should never suggest a service waiting to be purchased.
 
 Avoid: "inquire", "inquiry", "licensing", "prints", "commission", "client", "booking",
@@ -29,11 +29,11 @@ from that document.
 ## Content safety (non-negotiable)
 
 Never invent awards, clients, testimonials, credentials, exhibitions, publications, prices,
-or locations. Camera settings come from EXIF or nowhere — a guessed aperture is a lie about
+or locations. Camera settings come from EXIF or nowhere. A guessed aperture is a lie about
 a real photograph. If a fact is needed and unknown, write `[PLACEHOLDER: ...]` and flag it.
 
 Alt text is editorial copy, never a filename and never the category with an article in
-front. Never crop or distort a photograph — native aspect ratio always.
+front. Never crop or distort a photograph: native aspect ratio always.
 
 Fuller rules in [`src/CLAUDE.md`](src/CLAUDE.md), which loads automatically when you
 work anywhere under `src/`.
@@ -42,51 +42,51 @@ work anywhere under `src/`.
 
 ```bash
 npm run validate   # content checks (orphan images, bad refs, alt text, pin collisions)
-npm run test       # vitest — pure logic in src/utils (fast, <1s)
+npm run test       # vitest, pure logic in src/utils (fast, <1s)
 npm run check      # astro check / TypeScript
-npm run build      # the real test — image processing is where things break
+npm run build      # the real test. Image processing is where things break
 ```
 
 CI runs all four on PRs to `main`/`dev`. The build takes several minutes because Astro
 generates ~500 responsive image variants from 127 source photos.
 
-No new dependency without justifying it — `sharp` and `tailwindcss` are the only runtime
+No new dependency without justifying it: `sharp` and `tailwindcss` are the only runtime
 ones that aren't Astro itself.
 
 ## Content model
 
 Two collections, both markdown, defined in `src/content/config.ts`.
 
-**`photos`** — one file per photograph in `src/content/photos/<slug>.md`. The filename
+**`photos`**: one file per photograph in `src/content/photos/<slug>.md`. The filename
 is the slug and therefore the URL (`/photo/<slug>`).
 
 - `image` is an Astro asset reference, relative to the markdown file:
   `../../assets/photos/<category>/<file>.jpg`. Images live in **`src/assets/photos/`**,
-  not `public/` — that's what lets Astro emit WebP + `srcset` + intrinsic dimensions.
+  not `public/`. That's what lets Astro emit WebP + `srcset` + intrinsic dimensions.
 - `order` is an **optional pin**, not a sort key. Photos with `order` sort first
   (ascending); everything else is newest-first by `date`. Don't add `order` to a photo
-  unless you specifically want it pinned to the top — a value on every photo is what
+  unless you specifically want it pinned to the top. A value on every photo is what
   made the old global sort meaningless.
 
-**`journal`** — long-form entries in `src/content/journal/<slug>.md`.
+**`journal`**: long-form entries in `src/content/journal/<slug>.md`.
 
 - `coverImage` and `relatedPhotos` are `reference('photos')`, so they hold **photo slugs**,
   not paths. A typo fails the build instead of silently rendering nothing.
 - Reading time is computed from the body at build time. There is no `readingTime` field.
-- Cover alt text comes from the referenced photo — there is no `coverAlt` field.
+- Cover alt text comes from the referenced photo, there is no `coverAlt` field.
 
 ## Conventions worth knowing
 
 - **No View Transitions.** `astro:page-load` never fires. Inline `<script>` tags in
-  `.astro` files are deferred modules, so the DOM is ready when they run — just write
+  `.astro` files are deferred modules, so the DOM is ready when they run. Just write
   top-level code. Don't add `astro:page-load` listeners.
 - **Gallery filter state lives in `?filter=`** and nothing else. All four consumers
   (gallery grid, photo prev/next, filmstrip, lightbox) go through `src/utils/filter.ts`.
-  If you're about to read `searchParams.get('filter')` by hand, import the helper instead —
-  divergent defaults here caused three separate bug-fix commits.
+  If you're about to read `searchParams.get('filter')` by hand, import the helper instead.
+  Divergent defaults here caused three separate bug-fix commits.
 - **Photo sorting goes through `sortPhotos()`** in `src/utils/photos.ts`. Don't re-sort inline.
 - `src/pages/photo/[slug].astro` builds its filmstrip/lightbox payload **once** in
-  `getStaticPaths`, shared across all 127 pages. Keep it that way — moving `getImage()`
+  `getStaticPaths`, shared across all 127 pages. Keep it that way. Moving `getImage()`
   calls inside the per-page map multiplies build time by 127.
 
 ## Ingest pipeline
@@ -108,7 +108,7 @@ JPEG into `src/assets/photos/<category>/` and the markdown into `src/content/pho
 | `npm run validate` | Content integrity checks |
 
 Ingest needs `GEMINI_API_KEY` in `.env`. Without it, `add-photo` writes placeholder copy
-rather than failing — which is how 92 of 127 photos ended up with `alt: "A <category>
+rather than failing, which is how 92 of 127 photos ended up with `alt: "A <category>
 photograph"`. `npm run validate` reports the current count.
 
 `slugs fix` rewrites live URLs. Run `check` first.
@@ -116,7 +116,7 @@ photograph"`. `npm run validate` reports the current count.
 ## Design
 
 Tokens are CSS custom properties in `src/styles/global.css`, surfaced as Tailwind tokens.
-**Never hardcode a hex or a raw Tailwind colour** — `bg-zinc-50` doesn't theme,
+**Never hardcode a hex or a raw Tailwind colour**: `bg-zinc-50` doesn't theme,
 `bg-surface-main` does.
 
 **Light is the default theme**, `.dark` is the variant. `prompts/initial_prompt.md` says

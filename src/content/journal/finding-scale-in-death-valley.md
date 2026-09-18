@@ -17,7 +17,7 @@ You hike out before sunrise, stare out over miles of eroded clay ridges and anci
 
 The camera has no depth perception when the sky is bald blue and there are no trees or houses around. Every cliff looks small.
 
-I had been sitting near the trailhead overlook for about an hour on this morning in late April. The air was bone-dry and smelled like dust and sagebrush. The sun had cleared the eastern bluffs, hitting the exposed rock bands at a low rake angle that carved razor-sharp shadows into the sediment gullies. The colors were incredible—yellow sulfur bands bleeding into rust and deep terracotta.
+I had been sitting near the trailhead overlook for about an hour on this morning in late April. The air was bone-dry and smelled like dust and sagebrush. The sun had cleared the eastern bluffs, hitting the exposed rock bands at a low rake angle that carved razor-sharp shadows into the sediment gullies. The colors were incredible: yellow sulfur bands bleeding into rust and deep terracotta.
 
 Still, the compositions felt empty. There was texture, but no tension.
 
@@ -25,6 +25,6 @@ Then I caught movement out on the opposite ridge. A lone hiker with a red daypac
 
 I waited about ten minutes for them to reach the small outcrop at the crest. When they stopped, put their hands on their hips, and stood silhouetted against the sky, everything in the frame clicked into place.
 
-Suddenly, that ridge wasn't just a diagonal line of compressed dirt—it became a six-hundred-foot wall of stone. The small gullies underneath them revealed themselves as massive ravines carved out by millions of years of flash floods. The human silhouette gave the geology its true weight. It turned an abstract pattern of rocks into an honest story about how small we are when we step off the pavement.
+Suddenly, that ridge wasn't just a diagonal line of compressed dirt. It became a six-hundred-foot wall of stone. The small gullies underneath them revealed themselves as massive ravines carved out by millions of years of flash floods. The human silhouette gave the geology its true weight. It turned an abstract pattern of rocks into an honest story about how small we are when we step off the pavement.
 
 I didn't yell or wave. Out in the canyon, sound carries for miles, and that silence is half the reason you wake up at 5:00 AM in the first place. I took three frames, let the shutter settle, and just watched them stand there on the spine of the ridge until they turned back down the trail.

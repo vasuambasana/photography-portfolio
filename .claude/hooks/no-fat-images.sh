@@ -3,7 +3,7 @@
 #
 # .git is already ~137MB against a ~129MB photo set. Every committed copy of a photo
 # is permanent, so the only reliable place to stop the ratchet is before the add.
-# Only newly added or modified files are checked — photos already in history are
+# Only newly added or modified files are checked: photos already in history are
 # grandfathered, otherwise this would block every commit forever.
 
 set -uo pipefail
@@ -53,7 +53,7 @@ if [ -n "$offenders" ]; then
     echo ""
     echo "Run 'npm run optimize' first (it resizes to 2560px / mozjpeg q85 in place),"
     echo "then stage again. Astro generates the responsive variants at build time, so"
-    echo "the committed file only needs to be a sane master — not the camera original."
+    echo "the committed file only needs to be a sane master, not the camera original."
   } >&2
   exit 2
 fi

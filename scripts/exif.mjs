@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * exif.mjs — audit or backfill camera metadata on photo markdown files.
+ * exif.mjs: audit or backfill camera metadata on photo markdown files.
  *
  *   node scripts/exif.mjs audit   # report photos with missing/incomplete cameraSpecs
  *   node scripts/exif.mjs fix     # re-read EXIF from the originals and merge it in
@@ -59,7 +59,7 @@ async function audit() {
  */
 async function auditDates(files) {
   if (!SOURCE_DIR || !fs.existsSync(SOURCE_DIR)) {
-    console.log('\nSkipping date check — PHOTO_SOURCE_DIR not available.');
+    console.log('\nSkipping date check. PHOTO_SOURCE_DIR not available.');
     return;
   }
 
@@ -156,14 +156,14 @@ async function fix() {
       const { data } = parsed;
 
       if (!data.originalFilename || !data.category) {
-        console.log(`skip ${file} — no originalFilename/category`);
+        console.log(`skip ${file}. No originalFilename/category`);
         skipped++;
         continue;
       }
 
       const originalPath = path.join(sourceDir, data.category, data.originalFilename);
       if (!fs.existsSync(originalPath)) {
-        console.log(`skip ${file} — original not found: ${data.originalFilename}`);
+        console.log(`skip ${file}. Original not found: ${data.originalFilename}`);
         skipped++;
         continue;
       }

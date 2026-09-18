@@ -29,7 +29,7 @@ photographs rather than the last.
 ## What's actually in the frames
 
 All five were shot on the Canon R5 Mark II with the RF 70-200mm f/2.8, almost entirely at
-the long end — 200mm on four of them, 187mm on the fifth. **ISO 100 on every single frame**,
+the long end: 200mm on four of them, 187mm on the fifth. **ISO 100 on every single frame**,
 which tells you how much light there was: this was open, bright, cold daylight, not deep
 forest.
 
@@ -46,21 +46,21 @@ Behind it, unmistakably, is the diamond pattern of aviary netting, thrown out of
 f/2.8 but absolutely still there.
 
 I could have shot it at a different angle and lost the mesh. At 200mm and f/2.8 that's not
-hard — get closer to the wire, find a gap, let the background dissolve. Plenty of very good
+hard: get closer to the wire, find a gap, let the background dissolve. Plenty of very good
 photographs are made that way and there's nothing dishonest about it.
 
 But leaving it in changes what the picture is about. With the mesh visible, it stops being a
 photograph of a wild falcon and becomes a photograph of a falcon that lives behind mesh.
 Those are different pictures, and only one of them is true here.
 
-[*Unwavering Gaze*](/photo/unwavering-gaze) does the same thing more quietly — a mountain lion sitting upright, staring
+[*Unwavering Gaze*](/photo/unwavering-gaze) does the same thing more quietly: a mountain lion sitting upright, staring
 straight down the lens, on a **wooden platform**. Wild cougars do not have platforms.
 
 ## The part I'm less sure about
 
 Long lenses at wide apertures are very good at removing context. That's mostly what we use
 them for: isolate the subject, melt everything else. But at a wildlife park the context is
-the whole ethical content of the picture — whether the animal chose to be there, whether it
+the whole ethical content of the picture: whether the animal chose to be there, whether it
 can leave.
 
 f/2.8 at 200mm will erase a fence into a wash of grey-blue and nobody looking at the result
@@ -74,7 +74,7 @@ is the one that admits it.
 ## The practical note
 
 ISO 100 across five frames in winter light is the useful technical takeaway. Enclosures are
-usually built in the open, which means far more light than actual forest — the exposure
+usually built in the open, which means far more light than actual forest. The exposure
 problem at a wildlife park is rarely darkness.
 
 The real problem is backgrounds: fences, feeding stations, signage, other visitors. Every

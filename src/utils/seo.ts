@@ -62,7 +62,7 @@ export function breadcrumbList(crumbs: Crumb[], siteUrl: string) {
 /**
  * EXIF as schema.org `exifData` property/value pairs.
  *
- * Only reports settings the file actually carried — an absent aperture means
+ * Only reports settings the file actually carried. An absent aperture means
  * the camera never wrote one, and inventing a plausible value would be a lie
  * about the photograph.
  */

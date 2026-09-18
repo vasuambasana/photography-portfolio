@@ -3,7 +3,7 @@
  * photo pages, the filmstrip and the lightbox all agree on which set of photos
  * the visitor is currently browsing.
  *
- * Runs in the browser only — keep it free of Astro/node imports so React
+ * Runs in the browser only. Keep it free of Astro/node imports so React
  * islands and inline `<script>` tags can both use it.
  */
 

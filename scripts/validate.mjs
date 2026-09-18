@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * validate.mjs — content checks that the Zod schema can't express.
+ * validate.mjs: content checks that the Zod schema can't express.
  *
  * Astro already fails the build on a bad schema or an unresolvable reference.
  * This catches the quieter problems: images on disk that nothing points at,
@@ -76,7 +76,7 @@ for (const { file, data, content } of photos) {
   } else {
     const resolved = path.resolve(CONTENT_DIR, data.image);
     if (!fs.existsSync(resolved)) {
-      error(`${where}: image not found on disk — ${data.image}`);
+      error(`${where}: image not found on disk: ${data.image}`);
     } else {
       referencedImages.add(resolved);
       const expectedDir = path.join(PHOTOS_DIR, data.category || '');
@@ -94,11 +94,11 @@ for (const { file, data, content } of photos) {
   if (!alt) {
     error(`${where}: missing alt text`);
   } else if (IMAGE_EXT.test(alt) || /^[a-z0-9_\-]+$/i.test(alt)) {
-    error(`${where}: alt text looks like a filename — "${alt}"`);
+    error(`${where}: alt text looks like a filename: "${alt}"`);
   } else if (PLACEHOLDER_ALT.test(alt)) {
     placeholderAlt.push(where);
   } else if (alt.length < 15) {
-    warn(`${where}: alt text is very short — "${alt}"`);
+    warn(`${where}: alt text is very short: "${alt}"`);
   }
 
   if (PLACEHOLDER_BODY.test(content)) placeholderBody.push(where);
@@ -150,7 +150,7 @@ for (const { file, data, content } of journal) {
 
   // A published entry must not still be carrying scaffolding.
   if (/\[PLACEHOLDER/i.test(content) || /\[PLACEHOLDER/i.test(JSON.stringify(data))) {
-    error(`${where}: published entry still contains [PLACEHOLDER] — set draft: true or finish it`);
+    error(`${where}: published entry still contains [PLACEHOLDER]. Set draft: true or finish it`);
   }
 
   if (!data.coverImage) {
@@ -170,13 +170,13 @@ for (const { file, data, content } of journal) {
 
   // An entry that names a photograph should let the reader go and look at it.
   // Titles are written in italics; the body is hard-wrapped, so a title can span
-  // a line break — matching without allowing that is exactly how one mention
+  // a line break. Matching without allowing that is exactly how one mention
   // stayed unlinked after the first pass.
   const unlinked = content.replace(/\[[^\]]*\]\([^)]*\)/g, ' ');
   for (const [, label] of unlinked.matchAll(/(?<![*[\w])\*([^*]+?)\*(?!\*)/g)) {
     const slug = photoTitles.get(label.replace(/\s+/g, ' ').trim().toLowerCase());
     if (slug) {
-      warn(`${where}: mentions "${label.replace(/\s+/g, ' ')}" without linking it — /photo/${slug}`);
+      warn(`${where}: mentions "${label.replace(/\s+/g, ' ')}" without linking it: /photo/${slug}`);
     }
   }
 
@@ -199,7 +199,7 @@ for (const { file, data, content } of journal) {
 //
 // The site is a personal archive and nothing on it is for sale. The original spec
 // described print catalogues and assignment inquiries, so this wording keeps drifting
-// back in from that document. Only unambiguous terms are listed — "print" and "client"
+// back in from that document. Only unambiguous terms are listed. "print" and "client"
 // are omitted because they have legitimate code meanings (clientPhotos, client:load).
 // ---------------------------------------------------------------------------
 const COMMERCIAL = [
@@ -229,7 +229,7 @@ function scanForCommercial(dir) {
       for (const pattern of COMMERCIAL) {
         if (pattern.test(line)) {
           const rel = path.relative(ROOT, full).replace(/\\/g, '/');
-          error(`${rel}:${i + 1}: commercial language — "${line.trim().slice(0, 70)}"`);
+          error(`${rel}:${i + 1}: commercial language: "${line.trim().slice(0, 70)}"`);
           return;
         }
       }
@@ -245,12 +245,12 @@ scanForCommercial(path.join(ROOT, 'src'));
 for (const w of warnings) console.log(`warn   ${w}`);
 for (const e of errors) console.log(`ERROR  ${e}`);
 
-// Reported as a count rather than one line each — this is a content backlog to work
+// Reported as a count rather than one line each. This is a content backlog to work
 // through, not something to fail a build over.
 if (placeholderAlt.length) {
   console.log(
     `\nwarn   ${placeholderAlt.length}/${photos.length} photos still have placeholder alt text ` +
-      `("A <category> photograph"). These are the AI-ingest fallbacks — run ` +
+      `("A <category> photograph"). These are the AI-ingest fallbacks. Run ` +
       `\`npm run backfill-ai\` or write them by hand.`
   );
 }
@@ -260,7 +260,7 @@ if (placeholderBody.length) {
 
 console.log(
   `\n${photos.length} photos, ${journal.length - drafts} published journal entries ` +
-    `(+${drafts} draft), ${tagSlugs.size} tags — ` +
+    `(+${drafts} draft), ${tagSlugs.size} tags: ` +
     `${errors.length} error(s), ${warnings.length + placeholderAlt.length + placeholderBody.length} warning(s).`
 );
 
