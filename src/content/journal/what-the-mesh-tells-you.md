@@ -22,61 +22,48 @@ Five frames from one February morning: a peregrine falcon, a red panda, a flamin
 wolves, and a mountain lion.
 
 No stretch of the world contains that list. Red pandas live in the eastern Himalayas,
-flamingos don't winter in New England, and mountain lions do not sit still for portraits.
-These animals were in enclosures, and I think that's the first thing worth saying about the
-photographs rather than the last.
+flamingos don't winter in New England, and mountain lions don't sit still for portraits.
+These were animals in enclosures, and I'd rather say so at the top than leave it sitting at
+the bottom like a reveal.
 
-## What's actually in the frames
+All five came off the Canon R5 Mark II with the RF 70-200mm f/2.8, almost all of it at the
+long end, 200mm on four and 187mm on the fifth. ISO 100 on every frame, which tells you what
+the light was doing. Open, bright, cold. Nothing like forest.
 
-All five were shot on the Canon R5 Mark II with the RF 70-200mm f/2.8, almost entirely at
-the long end: 200mm on four of them, 187mm on the fifth. **ISO 100 on every single frame**,
-which tells you how much light there was: this was open, bright, cold daylight, not deep
-forest.
+Shutter speeds move around with the subject. [*Crimson Spray*](/photo/crimson-spray) is a
+flamingo shaking water out of its feathers at 1/2500s, fast enough to hold the droplets
+still. [*Canopy Wanderer*](/photo/canopy-wanderer) is a red panda working its way along a
+bare branch at 1/320s, because it was barely moving and there was no reason to go faster.
 
-Shutter speeds spread according to what was happening. [*Crimson Spray*](/photo/crimson-spray), a flamingo shaking
-water out of its feathers, is at 1/2500s to freeze the droplets. [*Canopy Wanderer*](/photo/canopy-wanderer), a red
-panda picking its way along a bare branch, is at 1/320s because it was barely moving.
+[*Quiet Sentinel*](/photo/quiet-sentinel) is the one I keep coming back to. A peregrine on a
+weathered wooden post, head turned in profile, the barred chest and dark hood sharp enough
+to count feathers. And behind it, thrown out of focus by f/2.8 but perfectly
+legible, the diamond pattern of aviary netting.
 
-## The falcon gives it away
+I could have moved and lost it. At 200mm and f/2.8 that's easy. Step closer to the wire,
+find a gap, let everything behind go to mush. Plenty of good photographs get made exactly
+that way and there's nothing dishonest in it.
 
-[*Quiet Sentinel*](/photo/quiet-sentinel) is the frame I'd point at first. A peregrine on a weathered wooden post,
-head turned in profile, the barred chest and dark hood sharp enough to count feathers.
+Leaving the mesh in changes what the photograph is of, though. With it there, this stops
+being a picture of a wild falcon and becomes a picture of a falcon that lives behind mesh.
+Only one of those is true here.
 
-Behind it, unmistakably, is the diamond pattern of aviary netting, thrown out of focus by
-f/2.8 but absolutely still there.
+[*Unwavering Gaze*](/photo/unwavering-gaze) does the same thing more quietly. A mountain
+lion sitting upright, staring straight down the lens, on a wooden platform. Wild cougars
+don't have platforms.
 
-I could have shot it at a different angle and lost the mesh. At 200mm and f/2.8 that's not
-hard: get closer to the wire, find a gap, let the background dissolve. Plenty of very good
-photographs are made that way and there's nothing dishonest about it.
+A long lens wide open is very good at deleting context, and deleting context is mostly what
+it's for. Isolate the subject, melt the rest. At a wildlife park, though, the context is the
+entire ethical question of the photograph, whether the animal chose to be there and whether
+it can leave. f/2.8 at 200mm turns a fence into a grey-blue wash and nobody looking at the
+file would ever know. I don't think using that is wrong. I do think not mentioning it starts
+to be, once the pictures are on a site with your name across the top.
 
-But leaving it in changes what the picture is about. With the mesh visible, it stops being a
-photograph of a wild falcon and becomes a photograph of a falcon that lives behind mesh.
-Those are different pictures, and only one of them is true here.
+The animals are real and none of these frames are staged. They just weren't found in the
+wild, and the falcon is the one that says so.
 
-[*Unwavering Gaze*](/photo/unwavering-gaze) does the same thing more quietly: a mountain lion sitting upright, staring
-straight down the lens, on a **wooden platform**. Wild cougars do not have platforms.
-
-## The part I'm less sure about
-
-Long lenses at wide apertures are very good at removing context. That's mostly what we use
-them for: isolate the subject, melt everything else. But at a wildlife park the context is
-the whole ethical content of the picture: whether the animal chose to be there, whether it
-can leave.
-
-f/2.8 at 200mm will erase a fence into a wash of grey-blue and nobody looking at the result
-will know. I don't think using that is wrong. I do think not *mentioning* it starts to be,
-once the photographs are on a website with your name at the top.
-
-So: a wildlife park, in February, at 200mm, in flat bright light. The animals are real and
-the photographs aren't staged, but nothing here was found in the wild, and the falcon frame
-is the one that admits it.
-
-## The practical note
-
-ISO 100 across five frames in winter light is the useful technical takeaway. Enclosures are
-usually built in the open, which means far more light than actual forest. The exposure
-problem at a wildlife park is rarely darkness.
-
-The real problem is backgrounds: fences, feeding stations, signage, other visitors. Every
-compositional decision that morning was about what to keep out of frame. Which is, in the
-end, exactly the thing this entry is about.
+The practical half of this is duller. ISO 100 across five frames in winter light is the bit
+worth remembering: enclosures get built in the open, so there is far more light than real
+forest, and darkness is almost never the problem. Backgrounds are. Fences, feeding stations,
+signage, other visitors. Every decision I made that morning was about what to keep out of
+the frame.
