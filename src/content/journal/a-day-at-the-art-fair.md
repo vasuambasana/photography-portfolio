@@ -32,7 +32,7 @@ do anything at arm's length.
 
 What it lets you not do is intrude.
 
-*Brushstrokes of Summer* is the clearest case: an artist in a black beret, seen from behind
+[*Brushstrokes of Summer*](/photo/brushstrokes-of-summer) is the clearest case: an artist in a black beret, seen from behind
 and slightly to the side, working on a large acrylic portrait propped on an easel — a woman
 with an ice pop against an orange sky, the paint still wet-looking. Prints hang on a grid
 frame behind her, tents and other visitors dissolving into the background.
@@ -42,7 +42,7 @@ what f/3.2 costs in full sun at ISO 100. But the distance is the point — she i
 absorbed, and she stayed that way, because the camera was far enough back not to be part of
 the situation.
 
-*Strokes of Identity* is the same idea at 168mm: an artist in a wide-brimmed hat and a long
+[*Strokes of Identity*](/photo/strokes-of-identity) is the same idea at 168mm: an artist in a wide-brimmed hat and a long
 black dress, photographed from behind, facing her own work.
 
 Both are portraits where nobody is posing and nobody is being interrupted. That's the whole
@@ -50,10 +50,10 @@ argument for the lens.
 
 ## The two wide frames
 
-Only two frames came from the 35mm: *A Sunny Day in the Park* at 1/2000s and *Unbound Spirit*
+Only two frames came from the 35mm: [*A Sunny Day in the Park*](/photo/a-sunny-day-in-the-park) at 1/2000s and [*Unbound Spirit*](/photo/unbound-spirit)
 at **1/4000s, f/1.8, ISO 100**.
 
-Wide means close, and close means participating. *Unbound Spirit* is a child in a pinstriped
+Wide means close, and close means participating. [*Unbound Spirit*](/photo/unbound-spirit) is a child in a pinstriped
 baseball uniform mid-motion — the kind of frame you only get from a few feet away, where
 being seen doesn't matter because the subject is six years old and busy.
 
@@ -65,14 +65,14 @@ people who never knew.
 ISO 100 on nine frames, 200 on four, and shutter speeds from 1/5000s down to 1/250s. Hard
 late-summer sun, and no lack of light anywhere.
 
-The interesting outlier is *Guiding Light* — 200mm, f/2.8, **1/250s at ISO 320**. Slower
+The interesting outlier is [*Guiding Light*](/photo/guiding-light) — 200mm, f/2.8, **1/250s at ISO 320**. Slower
 shutter, higher ISO, wide open. That's deep shade, or the light had dropped considerably by
 the time it was taken. It's a man steadying a small child beside a wooden post, and it's the
 only frame where the camera was clearly working for it.
 
 ## The one that isn't from the fair
 
-*Crimson Horizon* also carries this date, and it doesn't belong with the rest. A gibbous moon
+[*Amber Moon*](/photo/amber-moon) also carries this date, and it doesn't belong with the rest. A gibbous moon
 in full black sky, amber-coloured, shot at **1/30s and ISO 400** — and not on the Canon at
 all, but on the phone's periscope telephoto.
 

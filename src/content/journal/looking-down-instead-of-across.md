@@ -31,7 +31,7 @@ From above, a scene stops being a space you're standing in and becomes a pattern
 reading. The horizon disappears. There's no sky to balance against, no background behind
 anyone's head — just surfaces, and whatever is standing on them.
 
-*Captured in the Geometry* is the clearest version. Looking straight down onto an empty
+[*Captured in the Geometry*](/photo/captured-in-the-geometry) is the clearest version. Looking straight down onto an empty
 restaurant deck: weathered grey boards running in three directions, wooden tables, white
 wicker chairs pushed in, one blue chair against a white clapboard wall. Almost all of it
 unoccupied.
@@ -45,7 +45,7 @@ which is the whole reason the frame works.
 
 ## The other one with people in it
 
-*Patterns of Solitude*, at 70mm and 1/500s, is the same idea with more room to breathe.
+[*Patterns of Solitude*](/photo/patterns-of-solitude), at 70mm and 1/500s, is the same idea with more room to breathe.
 
 Palms and coarse grass planted in raked sand, a boardwalk cutting a hard diagonal across the
 top of the frame, a wooden bench tucked into a corner. On the bench, two people sitting close
@@ -72,9 +72,9 @@ different photograph and I'd think harder about it.
 
 ## The rest of the day
 
-The remaining three run wider. *Coastal Quietude* and *Playing with the Past* are both at
+The remaining three run wider. [*Coastal Quietude*](/photo/coastal-quietude) and [*Playing with the Past*](/photo/playing-with-the-past) are both at
 35mm — 1/8000s and 1/3200s, which is a lot of shutter for ISO 200 and says how hard the light
-was. *A Quiet Afternoon Aboard* sits between the two modes at 111mm.
+was. [*A Quiet Afternoon Aboard*](/photo/a-quiet-afternoon-aboard) sits between the two modes at 111mm.
 
 Looking at the five together, the day has an obvious shape: find height, point downward, wait
 for someone to walk into the geometry. It isn't a method I use often. It worked here because

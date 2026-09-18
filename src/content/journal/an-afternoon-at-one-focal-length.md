@@ -30,7 +30,7 @@ can't change your angle by more than a few degrees, and you can't wait for the s
 move, because the subject is a building. All that's left is what you point at, and when you
 press.
 
-What you get back is compression. The lighthouse in *Sentinel of the Granite Coast* sits with
+What you get back is compression. The lighthouse in [*Sentinel of the Granite Coast*](/photo/sentinel-of-the-granite-coast) sits with
 its keeper's houses stacked flat against it — white clapboard, red roofs, a low shelf of
 granite — and everything above it given over to an enormous empty sky. At 115mm the headland
 stops being somewhere you could walk onto and becomes a shape on the horizon.
@@ -41,7 +41,7 @@ sits further back.
 
 ## The one with the writing on it
 
-*Echoes of Industry* is the frame I keep coming back to, and it's the least subtle of the
+[*Echoes of Industry*](/photo/echoes-of-industry) is the frame I keep coming back to, and it's the least subtle of the
 three.
 
 A red clapboard building at the waterline, paint gone chalky and peeling, with two lines
@@ -59,7 +59,7 @@ tied up.
 
 ## The third one
 
-*Coastal Elevation* is the quieter frame. Houses built out over the rocks on wooden pilings
+[*Coastal Elevation*](/photo/coastal-elevation) is the quieter frame. Houses built out over the rocks on wooden pilings
 and steel legs — a yellow one set back in the trees, a white one with an enclosed porch, and
 a newer grey-shingled storey on top with a yellow-striped awning, cantilevered out over the
 water.

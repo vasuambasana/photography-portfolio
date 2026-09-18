@@ -14,6 +14,11 @@ export default defineConfig({
     // already indexed and linked, so they keep resolving.
     '/photo/above-the-badlands': '/photo/above-the-desert-ridge',
     '/photo/strata-of-the-badlands': '/photo/strata-at-first-light',
+    // Retitled to break two duplicate titles. In both pairs the numbered slug
+    // held the photograph the shared title fitted worst, so the unnumbered one
+    // kept its name and its URL.
+    '/photo/crimson-horizon-2': '/photo/amber-moon',
+    '/photo/monolith-in-monochrome-2': '/photo/glass-among-the-brick',
   },
   integrations: [
     tailwind(),

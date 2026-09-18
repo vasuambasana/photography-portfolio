@@ -1,8 +1,10 @@
 ---
-title: Crimson Horizon
+title: Amber Moon
 category: night
-image: ../../assets/photos/night/crimson-horizon-2.jpg
-alt: "A gibbous moon photographed through low atmosphere, its disc deep orange, craters visible along the terminator."
+image: ../../assets/photos/night/amber-moon.jpg
+alt: >-
+  A gibbous moon photographed through low atmosphere, its disc deep orange,
+  craters visible along the terminator.
 date: 2026-08-23T00:00:00.000Z
 location: ''
 originalFilename: 20240816_205334_1723871719290.jpg

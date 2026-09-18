@@ -28,7 +28,7 @@ equivalent, in a single day. That's a wider range than I own in glass.
 
 ## Downtown, at the long end
 
-*Beacon of the Skyline* is One World Trade Center at **115mm equivalent**, 1/1600s, ISO 32,
+[*Beacon of the Skyline*](/photo/beacon-of-the-skyline) is One World Trade Center at **115mm equivalent**, 1/1600s, ISO 32,
 shot from street level with tree canopy filling the bottom of the frame.
 
 At that reach the tower is compressed into a flat geometric object — the chamfered corners
@@ -36,7 +36,7 @@ reading as a single long chevron up the face of the glass, the spire a thin vert
 against a bruised pink-grey sky. Nothing in the frame gives away the scale except the trees,
 and they only tell you it's tall, not how tall.
 
-*Verdant Sovereign* is from the same camera at the same 115mm and ISO 32.
+[*Verdant Sovereign*](/photo/verdant-sovereign) is from the same camera at the same 115mm and ISO 32.
 
 Those two are the frames people assume a phone can't produce. The thing that makes them work
 isn't the sensor, it's that there was an enormous amount of light — ISO 32 is a phone
@@ -44,7 +44,7 @@ saying it has light to spare.
 
 ## Midtown, after dark
 
-*Neon Pulse of the Metropolis* is the wide camera, **23mm equivalent, f/1.7, 1/60s, ISO 40**,
+[*Neon Pulse of the Metropolis*](/photo/neon-pulse-of-the-metropolis) is the wide camera, **23mm equivalent, f/1.7, 1/60s, ISO 40**,
 and it's the most crowded photograph in this archive by a distance.
 
 Times Square looking down Seventh Avenue, taken from the red steps at Duffy Square — the
@@ -57,19 +57,19 @@ The exposure problem there is the opposite of night photography — the signage 
 than the people underneath it, and the frame is mostly an argument about which of those to
 expose for.
 
-*Neon Current* switches to the telephoto at 69mm, 1/200s, ISO 100 — tighter, pulling detail
+[*Neon Current*](/photo/neon-current) switches to the telephoto at 69mm, 1/200s, ISO 100 — tighter, pulling detail
 out of the same lit chaos.
 
 ## The ultrawide, once
 
-*Concrete Canopy under Stormy Skies* is the only frame from the ultrawide: **13mm
+[*Concrete Canopy under Stormy Skies*](/photo/concrete-canopy-under-stormy-skies) is the only frame from the ultrawide: **13mm
 equivalent, f/2.2, 1/60s, ISO 64.**
 
 Thirteen millimetres is a lens for standing underneath something and looking up. At 1/60s
 it is far slower than the day's other daylight frames, which sat between 1/1250s and
 1/2800s — so the weather had turned by the time it was taken.
 
-*Monolith and Ribs* rounds it out at 69mm, and at 1/2800s it's the fastest shutter of the
+[*Monolith and Ribs*](/photo/monolith-and-ribs) rounds it out at 69mm, and at 1/2800s it's the fastest shutter of the
 day.
 
 ## What I'd take from it

@@ -33,13 +33,13 @@ the long end — 200mm on four of them, 187mm on the fifth. **ISO 100 on every s
 which tells you how much light there was: this was open, bright, cold daylight, not deep
 forest.
 
-Shutter speeds spread according to what was happening. *Crimson Spray*, a flamingo shaking
-water out of its feathers, is at 1/2500s to freeze the droplets. *Canopy Wanderer*, a red
+Shutter speeds spread according to what was happening. [*Crimson Spray*](/photo/crimson-spray), a flamingo shaking
+water out of its feathers, is at 1/2500s to freeze the droplets. [*Canopy Wanderer*](/photo/canopy-wanderer), a red
 panda picking its way along a bare branch, is at 1/320s because it was barely moving.
 
 ## The falcon gives it away
 
-*Quiet Sentinel* is the frame I'd point at first. A peregrine on a weathered wooden post,
+[*Quiet Sentinel*](/photo/quiet-sentinel) is the frame I'd point at first. A peregrine on a weathered wooden post,
 head turned in profile, the barred chest and dark hood sharp enough to count feathers.
 
 Behind it, unmistakably, is the diamond pattern of aviary netting, thrown out of focus by
@@ -53,7 +53,7 @@ But leaving it in changes what the picture is about. With the mesh visible, it s
 photograph of a wild falcon and becomes a photograph of a falcon that lives behind mesh.
 Those are different pictures, and only one of them is true here.
 
-*Unwavering Gaze* does the same thing more quietly — a mountain lion sitting upright, staring
+[*Unwavering Gaze*](/photo/unwavering-gaze) does the same thing more quietly — a mountain lion sitting upright, staring
 straight down the lens, on a **wooden platform**. Wild cougars do not have platforms.
 
 ## The part I'm less sure about

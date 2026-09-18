@@ -43,8 +43,8 @@ messages.
 
 Five photographs are marked as featured — the ones on the front page.
 
-Three are Canon R5 Mark II frames. **Two were shot on folding phones**: *Canopy of Infinity*
-on a Z Fold6 — a twenty-five second night-sky exposure — and *Celestial Web* on a Z Fold7,
+Three are Canon R5 Mark II frames. **Two were shot on folding phones**: [*Canopy of Infinity*](/photo/canopy-of-infinity)
+on a Z Fold6 — a twenty-five second night-sky exposure — and [*Celestial Web*](/photo/celestial-web) on a Z Fold7,
 at 1/120s. Neither announces what took it.
 
 Nothing about the featured set was chosen by camera — the split just falls where it falls,
@@ -52,7 +52,7 @@ and you only find out which is which by opening the metadata.
 
 ## One frame from a camera that appears once
 
-The most patient entry in the whole set is *Celestial Rhythms Over the Pines*, from October
+The most patient entry in the whole set is [*Celestial Rhythms Over the Pines*](/photo/celestial-rhythms-over-the-pines), from October
 2021. It is the only frame here from a **Canon EOS 700D** — an entry-level DSLR that was
 already eight years old by then — shot on the **EF-S 18-55mm kit lens**, the one that comes
 free in the box.

@@ -31,12 +31,12 @@ Z Fold7 — across eight separate nights between April 2023 and April 2026.
 That is a phone's astrophotography mode: hold the shutter open long enough that the sensor
 accumulates what the eye can't, and stack the result. It requires something to brace
 against, because twenty-five seconds is far past anything a hand can hold. Frames like
-*Aisle of Stars*, *Canopy of Infinity* and *Celestial Amphitheater* all come out of this
+[*Aisle of Stars*](/photo/aisle-of-stars), [*Canopy of Infinity*](/photo/canopy-of-infinity) and [*Celestial Amphitheater*](/photo/celestial-amphitheater) all come out of this
 approach, all at the phone's 23mm-equivalent wide camera.
 
 Then there is the outlier that makes the whole cluster look impatient.
 
-*Celestial Rhythms Over the Pines*, October 2021: **693 seconds**. Eleven and a half
+[*Celestial Rhythms Over the Pines*](/photo/celestial-rhythms-over-the-pines), October 2021: **693 seconds**. Eleven and a half
 minutes on a Canon EOS 700D with the 18-55mm kit lens, at f/3.5 and ISO 200. Long enough
 that the stars stop being points and become arcs — the earth's rotation drawn directly onto
 the sensor. It is the only frame in the archive from that camera, and it is by a factor of
@@ -46,8 +46,8 @@ twenty-eight the longest exposure here.
 
 The Canon R5 Mark II night frames do the opposite thing entirely.
 
-*Moonlit Tapestry* and *Neon Devotion*, both from the night of 3 January 2026, are **1/60s
-and 1/100s at ISO 3200**, both at 200mm. *Symphony in Steel and Shadow* comes from the same
+[*Moonlit Tapestry*](/photo/moonlit-tapestry) and [*Neon Devotion*](/photo/neon-devotion), both from the night of 3 January 2026, are **1/60s
+and 1/100s at ISO 3200**, both at 200mm. [*Symphony in Steel and Shadow*](/photo/symphony-in-steel-and-shadow) comes from the same
 night at **1/160s and ISO 5000** — filed under architecture rather than night, but shot in
 the same dark.
 
@@ -61,7 +61,7 @@ At 200mm that isn't really a choice. The reciprocal rule puts the hand-holding f
 ## The gap in the middle
 
 Between two seconds and twenty seconds there is nothing at all. The two-second frame itself,
-*Neon Arteries* at **ISO 16**, is the boundary marker — and it's a bright-city long exposure
+[*Neon Arteries*](/photo/neon-arteries) at **ISO 16**, is the boundary marker — and it's a bright-city long exposure
 rather than a dark one, dragging the shutter to smooth traffic into ribbons. ISO 16 is a
 camera being told there is far too much light, not too little.
 
