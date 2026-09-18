@@ -2,7 +2,10 @@
 title: Patterns of Solitude
 category: street
 image: ../../assets/photos/street/patterns-of-solitude.jpg
-alt: A street photograph
+alt: >-
+  A high overhead view of raked sand and palms beside a boardwalk, where two
+  people sit close together on a wooden bench while a lone man walks across the
+  open sand some distance away.
 date: 2026-08-08T00:00:00.000Z
 location: ''
 originalFilename: 2P4A8043.jpg

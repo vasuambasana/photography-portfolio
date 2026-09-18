@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { CONTENT_DIR, requireSourceDir } from './lib/config.mjs';
+import { CONTENT_DIR, SOURCE_DIR, requireSourceDir } from './lib/config.mjs';
 
 const mode = process.argv[2];
 
@@ -28,7 +28,7 @@ function photoFiles() {
   return fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md')).sort();
 }
 
-function audit() {
+async function audit() {
   const files = photoFiles();
   const incomplete = [];
 
@@ -44,7 +44,67 @@ function audit() {
   }
 
   console.log(`\n${files.length - incomplete.length}/${files.length} photos have complete EXIF.`);
+
+  await auditDates(files);
   return incomplete.length;
+}
+
+/**
+ * `date` is the canonical sort key for the whole gallery, so a wrong one silently
+ * misplaces a photo. Three photos were once four months adrift because ingest fell
+ * back to the current date when it couldn't read DateTimeOriginal.
+ *
+ * Needs the originals, so it's here rather than in validate.mjs (which CI runs
+ * without access to PHOTO_SOURCE_DIR).
+ */
+async function auditDates(files) {
+  if (!SOURCE_DIR || !fs.existsSync(SOURCE_DIR)) {
+    console.log('\nSkipping date check — PHOTO_SOURCE_DIR not available.');
+    return;
+  }
+
+  const exifr = (await import('exifr')).default;
+  const drifted = [];
+  let compared = 0;
+
+  for (const file of files) {
+    const { data } = matter(fs.readFileSync(path.join(CONTENT_DIR, file), 'utf-8'));
+    if (!data.originalFilename || !data.category) continue;
+
+    const original = path.join(SOURCE_DIR, data.category, data.originalFilename);
+    if (!fs.existsSync(original)) continue;
+
+    let taken;
+    try {
+      taken = (await exifr.parse(original, { pick: ['DateTimeOriginal'] }))?.DateTimeOriginal;
+    } catch {
+      continue;
+    }
+    if (!taken) continue;
+
+    compared++;
+    // Compare calendar days in the camera's own local time, so a timezone offset
+    // doesn't read as a mismatch.
+    const local = new Date(taken.getTime() - taken.getTimezoneOffset() * 60000);
+    const exifDay = local.toISOString().slice(0, 10);
+    const frontmatterDay = new Date(data.date).toISOString().slice(0, 10);
+
+    const daysApart = Math.abs(new Date(frontmatterDay) - new Date(exifDay)) / 86400000;
+    if (daysApart > 1.5) {
+      drifted.push({ file, frontmatterDay, exifDay, daysApart: Math.round(daysApart) });
+    }
+  }
+
+  if (drifted.length === 0) {
+    console.log(`\nDates: all ${compared} checked photos match their EXIF capture date.`);
+    return;
+  }
+
+  console.log(`\nDates drifting from EXIF (${drifted.length} of ${compared}):`);
+  for (const d of drifted) {
+    console.log(`  ${d.file.padEnd(44)} frontmatter ${d.frontmatterDay}  exif ${d.exifDay}  (${d.daysApart}d)`);
+  }
+  console.log('These sort into the wrong place in the gallery. Fix the frontmatter date.');
 }
 
 function specsFromTags(tags) {
@@ -130,5 +190,5 @@ async function fix() {
   console.log(`\nUpdated ${updated} file(s), skipped ${skipped}.`);
 }
 
-if (mode === 'audit') audit();
+if (mode === 'audit') await audit();
 else await fix();

@@ -2,7 +2,10 @@
 title: Sentinel of the Granite Coast
 category: architecture
 image: ../../assets/photos/architecture/sentinel-of-the-granite-coast.jpg
-alt: A architecture photograph
+alt: >-
+  A white lighthouse with a red lantern room standing beside white keeper's
+  houses on a low shelf of warm granite, seen across open water beneath a vast
+  pale blue sky.
 date: 2024-08-18T00:00:00.000Z
 location: ''
 originalFilename: 20240818_130332.jpg

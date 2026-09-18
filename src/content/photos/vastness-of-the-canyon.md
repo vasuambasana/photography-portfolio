@@ -3,7 +3,7 @@ title: Vastness of the Canyon
 category: nature
 image: ../../assets/photos/nature/vastness-of-the-canyon.jpg
 alt: Vastness of the Canyon
-date: 2026-08-21T00:00:00.000Z
+date: 2026-04-06T00:00:00.000Z
 originalFilename: 2P4A6269.jpg
 featured: true
 cameraSpecs:

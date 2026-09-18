@@ -3,7 +3,7 @@ title: Hikers on the Trail
 category: nature
 image: ../../assets/photos/nature/hikers-on-the-trail.jpg
 alt: Hikers on the Trail
-date: 2026-08-21T00:00:00.000Z
+date: 2026-04-06T00:00:00.000Z
 originalFilename: 2P4A6453.jpg
 featured: false
 cameraSpecs:

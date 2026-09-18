@@ -2,7 +2,11 @@
 title: Echoes of Industry
 category: architecture
 image: ../../assets/photos/architecture/echoes-of-industry.jpg
-alt: A architecture photograph
+alt: >-
+  A weathered red clapboard mill building at the waterline, its peeling wall
+  painted with the words MANUFACTORY ESTABLISHED 1863 in large white letters,
+  with a modern white motor yacht moored directly in front of it under an
+  overcast sky.
 date: 2024-08-18T00:00:00.000Z
 location: ''
 originalFilename: 20240818_131016.jpg

@@ -4,6 +4,53 @@ This log tracks all architectural, specification, and prompt changes made throug
 
 ---
 
+## [0.5.3] - 2026-09-17
+
+### Fixed
+- **Journal paragraphs had no spacing at all.** Every `prose-*` class on the entry template
+  was dead code: `@tailwindcss/typography` was never installed, and Tailwind's preflight sets
+  `p { margin: 0 }`. Rendered markdown was arriving as one solid slab. Replaced with a real
+  `.journal-body` block in `global.css` covering paragraphs, headings, lists, blockquotes,
+  links, images and code. The photo page had the same dead classes but was saved by an
+  explicit `[&>p]:mb-4`; cleaned up too.
+- **Three photos were dated four months wrong.** `golden-hour-on-the-red-rocks`,
+  `hikers-on-the-trail` and `vastness-of-the-canyon` all carried 2026-08-21 against EXIF
+  capture dates of 2026-04-02 and 2026-04-06. Since `date` is the canonical gallery sort key,
+  they were sorting into the wrong place entirely.
+
+### Added
+- **Two journal entries**, both written after looking at the photographs and checking every
+  figure against EXIF:
+  - *An Afternoon at One Focal Length* — three frames from 18 August 2024, all at 115mm
+    equivalent on a Galaxy S24 Ultra, ISO 32 throughout, shot across water.
+  - *Looking Down Instead of Across* — five frames from 8 August 2026 on the R5 Mark II, all
+    shot from an elevated vantage looking down, ISO 200 throughout.
+- **`npm run exif audit` now compares frontmatter dates against EXIF capture dates**, in the
+  camera's local time so a timezone offset doesn't read as drift. It lives in `exif.mjs`
+  rather than `validate.mjs` because it needs the originals, which CI doesn't have.
+- Real alt text for five more photographs, written from the images themselves. Placeholder
+  count is down from 90 to 85.
+
+### Lessons Learned & Mistakes Avoided
+- **Dead utility classes fail silently and look deliberate.** `prose prose-invert prose-zinc
+  prose-lg prose-p:leading-relaxed` reads like carefully considered typography. Without the
+  plugin installed it generated nothing, and had been generating nothing since the journal
+  was built. *Lesson:* when styling doesn't apply, check the class exists before debugging
+  specificity — and grep `plugins: []` before trusting any `prose-*`, `line-clamp-*` or
+  `aspect-*` class that depends on one.
+- **A derived sort key hides its own corruption.** Three wrong dates produced no error, no
+  warning and no visual break — just three photographs quietly in the wrong place in a
+  127-item grid. Nobody would ever have spotted it by looking. *Lesson:* any field that
+  drives ordering deserves a check against its source of truth, because the failure mode is
+  invisible rather than loud.
+- **Looking at the photograph is not the same as inventing the story.** Three attempts at
+  adding journal entries stalled on the risk of fabrication. The way through was to write
+  only what is visible in the frame and what is recorded in EXIF — the words painted on a
+  wall, the focal length, the ISO — and to leave out everything that would require having
+  been there. *Lesson:* observation is evidence; memory is the thing I don't have.
+
+---
+
 ## [0.5.2] - 2026-09-17
 
 Removed commercial framing site-wide. This is a personal archive, not a business.

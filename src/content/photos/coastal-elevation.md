@@ -2,7 +2,10 @@
 title: Coastal Elevation
 category: architecture
 image: ../../assets/photos/architecture/coastal-elevation.jpg
-alt: A architecture photograph
+alt: >-
+  Houses built out over a granite shoreline on wooden pilings - a yellow one set
+  back among trees, a white one with an enclosed porch, and a newer
+  grey-shingled storey above with a yellow-striped awning - seen from the water.
 date: 2024-08-18T00:00:00.000Z
 location: ''
 originalFilename: 20240818_131146.jpg

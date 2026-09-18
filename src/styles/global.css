@@ -150,6 +150,102 @@
     max-width: 42rem;
   }
 
+  /*
+   * Long-form body copy for journal entries.
+   *
+   * Tailwind's preflight zeroes the margin on every p/h/ul, and the typography
+   * plugin is deliberately not installed, so rendered markdown gets no spacing at
+   * all unless it is written here. Anything that comes out of a <Content /> needs
+   * a rule in this block or it will render as one solid slab of text.
+   */
+  .journal-body {
+    @apply text-text-secondary;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  .journal-body > * + * {
+    margin-top: 1.5em;
+  }
+
+  .journal-body h2 {
+    @apply font-display text-text-primary font-semibold;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin-top: 2.5em;
+    margin-bottom: -0.5em; /* the sibling rule adds 1.5em back */
+    letter-spacing: -0.01em;
+  }
+
+  .journal-body h3 {
+    @apply font-display text-text-primary font-semibold;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    margin-top: 2em;
+    margin-bottom: -0.5em;
+  }
+
+  .journal-body h2:first-child,
+  .journal-body h3:first-child {
+    margin-top: 0;
+  }
+
+  .journal-body strong {
+    @apply text-text-primary font-semibold;
+  }
+
+  .journal-body em {
+    font-style: italic;
+  }
+
+  .journal-body a {
+    @apply text-text-accent underline underline-offset-2;
+    text-decoration-thickness: 1px;
+  }
+
+  .journal-body a:hover {
+    @apply opacity-80;
+  }
+
+  .journal-body ul,
+  .journal-body ol {
+    padding-left: 1.4em;
+  }
+
+  .journal-body ul { list-style: disc; }
+  .journal-body ol { list-style: decimal; }
+
+  .journal-body li + li {
+    margin-top: 0.6em;
+  }
+
+  .journal-body li::marker {
+    @apply text-text-secondary/50;
+  }
+
+  .journal-body blockquote {
+    @apply border-l-2 border-text-accent text-text-secondary italic;
+    padding-left: 1.25em;
+  }
+
+  .journal-body img {
+    @apply rounded-xl;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .journal-body hr {
+    @apply border-subtle;
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+
+  .journal-body code {
+    @apply font-mono text-text-primary bg-surface-overlay rounded;
+    font-size: 0.875em;
+    padding: 0.15em 0.4em;
+  }
+
   /* Card hover micro-interaction */
   .card-hover {
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
