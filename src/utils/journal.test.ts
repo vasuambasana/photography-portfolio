@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { collectTags, readingTime, sortJournal, tagSlug } from './journal';
+import { collectTags, journalMentions, readingTime, sortJournal, tagSlug } from './journal';
 import type { CollectionEntry } from 'astro:content';
 
 function entry(slug: string, date: string, tags: string[] = []) {
@@ -77,5 +77,38 @@ describe('collectTags', () => {
 
   it('skips tags that slugify to nothing', () => {
     expect(collectTags([entry('a', '2026-01-01', ['!!!'])]).size).toBe(0);
+  });
+});
+
+describe('journalMentions', () => {
+  function withPhotos(slug: string, cover: string, related: string[] = [], body = '') {
+    return {
+      slug,
+      body,
+      data: {
+        title: slug,
+        date: new Date('2026-01-01'),
+        type: 'essay',
+        coverImage: { collection: 'photos', slug: cover },
+        relatedPhotos: related.map((r) => ({ collection: 'photos', slug: r })),
+      },
+    } as unknown as CollectionEntry<'journal'>;
+  }
+
+  it('collects cover, related photos and body links', () => {
+    const map = journalMentions([
+      withPhotos('a', 'cover-shot', ['related-shot'], 'See [this](/photo/linked-shot) and [that](/photo/cover-shot).'),
+    ]);
+    expect([...map.keys()].sort()).toEqual(['cover-shot', 'linked-shot', 'related-shot']);
+  });
+
+  it('lists an entry once per photo even when it references it several ways', () => {
+    const map = journalMentions([withPhotos('a', 'shot', ['shot'], '[x](/photo/shot) [y](/photo/shot)')]);
+    expect(map.get('shot')!.map((m) => m.slug)).toEqual(['a']);
+  });
+
+  it('keeps entries in the order given', () => {
+    const map = journalMentions([withPhotos('newer', 'shot'), withPhotos('older', 'shot')]);
+    expect(map.get('shot')!.map((m) => m.slug)).toEqual(['newer', 'older']);
   });
 });

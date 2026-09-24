@@ -6,6 +6,10 @@ import type { CollectionEntry } from 'astro:content';
 import ClickableImage from '../../components/portfolio/ClickableImage';
 import { neighbours, photosInCategory, sortPhotos } from '../../utils/photos';
 import { exifData, metaDescription } from '../../utils/seo';
+import { cameraName } from '../../utils/camera';
+import { journalMentions, publishedJournal, sortJournal } from '../../utils/journal';
+import type { JournalMention } from '../../utils/journal';
+import { JOURNAL_TYPE_LABELS } from '../../content/config';
 
 export async function getStaticPaths() {
   const photos = sortPhotos(await getCollection('photos'));
@@ -23,6 +27,9 @@ export async function getStaticPaths() {
     }))
   );
 
+  // Links only ever ran journal -> photo. This is the way back, also built once.
+  const mentions = journalMentions(sortJournal(publishedJournal(await getCollection('journal'))));
+
   return photos.map((photo) => {
     const all = neighbours(photos, photo.slug);
     const cat = neighbours(photosInCategory(photos, photo.data.category), photo.slug);
@@ -35,6 +42,7 @@ export async function getStaticPaths() {
       props: {
         photo,
         clientPhotos,
+        writtenAbout: mentions.get(photo.slug) ?? [],
         prevPhotoAll: summarise(all.prev),
         nextPhotoAll: summarise(all.next),
         prevPhotoCat: summarise(cat.prev),
@@ -56,15 +64,20 @@ export interface ClientPhoto {
 interface Props {
   photo: CollectionEntry<'photos'>;
   clientPhotos: ClientPhoto[];
+  writtenAbout: JournalMention[];
   prevPhotoAll: { slug: string; title: string } | null;
   nextPhotoAll: { slug: string; title: string } | null;
   prevPhotoCat: { slug: string; title: string } | null;
   nextPhotoCat: { slug: string; title: string } | null;
 }
 
-const { photo, clientPhotos, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
+const { photo, clientPhotos, writtenAbout, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
 const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
+
+const camera = cameraName(cameraSpecs?.body);
+const specs = cameraSpecs ?? {};
+const hasSpecs = Boolean(camera || specs.lens || specs.focalLength || specs.aperture || specs.shutterSpeed || specs.iso);
 
 const display = await getImage({ src: image, width: 1800, format: 'webp' });
 const initialIndex = clientPhotos.findIndex((p) => p.slug === photo.slug);
@@ -181,68 +194,94 @@ const description = metaDescription(photo.body, alt);
           <div class="max-w-none text-text-secondary text-body-md font-body leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0">
             <Content />
           </div>
+
+          {writtenAbout.length > 0 && (
+            <section aria-labelledby="journal-mentions-heading" class="pt-6 border-t border-subtle">
+              <h2 id="journal-mentions-heading" class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-3">
+                In the journal
+              </h2>
+              <ul class="space-y-3">
+                {writtenAbout.map((m) => (
+                  <li>
+                    <a href={`/journal/${m.slug}`} class="group block no-underline">
+                      <span class="block font-display text-body-lg text-text-primary group-hover:text-text-accent transition-colors duration-300">
+                        {m.title}
+                      </span>
+                      <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mt-0.5">
+                        {JOURNAL_TYPE_LABELS[m.type]} &middot; {m.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <!-- Right: Technical Details Plaque -->
-        {cameraSpecs && (
-          <div class="lg:col-span-5 bg-surface-card border border-subtle rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center gap-2 mb-5 pb-3 border-b border-subtle">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-text-secondary">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-              <h2 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">Technical Specs</h2>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-sm">
-              {cameraSpecs.body && (
-                <div class="col-span-2 sm:col-span-1">
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Camera Body</span>
-                  <span class="text-text-primary font-body text-sm font-medium">{cameraSpecs.body}</span>
-                </div>
-              )}
-              {cameraSpecs.lens && (
-                <div class="col-span-2 sm:col-span-1">
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Lens</span>
-                  <span class="text-text-primary font-body text-sm font-medium">{cameraSpecs.lens}</span>
-                </div>
-              )}
-              {cameraSpecs.focalLength && (
-                <div>
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Focal Length</span>
-                  <span class="text-text-primary font-mono text-sm">{cameraSpecs.focalLength}</span>
-                </div>
-              )}
-              {cameraSpecs.aperture && (
-                <div>
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Aperture</span>
-                  <span class="text-text-primary font-mono text-sm">{cameraSpecs.aperture}</span>
-                </div>
-              )}
-              {cameraSpecs.shutterSpeed && (
-                <div>
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Shutter Speed</span>
-                  <span class="text-text-primary font-mono text-sm">{cameraSpecs.shutterSpeed}</span>
-                </div>
-              )}
-              {cameraSpecs.iso && (
-                <div>
-                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">ISO</span>
-                  <span class="text-text-primary font-mono text-sm">{cameraSpecs.iso}</span>
-                </div>
-              )}
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-subtle flex items-center justify-between">
-              <a href="/gallery" class="text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors no-underline">
-                &larr; Back to Gallery
-              </a>
-              <a href="/contact" class="text-xs font-mono uppercase tracking-wider text-text-accent hover:opacity-80 transition-opacity no-underline">
-                Say Hello &rarr;
-              </a>
-            </div>
+        <div class="lg:col-span-5 bg-surface-card border border-subtle rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center gap-2 mb-5 pb-3 border-b border-subtle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-text-secondary">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <h2 class="text-xs font-mono uppercase tracking-[0.2em] text-text-secondary">Technical Specs</h2>
           </div>
-        )}
+
+          {!hasSpecs && (
+            <p class="text-body-sm text-text-secondary">
+              This file carries no camera settings, so none are shown. Nothing here is guessed.
+            </p>
+          )}
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            {camera && (
+              <div class="col-span-2 sm:col-span-1">
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Camera Body</span>
+                <span class="text-text-primary font-body text-sm font-medium">{camera}</span>
+              </div>
+            )}
+            {specs.lens && (
+              <div class="col-span-2 sm:col-span-1">
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Lens</span>
+                <span class="text-text-primary font-body text-sm font-medium">{specs.lens}</span>
+              </div>
+            )}
+            {specs.focalLength && (
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Focal Length</span>
+                <span class="text-text-primary font-mono text-sm">{specs.focalLength}</span>
+              </div>
+            )}
+            {specs.aperture && (
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Aperture</span>
+                <span class="text-text-primary font-mono text-sm">{specs.aperture}</span>
+              </div>
+            )}
+            {specs.shutterSpeed && (
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">Shutter Speed</span>
+                <span class="text-text-primary font-mono text-sm">{specs.shutterSpeed}</span>
+              </div>
+            )}
+            {specs.iso && (
+              <div>
+                <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary/70 mb-0.5">ISO</span>
+                <span class="text-text-primary font-mono text-sm">{specs.iso}</span>
+              </div>
+            )}
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-subtle flex items-center justify-between">
+            <a href="/gallery" class="text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors no-underline">
+              &larr; Back to Gallery
+            </a>
+            <a href="/contact" class="text-xs font-mono uppercase tracking-wider text-text-accent hover:opacity-80 transition-opacity no-underline">
+              Say Hello &rarr;
+            </a>
+          </div>
+        </div>
 
       </div>
     </div>

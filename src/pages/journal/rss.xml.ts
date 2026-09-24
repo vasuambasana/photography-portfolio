@@ -9,7 +9,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'Journal | Vasu Ambasana Photography',
     description:
-      "Stories from the field: location guides, photographer's notes, and visual essays by Vasu Ambasana.",
+      "Field notes, essays and behind-the-lens writing by Vasu Ambasana, about the photographs in this archive and how they were made.",
     site: context.site!,
     // Browsers render raw XML otherwise, which reads as broken to anyone who clicks it.
     stylesheet: '/rss/styles.xsl',

@@ -53,3 +53,37 @@ export function collectTags(entries: CollectionEntry<'journal'>[]) {
 
   return map;
 }
+
+export interface JournalMention {
+  slug: string;
+  title: string;
+  date: Date;
+  type: CollectionEntry<'journal'>['data']['type'];
+}
+
+/**
+ * Which journal entries talk about each photograph, keyed by photo slug.
+ *
+ * An entry counts as mentioning a photo if it uses it as the cover, lists it in
+ * `relatedPhotos`, or links to `/photo/<slug>` anywhere in its body. Entries keep
+ * the order they are passed in, so sort before calling.
+ */
+export function journalMentions(entries: CollectionEntry<'journal'>[]): Map<string, JournalMention[]> {
+  const mentions = new Map<string, JournalMention[]>();
+
+  for (const entry of entries) {
+    const slugs = new Set<string>([
+      entry.data.coverImage.slug,
+      ...entry.data.relatedPhotos.map((ref) => ref.slug),
+    ]);
+    for (const [, slug] of entry.body.matchAll(/\/photo\/([a-z0-9-]+)/g)) slugs.add(slug);
+
+    const mention = { slug: entry.slug, title: entry.data.title, date: entry.data.date, type: entry.data.type };
+    for (const slug of slugs) {
+      if (!mentions.has(slug)) mentions.set(slug, []);
+      mentions.get(slug)!.push(mention);
+    }
+  }
+
+  return mentions;
+}

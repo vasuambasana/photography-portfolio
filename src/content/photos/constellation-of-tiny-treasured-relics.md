@@ -7,10 +7,6 @@ date: 2025-11-28T00:00:00.000Z
 location: ''
 originalFilename: 2P4A4161 (1).jpg
 featured: false
-cameraSpecs:
-  body: Unknown Body
-  lens: Unknown Lens
-  settings: Unknown mm | Unknown f/ | Unknown s | Unknown ISO
 ---
 
 A steeply pitched asphalt shingle roof is dramatically bisected by shadow, serving as a textured canvas scattered with a glittering array of lost rings and trinkets. The high-angle perspective transforms casual detritus into a mesmerizing architectural installation bathed in stark contrast and rich tonal depth.

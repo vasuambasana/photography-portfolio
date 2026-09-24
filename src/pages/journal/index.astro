@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import JournalCard from '../../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
@@ -11,6 +12,11 @@ const entries = await decorate(sortJournal(allEntries));
 // narrows ten stories down to the one you can already see, which is what made the
 // original tag list read as noise. Single-use tags still have pages, still get linked
 // from inside their entry, and reappear here as soon as a second entry uses them.
+// The newest entry's cover stands in for the journal on social cards, same as the
+// gallery does with its newest photograph. Otherwise the share preview is the logo.
+const lead = entries[0].cover;
+const social = await getImage({ src: lead.data.image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
+
 const tags = [...collectTags(allEntries).entries()]
   .filter(([, { entries: tagged }]) => tagged.length > 1)
   .sort((a, b) => b[1].entries.length - a[1].entries.length || a[1].tag.localeCompare(b[1].tag));
@@ -18,7 +24,10 @@ const tags = [...collectTags(allEntries).entries()]
 
 <BaseLayout
   title="Journal"
-  description="Stories from the field: location guides, photographer's notes, and visual essays by Vasu Ambasana."
+  description="Field notes, essays and behind-the-lens writing by Vasu Ambasana, about the photographs in this archive and how they were made."
+  ogImage={social.src}
+  ogImageSize={{ width: 1200, height: 630 }}
+  ogImageAlt={lead.data.alt}
   ogType="website"
   schema="CollectionPage"
   breadcrumbs={[
@@ -48,7 +57,7 @@ const tags = [...collectTags(allEntries).entries()]
         </span>
       </div>
       <p class="text-body-md text-text-secondary leading-relaxed">
-        Stories from the field: location guides, technical notes, and the narratives behind the images.
+        Field notes, essays and technical notes on the photographs: where they were made, what went wrong, and what the files say.
       </p>
       <p class="mt-3">
         <a href="/journal/rss.xml" class="text-xs font-mono uppercase tracking-wider text-text-secondary hover:text-text-primary transition-colors no-underline">

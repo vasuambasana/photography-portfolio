@@ -7,10 +7,6 @@ date: 2025-11-28
 location: ""
 originalFilename: "2P4A4371 (1).jpg"
 featured: false
-cameraSpecs:
-  body: "Unknown Body"
-  lens: "Unknown Lens"
-  settings: "Unknown mm | Unknown f/ | Unknown s | Unknown ISO"
 
 ---
 

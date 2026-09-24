@@ -12,7 +12,9 @@ const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slic
 
 const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
 
-const latestJournal = await decorate(sortJournal(publishedJournal(await getCollection('journal'))).slice(0, 2));
+const journal = sortJournal(publishedJournal(await getCollection('journal')));
+const journalCount = journal.length;
+const latestJournal = await decorate(journal.slice(0, 2));
 
 // Sharing the site showed the logo on a blank card. Lead with the picture.
 const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
@@ -51,7 +53,7 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
           Architecture &middot; Nature &middot; Night
         </span>
         <span class="hidden sm:inline-flex items-center gap-2 text-xs font-mono text-white/70 tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           NEW YORK / BOSTON
         </span>
       </div>
@@ -90,9 +92,9 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
           <span>Featured: {heroPhoto.data.title}{heroPhoto.data.location && `, ${heroPhoto.data.location}`}</span>
         </div>
         <div class="flex items-center gap-4 text-white/60 text-[11px]">
-          <span>{allPhotos.length} WORKS</span>
+          <span>{allPhotos.length} PHOTOGRAPHS</span>
           <span>&bull;</span>
-          <span>LOCATION GUIDES</span>
+          <span>{journalCount} JOURNAL ENTRIES</span>
           <span>&bull;</span>
           <span>EXIF ARCHIVE</span>
         </div>

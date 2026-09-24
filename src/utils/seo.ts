@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { cameraName } from './camera';
 
 /** Google truncates snippets around here; longer text is written for nobody. */
 const DESCRIPTION_LIMIT = 160;
@@ -70,7 +71,7 @@ export function exifData(specs: CollectionEntry<'photos'>['data']['cameraSpecs']
   if (!specs) return [];
 
   const pairs: Array<[string, string | undefined]> = [
-    ['Camera', specs.body],
+    ['Camera', cameraName(specs.body) ?? undefined],
     ['Lens', specs.lens],
     ['FocalLength', specs.focalLength],
     ['Aperture', specs.aperture],
