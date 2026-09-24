@@ -2,7 +2,7 @@
 title: Portals to Twilight
 category: architecture
 image: ../../assets/photos/architecture/portals-to-twilight.jpg
-alt: "A weathered boardwalk running straight away from the camera through a receding line of timber arches, under a long-exposure sky banded pink and blue."
+alt: "A weathered boardwalk running straight away from the camera through a receding line of timber arches, under a sky banded pink and blue."
 date: 2024-04-17T00:00:00.000Z
 location: ''
 originalFilename: 20240416_215442.jpg

@@ -14,6 +14,7 @@ relatedPhotos:
     echoes-of-the-canyon,
     golden-hour-on-the-red-rocks,
     cosmic-gateway,
+    celestial-weave,
     hikers-on-the-trail,
     vastness-of-the-canyon,
   ]
@@ -50,6 +51,9 @@ twenty-five second exposure at ISO 500 on the Z Fold7, a blue-lit dome tent with
 sky over it and the last light still on a red ridge behind. Twenty-five seconds and ISO 500
 is an unhurried exposure by any standard. Standing in the dark asked less of the camera
 than standing in a canyon at noon.
+[*Celestial Weave*](/photo/celestial-weave) is the same phone at exactly the same settings,
+and by the two file names half an hour earlier: the tops of trees, thin cloud lit orange
+along one edge, and a bright planet near the middle of the sky.
 
 The rest of the week is ordinary by comparison and I like it for that.
 [*Golden Hour on the Red Rocks*](/photo/golden-hour-on-the-red-rocks) is 135mm at f/6.3,

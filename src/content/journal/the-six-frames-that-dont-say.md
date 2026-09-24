@@ -15,6 +15,7 @@ relatedPhotos:
     an-alpine-holiday-glow,
     a-family-outing-against-blue-ridges,
     a-symphony-of-holiday-lights,
+    constellation-of-tiny-treasured-relics,
     distant-blue-ridges,
     edge-of-dusk,
   ]
@@ -35,7 +36,10 @@ lit pedestrian street running through it, and
 [*A Family Outing Against Blue Ridges*](/photo/a-family-outing-against-blue-ridges), people
 at a railed overlook with ranges going back behind them, and
 [*A Symphony of Holiday Lights*](/photo/a-symphony-of-holiday-lights), a main street with
-every bare tree wrapped in white.
+every bare tree wrapped in white. The sixth is the odd one out,
+[*Constellation of Tiny Treasured Relics*](/photo/constellation-of-tiny-treasured-relics): a
+dark shingled surface cut across by hard shadow, scattered end to end with hundreds of small
+rings catching the light. No landscape in it at all, and still the same two days.
 
 Two frames from the same trip did keep their metadata.
 [*Distant Blue Ridges*](/photo/distant-blue-ridges) is a Canon R5 Mark II at 70mm, f/11,
@@ -43,10 +47,16 @@ Two frames from the same trip did keep their metadata.
 1/320s, ISO 320. So the Canon was there and was recording normally. Whatever stripped the
 other six did not touch those two.
 
-I do not know what happened. The most likely explanation is dull: something in the chain
-between the camera and this repository rewrote the files and dropped the metadata on the
-way, and it happened to catch a batch. It could equally have been a share, an export, or a
-message thread. The archive cannot tell me, which is the whole point of the entry.
+I do not know exactly what happened. The most likely explanation is dull: something in the
+chain between the camera and this repository rewrote the files and dropped the metadata on
+the way, and it happened to catch a batch.
+
+Since writing that I have opened the stored original of
+[*A Symphony of Holiday Lights*](/photo/a-symphony-of-holiday-lights), the file this site was
+built from. It is an export from Lightroom on an Android phone, and the camera fields are
+already gone from it. The only time it still carries is a capture time in a different block
+of metadata. So the loss happened at or before that export, not anywhere later, and that is
+as far back as the files go.
 
 It matters more here than it would elsewhere, because this site keeps claiming its numbers
 are checkable. For six photographs that claim is just false. They are good frames and they

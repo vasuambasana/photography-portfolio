@@ -29,8 +29,9 @@ their metadata before it reached me.
 Of the rest, 43 came from a Canon and 78 came from a phone.
 
 Not a phone. Phones. Eight of them: a Galaxy S22 Ultra, an S23 Ultra, an S24 Ultra, a Z
-Fold6, a Z Fold7, an iPhone 17 Pro, and two older handsets that report nothing but their
-model codes. Whatever was in a pocket at the time.
+Fold6, a Z Fold7, an iPhone 17 Pro, a Galaxy Note10+ 5G and a OnePlus 7 Pro. Those last two
+write only a model code into their files, SM-N976U and GM1917, and had to be looked up.
+Whatever was in a pocket at the time.
 
 The most-used lens in the whole archive is the RF 70-200mm f/2.8 L, at 33 frames, and it is
 also by a wide margin the most expensive object involved. Call it a quarter of the work. The

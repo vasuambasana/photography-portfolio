@@ -12,6 +12,7 @@ relatedPhotos:
   [
     brushstrokes-of-summer,
     strokes-of-identity,
+    sun-drenched-stroll,
     a-vibrant-marketplace-portrait,
     sunflowers-in-the-summer-shade,
     a-sunny-day-in-the-park,
@@ -48,7 +49,9 @@ the situation.
 [*Strokes of Identity*](/photo/strokes-of-identity) is the same idea at 168mm, an artist in
 a wide-brimmed hat and a long black dress, photographed from behind, facing her own work.
 Both are portraits where nobody is posing and nobody is being interrupted, which is the
-whole argument for the lens.
+whole argument for the lens. [*Sun-Drenched Stroll*](/photo/sun-drenched-stroll) is the
+same again at 200mm, f/5 and 1/1000s: a young couple crossing the grass with their hands
+linked, one of them in white headphones, the crowd reduced to colour behind them.
 
 Only two frames came from the 35mm:
 [*A Sunny Day in the Park*](/photo/a-sunny-day-in-the-park) at 1/2000s and
