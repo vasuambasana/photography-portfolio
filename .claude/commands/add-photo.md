@@ -1,6 +1,6 @@
 ---
 description: Ingest new photos end to end, then review the AI-written copy
-argument-hint: "[path] [--category <cat>] [--featured]"
+argument-hint: "[path] [--category <cat>] [--location <place>] [--featured]"
 allowed-tools: Bash(npm run add-photo:*), Bash(node scripts/*), Bash(npm run validate), Read, Edit, Glob, Grep
 ---
 
@@ -26,8 +26,11 @@ Then, before anything is committed:
    invent aperture, shutter, ISO or focal length. If the originals are still on disk,
    `npm run exif fix` can backfill from them.
 
-5. **Leave `location` empty rather than guessing.** Only fill it from EXIF GPS or something
-   the user told you.
+5. **Get a location for every new photo, from a real source.** The ingest fills it from GPS,
+   then `--location`, then other photos already placed on the same capture date. Whatever is
+   still empty, it lists at the end with a `npm run locate set` command per shoot. **Ask the
+   user where those shoots were** and run the commands with their answers. If they don't
+   know, leave it empty. Never fill it from what the picture looks like.
 
 6. Run `npm run validate`.
 

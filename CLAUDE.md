@@ -97,11 +97,11 @@ JPEG into `src/assets/photos/<category>/` and the markdown into `src/content/pho
 
 | Command | What it does |
 | --- | --- |
-| `npm run add-photo [path]` | Ingest new photos (defaults to `PHOTO_SOURCE_DIR`) |
+| `npm run add-photo [path]` | Ingest new photos (defaults to `PHOTO_SOURCE_DIR`). `--location "<place>"` for the batch |
 | `npm run backfill-ai` | Regenerate placeholder alt text / descriptions (`--dry-run`, `--limit N`) |
 | `npm run locate list` | Shoots by capture date, with location status |
 | `npm run locate set "<place>" --dates <d>` | Assign a location to a whole shoot |
-| `npm run locate gps` | Backfill location from EXIF GPS (currently 0 photos have any) |
+| `npm run locate gps` | Backfill location from EXIF GPS (none of the current originals have any) |
 | `npm run exif audit` / `exif fix` | Report / backfill missing camera metadata |
 | `npm run slugs check` / `slugs fix` | Report / repair slugs that drifted from titles |
 | `npm run optimize` | Shrink oversized source JPEGs |

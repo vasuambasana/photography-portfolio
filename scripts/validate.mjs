@@ -65,6 +65,8 @@ const titles = new Map();
 const pinsByCategory = new Map();
 const placeholderAlt = [];
 const placeholderBody = [];
+const unlocated = [];
+const SPEC_KEYS = ['body', 'lens', 'focalLength', 'aperture', 'shutterSpeed', 'iso'];
 
 if (photos.length === 0) error('No photos found in src/content/photos/');
 
@@ -104,6 +106,20 @@ for (const { file, data, content } of photos) {
   if (PLACEHOLDER_BODY.test(content)) placeholderBody.push(where);
 
   if (!data.date) error(`${where}: missing date`);
+
+  // Specs come from EXIF or nowhere. "Unknown Body" is neither, and a key the schema
+  // doesn't know is dropped silently at build time, so both are errors here.
+  if (data.cameraSpecs) {
+    for (const [key, value] of Object.entries(data.cameraSpecs)) {
+      if (!SPEC_KEYS.includes(key)) {
+        error(`${where}: cameraSpecs.${key} is not a schema field and never renders`);
+      } else if (/\bunknown\b/i.test(String(value))) {
+        error(`${where}: cameraSpecs.${key} is a placeholder ("${value}"). Delete it rather than guess`);
+      }
+    }
+  }
+
+  if (!String(data.location ?? '').trim()) unlocated.push(data.date);
 
   if (data.title) {
     const key = data.title.trim().toLowerCase();
@@ -257,11 +273,18 @@ if (placeholderAlt.length) {
 if (placeholderBody.length) {
   console.log(`warn   ${placeholderBody.length} photos still have a placeholder description.`);
 }
+if (unlocated.length) {
+  const shoots = new Set(unlocated.map((d) => (d instanceof Date ? d.toISOString() : String(d)).slice(0, 10)));
+  console.log(
+    `\nwarn   ${unlocated.length}/${photos.length} photos have no location, across ${shoots.size} capture dates. ` +
+      `\`npm run locate list --missing\` groups them by shoot.`
+  );
+}
 
 console.log(
   `\n${photos.length} photos, ${journal.length - drafts} published journal entries ` +
     `(+${drafts} draft), ${tagSlugs.size} tags: ` +
-    `${errors.length} error(s), ${warnings.length + placeholderAlt.length + placeholderBody.length} warning(s).`
+    `${errors.length} error(s), ${warnings.length + placeholderAlt.length + placeholderBody.length + (unlocated.length ? 1 : 0)} warning(s).`
 );
 
 process.exit(errors.length > 0 ? 1 : 0);

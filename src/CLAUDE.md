@@ -16,10 +16,18 @@ guessed aperture is a lie about a real photograph.
 `location` is filled from EXIF GPS or from what the photographer said. Otherwise leave it
 empty. "Looks like New England" is not a source.
 
-**None of the originals carry GPS** (checked: 0 of 129), so location cannot be derived from
-a file. Assign it per shoot with `npm run locate set "<place>" --dates <date>`, and only
-for shoots you actually know. A photo that says "Southwest Badlands" when it was Death
-Valley is the failure mode this exists to prevent. That one shipped.
+**None of the originals carry GPS** (checked: 0 of 129; the Google Drive copies were
+spot-checked again in Sept 2026, 6 of 6 across every camera from 2020 to 2026). They are
+Lightroom Mobile exports, and the export dropped the location; some dropped all EXIF. So
+location cannot be derived from the existing files. Assign it per shoot with
+`npm run locate set "<place>" --dates <date>`, and only for shoots you actually know.
+`add-photo` asks once per shoot date for anything it can't place, and `npm run validate`
+reports the backlog. A photo that says "Southwest Badlands" when it was Death Valley is the
+failure mode this exists to prevent. That one shipped.
+
+For new photos to carry GPS, the export has to keep it: include location in Lightroom's
+export metadata settings, or ingest the camera original. The place name is all that reaches
+the site; `sharp` strips the coordinates from the published JPEG.
 
 ## Alt text is editorial copy
 

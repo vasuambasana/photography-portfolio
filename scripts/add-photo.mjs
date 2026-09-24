@@ -15,10 +15,17 @@
  *   2. Reads EXIF data (camera, lens, focal length, aperture, shutter, ISO)
  *   3. Calls Gemini API to generate a title, alt text, and artistic description
  *   4. Creates a markdown file in src/content/photos/
+ *
+ * Location, in order of preference (see resolveLocation):
+ *   GPS in the original -> --location "<place>" -> the place already recorded for other
+ *   photos from the same capture date -> asked once per shoot date (terminal only).
+ * Anything still unplaced is listed at the end with the `locate set` command to fix it.
  */
 
 import fs from 'node:fs';
+import readline from 'node:readline/promises';
 import path from 'node:path';
+import matter from 'gray-matter';
 import sharp from 'sharp';
 import {
   CONTENT_DIR,
@@ -47,6 +54,7 @@ const inputPath = args.find(a => !a.startsWith('--')) || SOURCE_DIR;
 const category = getArg('category');
 const skipAI = args.includes('--skip-ai');
 const featured = args.includes('--featured');
+const locationArg = getArg('location');
 
 if (!inputPath) {
   console.error(`
@@ -59,6 +67,8 @@ if (!inputPath) {
                   One of: ${VALID_CATEGORIES.join(', ')}
     --skip-ai     Skip Gemini API call (uses placeholder text)
     --featured    Mark the photo as featured on the homepage
+    --location    Where the batch was taken, e.g. "Acadia National Park, Maine".
+                  GPS in the file still wins; this fills in when there is none.
 
   Examples:
     # Process everything under PHOTO_SOURCE_DIR (auto-detects categories from subfolders):
@@ -457,6 +467,52 @@ function toSlug(str) {
 // ---------------------------------------------------------------------------
 // Process a single image
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Location
+// ---------------------------------------------------------------------------
+// Answers given at the prompt, keyed by capture date, so a shoot is asked about once.
+const answeredLocations = new Map();
+// Capture dates that ended up with no location, for the summary at the end.
+const unplacedDates = new Map();
+
+/** The single location every already-imported photo from `date` agrees on, if any. */
+function locationFromSameShoot(date) {
+  const places = new Set();
+  for (const mdFile of fs.readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md'))) {
+    const { data } = matter(fs.readFileSync(path.join(CONTENT_DIR, mdFile), 'utf-8'));
+    const day = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : String(data.date).slice(0, 10);
+    const place = typeof data.location === 'string' ? data.location.trim() : '';
+    if (day === date && place) places.add(place);
+  }
+  return places.size === 1 ? [...places][0] : null;
+}
+
+async function askLocation(date) {
+  if (answeredLocations.has(date)) return answeredLocations.get(date);
+  if (!process.stdin.isTTY) return null;
+
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const answer = (await rl.question(`   Where were the ${date} photos taken? (Enter to leave blank) `)).trim();
+  rl.close();
+  answeredLocations.set(date, answer || null);
+  return answer || null;
+}
+
+/**
+ * Location is a fact about where the photographer stood, so it only ever comes from
+ * the file's GPS or from the photographer. Never from what the picture looks like.
+ */
+async function resolveLocation(filePath, date) {
+  const fromGps = await locationFromExif(filePath);
+  if (fromGps) return { place: fromGps, source: 'GPS' };
+  if (locationArg) return { place: locationArg, source: '--location' };
+  const fromShoot = locationFromSameShoot(date);
+  if (fromShoot) return { place: fromShoot, source: `other photos from ${date}` };
+  const answered = await askLocation(date);
+  if (answered) return { place: answered, source: 'you' };
+  return null;
+}
+
 async function processImage(filePath, targetCategory) {
   const ext = path.extname(filePath).toLowerCase();
   const originalName = path.basename(filePath, ext);
@@ -541,19 +597,22 @@ async function processImage(filePath, targetCategory) {
     console.log(`   📁 Optimized & copied to: src/assets/photos/${targetCategory}/${destFileName}`);
   }
 
-  // 3b. Derive location from GPS, if the original carries any. Coordinates stay on the
-  // original; only the place name is written, and only when we actually have a fix.
-  let location = '';
-  const place = await locationFromExif(filePath);
-  if (place) {
-    location = place;
-    console.log(`   Location: ${place}`);
-  }
-
-  // 4. Determine date
+  // 3b. Determine date
   const photoDate = exif.dateTaken
     ? new Date(exif.dateTaken).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0];
+
+  // 4. Location. GPS coordinates stay on the original; only a place name is written.
+  let location = '';
+  const resolved = await resolveLocation(filePath, photoDate);
+  if (resolved) {
+    location = resolved.place;
+    console.log(`   Location: ${resolved.place} (from ${resolved.source})`);
+  } else {
+    console.log('   Location: none. Listed at the end with the command to set it.');
+    if (!unplacedDates.has(photoDate)) unplacedDates.set(photoDate, []);
+    unplacedDates.get(photoDate).push(path.basename(filePath));
+  }
 
   // 5. Build camera specs YAML
   const specEntries = [];
@@ -575,7 +634,7 @@ category: "${targetCategory}"
 image: ${frontmatterImagePath(targetCategory, destFileName)}
 alt: "${alt}"
 date: ${photoDate}
-location: "${location}"
+location: "${location.replace(/"/g, '\\"')}"
 originalFilename: "${path.basename(filePath)}"
 featured: ${featured}
 ${cameraBlock}
@@ -663,6 +722,13 @@ async function main() {
 
   console.log('\n' + '─'.repeat(50));
   console.log(`✅ Done! Added ${processedSlugs.length} photo(s).`);
+
+  if (unplacedDates.size > 0) {
+    console.log('\n📍 No location for these shoots. If you know where they were, run:');
+    for (const [date, files] of [...unplacedDates.entries()].sort()) {
+      console.log(`     npm run locate set "<place>" --dates ${date}   # ${files.length} photo(s)`);
+    }
+  }
   console.log('\nNext steps:');
   console.log('  1. Review markdown files in src/content/photos/');
   console.log('  2. Commit and push:');
