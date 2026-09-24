@@ -77,9 +77,14 @@ is the slug and therefore the URL (`/photo/<slug>`).
 
 ## Conventions worth knowing
 
-- **No View Transitions.** `astro:page-load` never fires. Inline `<script>` tags in
-  `.astro` files are deferred modules, so the DOM is ready when they run. Just write
-  top-level code. Don't add `astro:page-load` listeners.
+- **No Astro router.** There is no `<ClientRouter>` / `<ViewTransitions>`, so
+  `astro:page-load` never fires and every navigation is a full page load. Inline `<script>`
+  tags in `.astro` files are deferred modules, so the DOM is ready when they run. Just
+  write top-level code. Don't add `astro:page-load` listeners.
+- **Page transitions are native CSS**, not the router: `@view-transition` in
+  `global.css`, with `src/components/common/MotionHead.astro` naming the photo that travels
+  between pages (`#vt-photo` on photo and journal pages). Browsers without support just load
+  the page. All motion is listed in the design-system skill.
 - **Gallery filter state lives in `?filter=`** and nothing else. All four consumers
   (gallery grid, photo prev/next, filmstrip, lightbox) go through `src/utils/filter.ts`.
   If you're about to read `searchParams.get('filter')` by hand, import the helper instead.

@@ -87,7 +87,25 @@ a new label treatment.
 - Transitions 200-700ms, ease-out. `duration-700` for image scale, `duration-300` for
   overlays and colour.
 - Everything must be wrapped by the existing `prefers-reduced-motion` guard in `global.css`.
-- No motion that competes with the photographs.
+  Scripts check `html.reduce-motion` (set in `MotionHead.astro`) or the media query.
+- No motion that competes with the photographs. Motion should come from the photographs'
+  own data where it can, not from decoration.
+
+What exists, so it gets reused rather than rebuilt:
+
+| Piece | Where | What it does |
+| --- | --- | --- |
+| Page transitions | `@view-transition` in `global.css`, `MotionHead.astro` | The clicked photo morphs into the next page's `#vt-photo`; photo to photo slides in filmstrip order |
+| Develop | `img[data-develop]` + `--develop`, `scripts/develop.ts` | Photo comes up from dark over a duration set by its shutter speed (`developDuration()`) |
+| Journal previews | `scripts/photo-preview.ts` | Hover or focus a photo link in an entry to see the frame and its settings |
+| Theme aperture | `ThemeToggle.astro` | New theme opens through a hexagonal iris from the toggle |
+| Ambient + lights down | `.photo-ambient`, `.lights-down` | Blurred copy of the photo behind it; page dims while it fills the screen |
+| Sort by light | gallery `?sort=light`, `exposureValue()` | Darkest exposure first; filter and sort changes animate |
+| Lightbox | `ClickableImage.tsx`, `Lightbox.tsx` | Zooms out of the page photo; swipe down to close, sideways to step |
+
+Any new element given a `view-transition-name` must be unique on the page at the moment
+of the transition, or the whole transition is skipped. Name elements just before a
+transition and clear the name after, the way `MotionHead.astro` does.
 
 ## Accessibility (non-negotiable)
 

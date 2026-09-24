@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import { JOURNAL_TYPE_LABELS } from '../../content/config';
 import { tagSlug } from '../../utils/journal';
 import type { Photo } from '../../utils/photos';
+import { developDuration } from '../../utils/exposure';
 
 export interface Props {
   entry: CollectionEntry<'journal'>;
@@ -34,6 +35,7 @@ const {
 
 const { title, subtitle, type, date, location, tags, excerpt } = entry.data;
 const isCard = variant === 'card';
+const develop = developDuration(cover.data.cameraSpecs?.shutterSpeed);
 ---
 
 <article
@@ -56,6 +58,8 @@ const isCard = variant === 'card';
         widths={[600, 1200]}
         sizes="(min-width: 768px) 50vw, 92vw"
         loading={loading}
+        data-develop
+        style={`--develop:${develop}ms`}
         class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
       <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />

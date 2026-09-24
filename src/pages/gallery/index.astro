@@ -57,6 +57,7 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
           </p>
         </div>
 
+        <div class="flex flex-col items-start md:items-end gap-2.5">
         <!-- Category filter pills -->
         <nav aria-label="Filter photos by category">
           <ul class="flex flex-wrap items-center gap-1.5">
@@ -82,6 +83,27 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
             ))}
           </ul>
         </nav>
+
+        <!-- Order: newest first, or by how much light there was -->
+        <div class="flex items-center gap-2" role="group" aria-label="Order photos">
+          <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">Order</span>
+          <button
+            data-sort="newest"
+            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+            aria-pressed="true"
+          >
+            Newest
+          </button>
+          <button
+            data-sort="light"
+            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+            aria-pressed="false"
+            title="Sorted by exposure value, from the longest night exposure to the brightest daylight"
+          >
+            Darkest first
+          </button>
+        </div>
+        </div>
       </div>
 
       <!-- Photos grid -->
@@ -100,44 +122,116 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
   <script>
     import { ALL_FILTER, getActiveFilter, matchesFilter, withFilter } from '../../utils/filter';
 
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-    const items = document.querySelectorAll<HTMLElement>('[data-category]');
+    type Sort = 'newest' | 'light';
+    const SORT_PARAM = 'sort';
+
+    const grid = document.getElementById('portfolio-grid')!;
+    const cards = [...grid.querySelectorAll<HTMLElement>(':scope > [data-category]')];
+    const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const sortButtons = document.querySelectorAll<HTMLButtonElement>('.sort-btn');
     const empty = document.getElementById('gallery-empty');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function apply(filter: string, pushUrl: boolean) {
-      buttons.forEach((b) => {
-        const isActive = b.dataset.filter === filter;
-        b.setAttribute('aria-pressed', String(isActive));
-        b.classList.toggle('bg-text-primary', isActive);
-        b.classList.toggle('text-surface-main', isActive);
-        b.classList.toggle('shadow-sm', isActive);
-        b.classList.toggle('text-text-secondary', !isActive);
-      });
+    let filter = getActiveFilter();
+    // The order is a way of looking at the gallery, not a filter, so only this page reads it.
+    let sort: Sort = new URL(location.href).searchParams.get(SORT_PARAM) === 'light' ? 'light' : 'newest';
 
-      let visible = 0;
-      items.forEach((item) => {
-        const shown = matchesFilter(item.dataset.category, filter);
-        item.style.display = shown ? '' : 'none';
-        if (shown) visible++;
-
-        const link = item.querySelector<HTMLAnchorElement>('[data-photo-link]');
-        if (link) link.href = withFilter(link.pathname, filter);
-      });
-
-      empty?.classList.toggle('hidden', visible > 0);
-
-      if (pushUrl) {
-        const url = new URL(window.location.href);
-        if (filter === ALL_FILTER) url.searchParams.delete('filter');
-        else url.searchParams.set('filter', filter);
-        history.replaceState(null, '', url);
-      }
-    }
-
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', () => apply(btn.dataset.filter || ALL_FILTER, true));
+    // The server renders newest first. "Darkest first" orders by exposure value: the
+    // longest night exposures at the top, the brightest daylight at the bottom, and
+    // photos that recorded no settings after all of them.
+    const byLight = [...cards].sort((a, b) => {
+      const ea = a.dataset.ev ? Number(a.dataset.ev) : null;
+      const eb = b.dataset.ev ? Number(b.dataset.ev) : null;
+      if (ea === null || eb === null) return ea === null ? (eb === null ? 0 : 1) : -1;
+      return ea - eb;
     });
 
-    apply(getActiveFilter(), false);
+    function setPressed(buttons: NodeListOf<HTMLButtonElement>, key: 'filter' | 'sort', value: string) {
+      buttons.forEach((b) => {
+        const active = b.dataset[key] === value;
+        b.setAttribute('aria-pressed', String(active));
+        b.classList.toggle('bg-text-primary', active);
+        b.classList.toggle('text-surface-main', active);
+        b.classList.toggle('shadow-sm', active);
+        b.classList.toggle('text-text-secondary', !active);
+      });
+    }
+
+    function render() {
+      setPressed(filterButtons, 'filter', filter);
+      setPressed(sortButtons, 'sort', sort);
+
+      for (const card of sort === 'light' ? byLight : cards) grid.appendChild(card);
+
+      let visible = 0;
+      cards.forEach((card) => {
+        const shown = matchesFilter(card.dataset.category, filter);
+        card.style.display = shown ? '' : 'none';
+        if (shown) visible++;
+        const link = card.querySelector<HTMLAnchorElement>('[data-photo-link]');
+        if (link) link.href = withFilter(link.pathname, filter);
+      });
+      empty?.classList.toggle('hidden', visible > 0);
+    }
+
+    function syncUrl() {
+      const url = new URL(location.href);
+      if (filter === ALL_FILTER) url.searchParams.delete('filter');
+      else url.searchParams.set('filter', filter);
+      if (sort === 'light') url.searchParams.set(SORT_PARAM, 'light');
+      else url.searchParams.delete(SORT_PARAM);
+      history.replaceState(null, '', url);
+    }
+
+    const onScreen = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      return r.height > 0 && r.bottom > 0 && r.top < innerHeight;
+    };
+
+    // Cards glide to their new places. Only the ones on screen before or after are
+    // animated; naming all 127 would ask a phone to capture every photograph at once.
+    function update() {
+      syncUrl();
+      // Re-appending cards would otherwise replay their load-in fade.
+      grid.classList.add('stagger-done');
+      if (reducedMotion || !document.startViewTransition) {
+        render();
+        return;
+      }
+
+      const named = new Set<HTMLElement>();
+      const nameOnScreen = () =>
+        cards.forEach((card) => {
+          if (card.style.display !== 'none' && onScreen(card)) {
+            card.style.viewTransitionName = `card-${card.dataset.slug}`;
+            (card.style as CSSStyleDeclaration & { viewTransitionClass?: string }).viewTransitionClass = 'gallery-card';
+            named.add(card);
+          }
+        });
+
+      nameOnScreen();
+      const vt = document.startViewTransition(() => {
+        render();
+        nameOnScreen();
+      });
+      vt.finished.finally(() => named.forEach((card) => (card.style.viewTransitionName = '')));
+    }
+
+    filterButtons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        filter = btn.dataset.filter || ALL_FILTER;
+        update();
+      })
+    );
+    sortButtons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.sort === 'light' ? 'light' : 'newest';
+        if (next === sort) return;
+        sort = next;
+        update();
+      })
+    );
+
+    render();
   </script>
 </BaseLayout>

@@ -7,6 +7,7 @@ import ClickableImage from '../../components/portfolio/ClickableImage';
 import { neighbours, photosInCategory, sortPhotos } from '../../utils/photos';
 import { exifData, metaDescription } from '../../utils/seo';
 import { cameraName } from '../../utils/camera';
+import { developDuration } from '../../utils/exposure';
 import { journalMentions, publishedJournal, sortJournal } from '../../utils/journal';
 import type { JournalMention } from '../../utils/journal';
 import { JOURNAL_TYPE_LABELS } from '../../content/config';
@@ -76,11 +77,13 @@ const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
 const camera = cameraName(cameraSpecs?.body);
+const develop = developDuration(cameraSpecs?.shutterSpeed);
 const specs = cameraSpecs ?? {};
 const hasSpecs = Boolean(camera || specs.lens || specs.focalLength || specs.aperture || specs.shutterSpeed || specs.iso);
 
 const display = await getImage({ src: image, width: 1800, format: 'webp' });
 const initialIndex = clientPhotos.findIndex((p) => p.slug === photo.slug);
+const ambient = clientPhotos[initialIndex]?.thumb ?? display.src;
 
 // WebP still trips up some crawlers (LinkedIn, WhatsApp), which then show no card
 // at all. Social previews get their own JPEG at the size the platforms expect.
@@ -119,9 +122,13 @@ const description = metaDescription(photo.body, alt);
     ...(exifData(cameraSpecs).length ? { exifData: exifData(cameraSpecs) } : {}),
   }}
 >
-  <div class="section-container">
+  <div class="section-container photo-stage">
     <!-- Immersive Exhibition Theater Display -->
-    <div class="relative rounded-2xl overflow-hidden bg-zinc-950 border border-white/10 shadow-2xl flex items-center justify-center p-2 sm:p-4 md:p-6">
+    <div class="photo-theatre relative rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl flex items-center justify-center p-2 sm:p-4 md:p-6">
+      <!-- Ambient light: the photograph itself, blurred far past recognition, so the frame
+           around a portrait is tinted by its own colour instead of flat black. -->
+      <img src={ambient} alt="" aria-hidden="true" class="photo-ambient" width="200" height="200" />
+      <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
       <ClickableImage
         client:load
         src={display.src}
@@ -131,9 +138,13 @@ const description = metaDescription(photo.body, alt);
         caption={title}
         galleryImages={clientPhotos}
         initialIndex={initialIndex}
-        className="w-full h-auto max-h-[82vh] object-contain mx-auto rounded-lg"
+        id="vt-photo"
+        developMs={develop}
+        className="relative w-full h-auto max-h-[82vh] object-contain mx-auto rounded-lg"
       />
     </div>
+    <!-- Lights down: the rest of the page dims while the photograph fills the screen. -->
+    <div class="lights-down" aria-hidden="true"></div>
 
     <!-- Prev / Next navigation -->
     <nav class="flex items-center justify-between py-4" aria-label="Photo navigation">

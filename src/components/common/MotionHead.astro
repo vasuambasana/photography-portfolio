@@ -1,0 +1,117 @@
+---
+// Page-to-page photo transitions. Native cross-document view transitions: the CSS
+// rule `@view-transition { navigation: auto }` in global.css turns them on, and this
+// script decides which image travels between the two pages by giving it a shared
+// `view-transition-name` on both sides.
+//
+// This is not Astro's <ClientRouter>. Every navigation is still a normal full page
+// load, `astro:page-load` still never fires, and browsers without support just load
+// the page. It has to be inline and in <head> because `pagereveal` fires before the
+// first paint of the new page, before any deferred module script would run.
+---
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    root.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      root.classList.add('reduce-motion');
+      return;
+    }
+
+    const NAME = 'hero-photo';
+    const FROM_KEY = 'vt-from';
+
+    const pathOf = (url) => {
+      const p = new URL(url, location.href).pathname.replace(/\/+$/, '');
+      return p || '/';
+    };
+    const isDetail = (p) => /^\/(photo|journal)\/[^/]+$/.test(p) && !p.startsWith('/journal/tag');
+
+    const onScreen = (el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+    };
+
+    // The first image inside a link that points at `target`, visible unless told otherwise.
+    const linkedImage = (target, anywhere = false) => {
+      for (const img of document.querySelectorAll('a[href] img')) {
+        const link = img.closest('a');
+        if (link && pathOf(link.href) === target && (anywhere || onScreen(img))) return img;
+      }
+      return null;
+    };
+
+    const name = (el, vt) => {
+      el.style.viewTransitionName = NAME;
+      vt.finished.finally(() => {
+        el.style.viewTransitionName = '';
+      });
+    };
+
+    // Old page: pick the image that goes with the visitor.
+    addEventListener('pageswap', (e) => {
+      try { sessionStorage.setItem(FROM_KEY, location.pathname); } catch {}
+
+      const vt = e.viewTransition;
+      const url = e.activation && e.activation.entry && e.activation.entry.url;
+      if (!vt || !url) return;
+
+      const dest = pathOf(url);
+      const here = pathOf(location.href);
+      const main = document.getElementById('vt-photo');
+      const photoToPhoto = here.startsWith('/photo/') && dest.startsWith('/photo/');
+
+      // Photo to photo: the main image slides. Into any other detail page: the card that
+      // was clicked, or nothing, never a different photograph pretending to be it. Back
+      // out to a listing: the main image, which the listing then catches in its card.
+      const mainInView = main && onScreen(main) ? main : null;
+      const source = photoToPhoto ? mainInView : isDetail(dest) ? linkedImage(dest) : mainInView;
+      if (source) name(source, vt);
+    });
+
+    // New page: pick the image that receives it.
+    addEventListener('pagereveal', (e) => {
+      const vt = e.viewTransition;
+      if (!vt) return;
+
+      let from = null;
+      try { from = sessionStorage.getItem(FROM_KEY); } catch {}
+      const here = pathOf(location.href);
+      const main = document.getElementById('vt-photo');
+
+      if (main) {
+        // Arriving on a detail page: skip the develop fade, the morph is the entrance.
+        main.classList.add('developed', 'no-develop');
+        name(main, vt);
+
+        // Photo to photo slides sideways, in filmstrip order.
+        if (from && from.startsWith('/photo/') && here.startsWith('/photo/')) {
+          const thumbs = [...document.querySelectorAll('.thumbnail-link')].map((t) => t.dataset.baseHref);
+          const a = thumbs.indexOf(pathOf(from));
+          const b = thumbs.indexOf(here);
+          if (a !== -1 && b !== -1 && a !== b) {
+            const cls = a < b ? 'vt-forward' : 'vt-back';
+            root.classList.add(cls);
+            vt.finished.finally(() => root.classList.remove(cls));
+          }
+        }
+        return;
+      }
+
+      // Arriving back on a listing: the card for the page we came from. The gallery
+      // scrolls to it, so leaving a photo returns you to where it sits in the grid.
+      if (from && isDetail(pathOf(from))) {
+        let card = linkedImage(pathOf(from));
+        if (!card && here === '/gallery') {
+          card = linkedImage(pathOf(from), true);
+          if (card) card.scrollIntoView({ block: 'center', behavior: 'instant' });
+        }
+        if (card) {
+          card.classList.add('developed', 'no-develop');
+          name(card, vt);
+        }
+      }
+    });
+  })();
+</script>

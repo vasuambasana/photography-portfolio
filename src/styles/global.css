@@ -316,3 +316,165 @@
     border-color: var(--border-subtle);
   }
 }
+
+/* ── Motion ──────────────────────────────────────────────────────────────────────
+   Everything below is progressive: browsers without support show the page as it
+   always was, and none of it runs under prefers-reduced-motion. */
+
+/* Page-to-page transitions. MotionHead.astro names the image that travels. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.25, 0.6, 0.3, 1);
+}
+
+::view-transition-group(hero-photo) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+::view-transition-old(hero-photo),
+::view-transition-new(hero-photo) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+/* Photo to photo: a short slide in filmstrip order, not a morph. */
+html.vt-forward::view-transition-old(hero-photo) { animation-name: vt-out-left; }
+html.vt-forward::view-transition-new(hero-photo) { animation-name: vt-in-right; }
+html.vt-back::view-transition-old(hero-photo) { animation-name: vt-out-right; }
+html.vt-back::view-transition-new(hero-photo) { animation-name: vt-in-left; }
+
+@keyframes vt-out-left { to { opacity: 0; transform: translateX(-6%); } }
+@keyframes vt-in-right { from { opacity: 0; transform: translateX(6%); } }
+@keyframes vt-out-right { to { opacity: 0; transform: translateX(6%); } }
+@keyframes vt-in-left { from { opacity: 0; transform: translateX(-6%); } }
+
+/* Develop: a photo starts dark and soft and comes up to full exposure once loaded,
+   over --develop, which is derived from its own shutter speed at build time.
+   Filter only, never opacity, so the image still counts as painted immediately. */
+html.js:not(.reduce-motion) img[data-develop] {
+  filter: brightness(0.2) saturate(0.4) blur(6px);
+  transition-property: filter, transform, opacity;
+  transition-duration: var(--develop, 480ms), 700ms, 300ms;
+  transition-timing-function: cubic-bezier(0.3, 0.55, 0.3, 1), cubic-bezier(0.4, 0, 0.2, 1),
+    ease;
+}
+
+html.js:not(.reduce-motion) img[data-develop].developed {
+  filter: none;
+}
+
+html.js img[data-develop].no-develop {
+  transition-duration: 0s, 700ms, 300ms;
+}
+
+/* Journal photo previews (scripts/photo-preview.ts). */
+.photo-preview {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px) scale(0.98);
+  transform-origin: 50% 100%;
+  transition: opacity 180ms ease-out, transform 220ms cubic-bezier(0.22, 0.8, 0.2, 1),
+    visibility 0s linear 220ms;
+}
+
+.photo-preview[data-side='below'] {
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: 50% 0;
+}
+
+.photo-preview.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+/* Theme switch aperture (ThemeToggle.astro): the new theme is clipped open by script, so
+   the default cross-fade is switched off for this one transition. */
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.theme-vt::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Photo page ambient light and lights-down (pages/photo/[slug].astro). */
+.photo-ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(48px) saturate(1.4);
+  transform: scale(1.35);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.lights-down {
+  display: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .photo-stage {
+      timeline-scope: --theatre;
+    }
+
+    .photo-theatre {
+      view-timeline-name: --theatre;
+      z-index: 6;
+    }
+
+    .lights-down {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background: black;
+      opacity: 0;
+      animation: lights-down linear both;
+      animation-timeline: --theatre;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* Full dim while the photograph fills the screen; the lights are fully up again by the
+   time the text below it reaches the middle of the screen. */
+@keyframes lights-down {
+  0% { opacity: 0; }
+  30% { opacity: 0.72; }
+  55% { opacity: 0.72; }
+  72% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Gallery filter and sort reflow (pages/gallery/index.astro). */
+.stagger-done > * {
+  animation: none;
+  opacity: 1;
+}
+
+::view-transition-group(.gallery-card) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+/* Lightbox zoom (ClickableImage.tsx). */
+::view-transition-group(lightbox-photo) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}

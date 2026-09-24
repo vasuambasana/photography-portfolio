@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cameraName } from './camera';
+import { cameraName, specLine } from './camera';
 
 describe('cameraName', () => {
   it('turns model codes into the names the phones were sold under', () => {
@@ -22,5 +22,21 @@ describe('cameraName', () => {
     expect(cameraName(undefined)).toBeNull();
     expect(cameraName('')).toBeNull();
     expect(cameraName('Unknown Body')).toBeNull();
+  });
+});
+
+describe('specLine', () => {
+  it('joins the recorded settings with readable camera and focal length', () => {
+    expect(
+      specLine({ body: 'Canon EOS R5m2', focalLength: '200.0mm', aperture: 'f/2.8', shutterSpeed: '1/1250s', iso: '100' })
+    ).toBe('Canon EOS R5 Mark II · 200mm · f/2.8 · 1/1250s · ISO 100');
+    expect(specLine({ body: 'samsung SM-S908U1', focalLength: '230mm (35mm eq)', iso: '40' })).toBe(
+      'Samsung Galaxy S22 Ultra · 230mm · ISO 40'
+    );
+  });
+
+  it('is empty when nothing was recorded', () => {
+    expect(specLine(undefined)).toBe('');
+    expect(specLine({})).toBe('');
   });
 });

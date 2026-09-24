@@ -25,3 +25,20 @@ export function cameraName(body: string | undefined): string | null {
   // Samsung writes its make in lower case; nothing else about the model needs changing.
   return raw.replace(/^samsung\b/, 'Samsung');
 }
+
+type Specs = {
+  body?: string;
+  focalLength?: string;
+  aperture?: string;
+  shutterSpeed?: string;
+  iso?: string;
+};
+
+/** One line of settings, e.g. "Canon EOS R5 Mark II · 200mm · f/2.8 · 1/1250s · ISO 100". */
+export function specLine(specs: Specs | undefined): string {
+  if (!specs) return '';
+  const focal = specs.focalLength?.replace(/\s*\(35mm eq\)/, '').replace(/\.0mm$/, 'mm');
+  return [cameraName(specs.body), focal, specs.aperture, specs.shutterSpeed, specs.iso && `ISO ${specs.iso}`]
+    .filter(Boolean)
+    .join(' · ');
+}
