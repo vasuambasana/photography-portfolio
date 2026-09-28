@@ -117,7 +117,7 @@ the class and the guard, move its row up into the table above, and take it off `
 | --- | --- | --- |
 | Loupe | `scripts/loupe.ts` | Press and hold the photo page image; releases swallow the click |
 | Viewfinder | `scripts/viewfinder.ts` | V or the button: framing guides and the file's settings over the picture |
-| Settings card, postcard | `scripts/card-dialog.ts`, `scripts/card-drawing.ts` | Canvas card sized to the photo (contained, never cropped); postcard with the visitor's note, a stamp of the photo and a postmark from the recorded date and place; turns over in 3D |
+| Settings card, postcard | `scripts/card-dialog.ts`, `scripts/card-drawing.ts`, `utils/postcard.ts` | Canvas card sized to the photo (contained, never cropped). Postcard at the photo's own shape: the whole photo edge to edge on the front; the back has the visitor's note, a VA stamp in the photo's colour valued at its shutter speed, and a postmark from the recorded date and place (`backLayout()` keeps it all apart for any shape); Front/Back buttons, turns over in 3D |
 | Histogram, spot meter | `scripts/viewfinder.ts`, `utils/tones.ts` | In the viewfinder: luma histogram of the file; hover reads stops from middle grey |
 | Colour rhyme | `data/archive.ts`, `utils/palette.ts` | Nearest 8-colour palette from another year, measured at build time with sharp; shown as chips |
 | Photo accent | `pages/photo/[slug].astro`, `accentFromPalette()` | The page's accent (and a faint surface tint) from the photo's most vivid colour, held to 4.5:1 in both themes |

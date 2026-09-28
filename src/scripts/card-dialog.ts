@@ -23,6 +23,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
   const front = postcard.querySelector<HTMLCanvasElement>('.postcard-front')!;
   const back = postcard.querySelector<HTMLCanvasElement>('.postcard-back')!;
   const message = dialog.querySelector<HTMLTextAreaElement>('[data-postcard-message]')!;
+  const sides = [...dialog.querySelectorAll<HTMLButtonElement>('[data-postcard-side]')];
   const save = dialog.querySelector<HTMLAnchorElement>('[data-card-save]')!;
   const share = dialog.querySelector<HTMLButtonElement>('[data-card-share]')!;
 
@@ -63,7 +64,8 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
       const img = await getPhoto();
       drawPostcardFront(front, img);
       drawPostcardBack(back, facts, message.value, img);
-      postcard.classList.toggle('portrait', front.height > front.width);
+      // The preview takes the card's own shape, the photograph's.
+      postcard.style.setProperty('--ratio', String(front.width / front.height));
       postcardDrawn = true;
     }
     await refreshExport();
@@ -83,9 +85,17 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
 
   tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.cardMode as Mode)));
 
+  // Front is the photograph, back is the writing. The buttons and a tap on the card both
+  // turn it over.
+  const turnTo = (side: 'front' | 'back') => {
+    postcard.classList.toggle('flipped', side === 'back');
+    sides.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.postcardSide === side)));
+  };
+  sides.forEach((b) => b.addEventListener('click', () => turnTo(b.dataset.postcardSide as 'front' | 'back')));
+
   // Writing on the back redraws it, and turns the card over so the words can be seen.
   message.addEventListener('input', () => {
-    postcard.classList.add('flipped');
+    turnTo('back');
     clearTimeout(pending);
     pending = window.setTimeout(async () => {
       drawPostcardBack(back, facts, message.value, await getPhoto());
@@ -93,7 +103,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
     }, 250);
   });
 
-  const turn = () => postcard.classList.toggle('flipped');
+  const turn = () => turnTo(postcard.classList.contains('flipped') ? 'front' : 'back');
   postcard.addEventListener('click', turn);
   postcard.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {

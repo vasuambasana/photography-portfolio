@@ -130,6 +130,7 @@ const photoFacts = JSON.stringify({
   ev: facts?.ev ?? null,
   full: display.src,
   palette,
+  accent: facts?.accent?.light ?? null,
 }).replace(/</g, '\\u003c');
 
 // Labs: the two palettes side by side under the colour rhyme, as measured.
@@ -436,7 +437,13 @@ const accentCss = accent
           <canvas class="postcard-face postcard-back" aria-label="Postcard back"></canvas>
         </div>
       </div>
-      <p class="mt-2 text-caption text-text-secondary">Tap the card to turn it over.</p>
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <div role="group" aria-label="Side of the postcard" class="inline-flex rounded-full border border-subtle p-1 gap-1">
+          <button type="button" data-postcard-side="front" aria-pressed="true" class="card-tab">Front</button>
+          <button type="button" data-postcard-side="back" aria-pressed="false" class="card-tab">Back</button>
+        </div>
+        <p class="text-caption text-text-secondary">Or tap the card to turn it over.</p>
+      </div>
       <label class="block mt-3">
         <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mb-1">Write on the back</span>
         <textarea data-postcard-message maxlength="180" rows="3" class="postcard-message" placeholder="Wish you were here."></textarea>

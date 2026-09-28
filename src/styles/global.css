@@ -652,13 +652,18 @@ html.labs .labs-switch-thumb {
   transition: color 200ms ease-out, background-color 200ms ease-out;
 }
 
-.card-tab[aria-selected='true'] {
+.card-tab[aria-selected='true'],
+.card-tab[aria-pressed='true'] {
   color: rgb(var(--color-surface-main));
   background-color: rgb(var(--color-text-primary));
 }
 
 /* The postcard turns over in 3D; the back canvas sits behind the front. */
 .postcard {
+  /* The card is the photograph's shape (--ratio), as large as fits while leaving the
+     buttons under it on screen, even on a phone. */
+  width: min(100%, calc(min(56vh, 100svh - 440px) * var(--ratio, 1.5)));
+  margin-inline: auto;
   perspective: 1800px;
   cursor: pointer;
   border-radius: 0.5rem;
@@ -677,11 +682,6 @@ html.labs .labs-switch-thumb {
 
 .postcard.flipped .postcard-inner {
   transform: rotateY(180deg);
-}
-
-.postcard.portrait {
-  width: min(100%, 40vh);
-  margin-inline: auto;
 }
 
 .card-dialog [data-card-panel='card'] img {

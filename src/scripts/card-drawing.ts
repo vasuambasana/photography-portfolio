@@ -1,12 +1,12 @@
 // Labs: the settings card and the postcard, drawn on canvases in the visitor's browser.
 //
-// The photograph is always fitted whole, at its own shape, never cropped. The settings
-// card is a screen object, so it takes the theme's colours. A postcard is paper, so it is
-// white card and dark ink whatever the theme, the way "over a photograph" uses plain
-// white and black.
+// The photograph is always shown whole, at its own shape, never cropped. The settings
+// card is a screen object, so it takes the theme's colours. A postcard is paper: the
+// front is the photograph edge to edge, the back is white card and dark ink whatever the
+// theme, the way "over a photograph" uses plain white and black.
 
 import type { PhotoFacts } from './viewfinder';
-import { postmarkDate, postmarkPlace, wrapWords } from '../utils/postcard';
+import { backLayout, postcardSize, postmarkDate, postmarkPlace, stampValue, wrapWords } from '../utils/postcard';
 
 const token = (name: string) => `rgb(${getComputedStyle(document.documentElement).getPropertyValue(name).trim()})`;
 const ink = (alpha: number) => `rgba(24, 24, 30, ${alpha})`;
@@ -40,14 +40,6 @@ function fitText(ctx: CanvasRenderingContext2D, text: string, font: (px: number)
     size -= 2;
     ctx.font = font(size);
   }
-}
-
-// The photograph fitted whole inside a box, centred.
-function fit(photo: HTMLImageElement, x: number, y: number, w: number, h: number) {
-  const scale = Math.min(w / photo.naturalWidth, h / photo.naturalHeight);
-  const pw = Math.round(photo.naturalWidth * scale);
-  const ph = Math.round(photo.naturalHeight * scale);
-  return { x: x + Math.round((w - pw) / 2), y: y + Math.round((h - ph) / 2), w: pw, h: ph };
 }
 
 const settingsLine = (f: PhotoFacts) =>
@@ -99,25 +91,21 @@ export function drawSettingsCard(facts: PhotoFacts, photo: HTMLImageElement): HT
   return canvas;
 }
 
-/** Postcards take the photograph's orientation: landscape 3:2, or portrait 2:3. */
-export function postcardSize(photo: HTMLImageElement) {
-  return photo.naturalWidth >= photo.naturalHeight ? { w: 1500, h: 1000 } : { w: 1000, h: 1500 };
-}
+const sizeOf = (photo: HTMLImageElement) => postcardSize(photo.naturalWidth, photo.naturalHeight);
 
-/** The front: the photograph on white card, whole. */
+/** The front: the whole photograph, edge to edge. The card is the photograph's shape. */
 export function drawPostcardFront(canvas: HTMLCanvasElement, photo: HTMLImageElement) {
-  const { w, h } = postcardSize(photo);
+  const { w, h } = sizeOf(photo);
   canvas.width = w;
   canvas.height = h;
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = PAPER;
-  ctx.fillRect(0, 0, w, h);
-  const r = fit(photo, 36, 36, w - 72, h - 72);
-  ctx.drawImage(photo, r.x, r.y, r.w, r.h);
+  canvas.getContext('2d')!.drawImage(photo, 0, 0, w, h);
 }
 
-// A perforated stamp with the photograph in it, fitted whole on a dark mat.
-function stamp(ctx: CanvasRenderingContext2D, photo: HTMLImageElement, x: number, y: number, w: number, h: number) {
+// A perforated stamp printed in the photograph's own colour: the VA mark, the year it was
+// made, and for its value the shutter speed it was made at.
+function stamp(ctx: CanvasRenderingContext2D, box: { x: number; y: number; w: number; h: number }, facts: PhotoFacts) {
+  const { x, y, w, h } = box;
+  ctx.save();
   ctx.fillStyle = ink(0.06);
   ctx.fillRect(x, y, w, h);
   ctx.fillStyle = PAPER;
@@ -134,26 +122,47 @@ function stamp(ctx: CanvasRenderingContext2D, photo: HTMLImageElement, x: number
     ctx.arc(x + w, j, 6, 0, Math.PI * 2);
     ctx.fill();
   }
+
   const inset = 16;
-  ctx.fillStyle = ink(0.9);
-  ctx.fillRect(x + inset, y + inset, w - inset * 2, h - inset * 2);
-  const r = fit(photo, x + inset, y + inset, w - inset * 2, h - inset * 2);
-  ctx.drawImage(photo, r.x, r.y, r.w, r.h);
+  const face = { x: x + inset, y: y + inset, w: w - inset * 2, h: h - inset * 2 };
+  // The accent is already dark enough for white type on it (utils/palette.ts).
+  ctx.fillStyle = facts.accent ? `rgb(${facts.accent.join(' ')})` : ink(0.9);
+  ctx.fillRect(face.x, face.y, face.w, face.h);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
+  ctx.font = mono(19);
+  const value = stampValue(facts.shutter);
+  if (value) ctx.fillText(value, face.x + 12, face.y + 28);
+  ctx.textAlign = 'center';
+  ctx.font = serif(70);
+  ctx.fillText('VA', face.x + face.w / 2, face.y + face.h / 2 + 26);
+  ctx.font = mono(16);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.fillText(facts.isoDate.slice(0, 4), face.x + face.w / 2, face.y + face.h - 14);
+  ctx.restore();
 }
 
 // A round postmark: the place round the top when one was recorded, the date across the
 // middle, and the wavy cancellation lines trailing off to one side.
-function postmark(ctx: CanvasRenderingContext2D, cx: number, cy: number, iso: string, place: string, wavesTo: number) {
+function postmark(
+  ctx: CanvasRenderingContext2D,
+  mark: { cx: number; cy: number; r: number; wavesFrom: number; wavesTo: number },
+  iso: string,
+  place: string
+) {
+  const { cx, cy, r } = mark;
   ctx.save();
   ctx.strokeStyle = ink(0.5);
   ctx.fillStyle = ink(0.55);
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(cx, cy, 92, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(cx, cy, 58, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r - 34, 0, Math.PI * 2);
   ctx.stroke();
 
   // The date in two lines, the way postmarks set it, so it sits inside the inner ring.
@@ -171,24 +180,21 @@ function postmark(ctx: CanvasRenderingContext2D, cx: number, cy: number, iso: st
   [...ring].forEach((ch, i) => {
     const a = start + i * spacing;
     ctx.save();
-    ctx.translate(cx + Math.cos(a) * 75, cy + Math.sin(a) * 75);
+    ctx.translate(cx + Math.cos(a) * (r - 17), cy + Math.sin(a) * (r - 17));
     ctx.rotate(a + Math.PI / 2);
     ctx.fillText(ch, 0, 0);
     ctx.restore();
   });
 
-  // Cancellation waves.
+  // Cancellation waves, trailing off to the left.
   ctx.lineWidth = 3;
   ctx.strokeStyle = ink(0.35);
-  const from = cx + (wavesTo < cx ? -100 : 100);
   for (let k = -1.5; k <= 1.5; k++) {
     ctx.beginPath();
     const y0 = cy + k * 18;
-    const dir = wavesTo < cx ? -1 : 1;
-    for (let t = 0; t <= Math.abs(wavesTo - from); t += 4) {
-      const x = from + dir * t;
-      const y = y0 + Math.sin(t / 14) * 6;
-      if (t === 0) ctx.moveTo(x, y);
+    for (let x = mark.wavesFrom; x >= mark.wavesTo; x -= 4) {
+      const y = y0 + Math.sin((mark.wavesFrom - x) / 14) * 6;
+      if (x === mark.wavesFrom) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
@@ -197,13 +203,13 @@ function postmark(ctx: CanvasRenderingContext2D, cx: number, cy: number, iso: st
 }
 
 /**
- * The back: the visitor's note on the left (or top), a stamp made of the photograph, a
- * postmark with its recorded date and place, lines for an address, and a small printed
- * caption saying what the photograph is.
+ * The back: the writing side. The visitor's note, a stamp, a postmark with the date the
+ * photograph was made (and the place, when it was recorded), lines for an address, and a
+ * small printed caption saying what is on the front.
  */
 export function drawPostcardBack(canvas: HTMLCanvasElement, facts: PhotoFacts, message: string, photo: HTMLImageElement) {
-  const { w, h } = postcardSize(photo);
-  const landscape = w > h;
+  const { w, h } = sizeOf(photo);
+  const l = backLayout(w, h);
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d')!;
@@ -213,34 +219,22 @@ export function drawPostcardBack(canvas: HTMLCanvasElement, facts: PhotoFacts, m
 
   ctx.fillStyle = ink(0.45);
   ctx.font = mono(24);
-  ctx.fillText('P O S T C A R D', 80, 116);
+  ctx.fillText('P O S T C A R D', l.heading.x, l.heading.y);
 
-  const stampW = landscape ? 190 : 170;
-  const stampH = landscape ? 230 : 205;
-  const stampX = w - 80 - stampW;
-  stamp(ctx, photo, stampX, 76, stampW, stampH);
-  // The postmark overlaps the stamp's edge, as they do, but not the picture on it.
-  postmark(ctx, stampX - 68, 76 + stampH - 40, facts.isoDate, postmarkPlace(facts.location), landscape ? stampX - 360 : 350);
+  stamp(ctx, l.stamp, facts);
+  postmark(ctx, l.postmark, facts.isoDate, postmarkPlace(facts.location));
 
-  // Where the note goes, and where the address goes.
-  const note = landscape ? { x: 80, y: 220, w: 740, bottom: h - 230 } : { x: 80, y: 400, w: 840, bottom: 880 };
   ctx.strokeStyle = ink(0.18);
   ctx.lineWidth = 2;
   ctx.beginPath();
-  if (landscape) {
-    ctx.moveTo(900, 170);
-    ctx.lineTo(900, h - 110);
-  } else {
-    ctx.moveTo(80, 940);
-    ctx.lineTo(w - 80, 940);
-  }
+  ctx.moveTo(l.divider.x1, l.divider.y1);
+  ctx.lineTo(l.divider.x2, l.divider.y2);
   ctx.stroke();
-  const lines = landscape ? { x0: 960, x1: w - 80, ys: [560, 650, 740, 830] } : { x0: 80, x1: w - 80, ys: [1050, 1130, 1210, 1290] };
   ctx.strokeStyle = ink(0.25);
-  for (const y of lines.ys) {
+  for (const y of l.address.ys) {
     ctx.beginPath();
-    ctx.moveTo(lines.x0, y);
-    ctx.lineTo(lines.x1, y);
+    ctx.moveTo(l.address.x1, y);
+    ctx.lineTo(l.address.x2, y);
     ctx.stroke();
   }
 
@@ -248,35 +242,41 @@ export function drawPostcardBack(canvas: HTMLCanvasElement, facts: PhotoFacts, m
   ctx.fillStyle = ink(0.85);
   ctx.font = serif(46, 'italic');
   const lineHeight = 62;
-  const maxLines = Math.floor((note.bottom - note.y) / lineHeight) + 1;
-  wrapWords(message, note.w, (s) => ctx.measureText(s).width)
+  const maxLines = Math.max(1, Math.floor((l.note.h - 46) / lineHeight) + 1);
+  wrapWords(message, l.note.w, (t) => ctx.measureText(t).width)
     .slice(0, maxLines)
-    .forEach((text, i) => ctx.fillText(text, note.x, note.y + i * lineHeight));
+    .forEach((text, i) => ctx.fillText(text, l.note.x, l.note.y + 46 + i * lineHeight));
 
   // The printed caption.
-  const captionY = h - 150;
   ctx.fillStyle = ink(0.8);
-  fitText(ctx, facts.title, (s) => serif(s), 30, landscape ? 780 : w - 160);
-  ctx.fillText(facts.title, 80, captionY);
+  fitText(ctx, facts.title, (px) => serif(px), 30, l.caption.w);
+  ctx.fillText(facts.title, l.caption.x, l.caption.y);
   ctx.fillStyle = ink(0.5);
   const line = settingsLine(facts) || facts.date;
-  fitText(ctx, line, mono, 19, landscape ? 780 : w - 160);
-  ctx.fillText(line, 80, captionY + 36);
-  ctx.font = mono(19);
-  ctx.fillText(`vasuambasana.com/photo/${facts.slug}`, 80, captionY + 68);
+  fitText(ctx, line, mono, 19, l.caption.w);
+  ctx.fillText(line, l.caption.x, l.caption.y + 36);
+  const address = `vasuambasana.com/photo/${facts.slug}`;
+  fitText(ctx, address, mono, 19, l.caption.w);
+  ctx.fillText(address, l.caption.x, l.caption.y + 68);
 }
 
-/** Both sides of a postcard, one above the other, for sharing as a single picture. */
+/**
+ * Both sides of a postcard in one picture, for sharing: front first, then back, one above
+ * the other for a wide card and side by side for a tall one, so the picture never ends
+ * up absurdly long.
+ */
 export function stackFaces(front: HTMLCanvasElement, back: HTMLCanvasElement): HTMLCanvasElement {
   const gap = 48;
+  const sideBySide = front.height > front.width;
   const canvas = document.createElement('canvas');
-  canvas.width = front.width + gap * 2;
-  canvas.height = front.height + back.height + gap * 3;
+  canvas.width = sideBySide ? front.width + back.width + gap * 3 : front.width + gap * 2;
+  canvas.height = sideBySide ? front.height + gap * 2 : front.height + back.height + gap * 3;
   const ctx = canvas.getContext('2d')!;
   ctx.fillStyle = token('--color-surface-main');
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(front, gap, gap);
-  ctx.drawImage(back, gap, front.height + gap * 2);
+  if (sideBySide) ctx.drawImage(back, front.width + gap * 2, gap);
+  else ctx.drawImage(back, gap, front.height + gap * 2);
   return canvas;
 }
 
