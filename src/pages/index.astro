@@ -12,13 +12,17 @@ import type { Photo } from '../utils/photos';
 const allPhotos = await getCollection('photos');
 const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slice(0, 12);
 
+// The span of the archive, from the photographs themselves, so it stays true as it grows.
+const years = allPhotos.map((p) => p.data.date.getUTCFullYear());
+const yearSpan = `${Math.min(...years)}–${Math.max(...years)}`;
+
 // The share card and the no-JavaScript hero stay fixed on one photograph.
 const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
 
 // Every visit shows a different photograph in the hero. Two pools, so a photo is never
 // cropped far from its own shape: landscape frames for wide screens, portrait frames for
-// phones. Only the categories the hero's tagline names, so a stranger's portrait never
-// ends up under the headline.
+// phones. Architecture, nature and night only, so a stranger's portrait never ends up
+// under the headline.
 const HERO_CATEGORIES = new Set(['architecture', 'nature', 'night']);
 const aspect = (p: Photo) => p.data.image.width / p.data.image.height;
 const heroCandidates = sortPhotos(allPhotos).filter((p) => HERO_CATEGORIES.has(p.data.category));
@@ -115,7 +119,7 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
       <!-- Top Tagline & Pill -->
       <div class="relative z-10 flex items-center justify-between">
         <span class="px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-[0.2em] uppercase text-white/90 bg-white/10 backdrop-blur-md border border-white/20">
-          Architecture &middot; Nature &middot; Night
+          Personal archive &middot; {yearSpan}
         </span>
       </div>
 
