@@ -4,10 +4,13 @@
 // the undeveloped state when this script has run (html.js) and motion is allowed, so
 // without JavaScript or with reduced motion, photos simply appear.
 //
-// A photo must never be left dark. Images added or replaced after load (the lightbox
-// island re-rendering, the home hero) are picked up by an observer, and a safety net
-// develops anything that has loaded but somehow missed its moment.
+// A photo must never be left dark. The effect only plays for a photo that is ready
+// almost at once; one still downloading after a moment (a large photo on a phone
+// connection) is shown straight away and fills in as it loads, rather than sitting as
+// a black box until the last byte arrives. Images added later (the lightbox island, the
+// home hero) are picked up by an observer, and a safety net catches anything else.
 
+const PATIENCE_MS = 250;
 const SAFETY_MS = 4000;
 
 function reveal(img: HTMLImageElement) {
@@ -20,10 +23,13 @@ function watch(img: HTMLImageElement) {
   img.dataset.developWatched = '';
   if (img.complete && img.naturalWidth > 0) {
     reveal(img);
-  } else {
-    img.addEventListener('load', () => reveal(img), { once: true });
-    img.addEventListener('error', () => img.classList.add('developed'), { once: true });
+    return;
   }
+  img.addEventListener('load', () => reveal(img), { once: true });
+  img.addEventListener('error', () => img.classList.add('developed'), { once: true });
+  setTimeout(() => {
+    if (!img.complete) img.classList.add('developed', 'no-develop');
+  }, PATIENCE_MS);
 }
 
 const pending = () => document.querySelectorAll<HTMLImageElement>('img[data-develop]:not(.developed)');

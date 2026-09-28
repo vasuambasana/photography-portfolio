@@ -14,6 +14,8 @@ interface GalleryImage {
 
 interface ClickableImageProps {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   alt: string;
   caption?: string;
   className?: string;
@@ -29,6 +31,8 @@ interface ClickableImageProps {
 
 export default function ClickableImage({
   src,
+  srcSet,
+  sizes,
   alt,
   caption,
   className = '',
@@ -107,6 +111,8 @@ export default function ClickableImage({
       <img
         ref={imgRef}
         src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={alt}
         width={width}
         height={height}

@@ -82,6 +82,13 @@ const specs = cameraSpecs ?? {};
 const hasSpecs = Boolean(camera || specs.lens || specs.focalLength || specs.aperture || specs.shutterSpeed || specs.iso);
 
 const display = await getImage({ src: image, width: 1800, format: 'webp' });
+
+// The page photo comes in the size the screen needs, not always the 1800px original: a
+// phone was downloading up to 2MB per photo, and waiting on it. It is shown no wider than
+// the column and no taller than 82vh, so its width is also capped by its own shape.
+const smaller = await Promise.all([800, 1200].map((width) => getImage({ src: image, width, format: 'webp' })));
+const displaySrcset = [...smaller.map((v, i) => `${v.src} ${[800, 1200][i]}w`), `${display.src} 1800w`].join(', ');
+const displaySizes = `min(100vw, ${Math.round(82 * (image.width / image.height))}vh)`;
 const initialIndex = clientPhotos.findIndex((p) => p.slug === photo.slug);
 const ambient = clientPhotos[initialIndex]?.thumb ?? display.src;
 
@@ -132,6 +139,8 @@ const description = metaDescription(photo.body, alt);
       <ClickableImage
         client:load
         src={display.src}
+        srcSet={displaySrcset}
+        sizes={displaySizes}
         width={display.attributes.width}
         height={display.attributes.height}
         alt={alt}
