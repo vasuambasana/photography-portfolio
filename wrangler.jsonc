@@ -3,6 +3,9 @@
   "name": "photography-portfolio",
   "compatibility_date": "2024-09-01",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // A missing address gets the site's own 404.html (with a real 404 status), not
+    // the browser's bare "page can't be found".
+    "not_found_handling": "404-page"
   }
 }
