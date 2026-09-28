@@ -14,9 +14,11 @@ const seo = Astro.props;
 
 // Labs: experiments are opt-in on the live site, and on by default everywhere else (the
 // dev branch preview, local dev), so work in progress is seen before it is promoted.
-// Cloudflare Pages sets CF_PAGES_BRANCH at build time. LABS_DEFAULT=on|off overrides.
+// The build knows its branch from Cloudflare: Workers Builds (wrangler.jsonc, the
+// workers.dev previews) sets WORKERS_CI_BRANCH, Pages sets CF_PAGES_BRANCH.
+// LABS_DEFAULT=on|off overrides both.
 const env = (name: string): string | undefined => process.env[name] ?? import.meta.env[name];
-const branch = env('CF_PAGES_BRANCH');
+const branch = env('WORKERS_CI_BRANCH') ?? env('CF_PAGES_BRANCH');
 const labsDefault = env('LABS_DEFAULT')
   ? env('LABS_DEFAULT') === 'on'
   : import.meta.env.DEV || (branch !== undefined && branch !== 'main');

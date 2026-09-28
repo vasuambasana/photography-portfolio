@@ -33,7 +33,7 @@ export default defineConfig({
       // Listing only the indexable ones would mean recomputing entry counts here,
       // away from the template that makes the decision.
       filter: (page) =>
-        !['/privacy/', '/accessibility/', '/labs/', '/play/', '/light/', '/table/'].some((path) => page.endsWith(path)) &&
+        !['/privacy/', '/accessibility/', '/labs/', '/play/', '/match/'].some((path) => page.endsWith(path)) &&
         !page.includes('/journal/tag/'),
       serialize: (item) => {
         const path = new URL(item.url).pathname;

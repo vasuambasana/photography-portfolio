@@ -611,9 +611,120 @@ html.labs .labs-switch-thumb {
 }
 .vf-ev { opacity: 0.7; }
 
-/* Settings card (scripts/settings-card.ts). */
-.settings-card-dialog::backdrop {
+.vf-histogram {
+  position: absolute;
+  top: 3em;
+  right: 2.6em;
+  width: min(28%, 150px);
+  height: 44px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.vf-histogram path {
+  fill: rgba(255, 255, 255, 0.75);
+}
+
+.vf-focus {
+  transition: left 80ms linear, top 80ms linear;
+}
+
+.vf-spot {
+  position: absolute;
+  translate: 30px -50%;
+  padding: 0.15em 0.5em;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+}
+
+/* Settings card and postcard (scripts/card-dialog.ts). */
+.card-dialog::backdrop {
   background: rgba(0, 0, 0, 0.6);
+}
+
+.card-tab {
+  min-height: 36px;
+  padding: 0 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  color: rgb(var(--color-text-secondary));
+  transition: color 200ms ease-out, background-color 200ms ease-out;
+}
+
+.card-tab[aria-selected='true'] {
+  color: rgb(var(--color-surface-main));
+  background-color: rgb(var(--color-text-primary));
+}
+
+/* The postcard turns over in 3D; the back canvas sits behind the front. */
+.postcard {
+  perspective: 1800px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+
+.postcard:focus-visible {
+  outline: 2px solid rgb(var(--color-text-accent));
+  outline-offset: 4px;
+}
+
+.postcard-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 650ms cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+.postcard.flipped .postcard-inner {
+  transform: rotateY(180deg);
+}
+
+.postcard.portrait {
+  width: min(100%, 40vh);
+  margin-inline: auto;
+}
+
+.card-dialog [data-card-panel='card'] img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 62vh;
+  margin-inline: auto;
+}
+
+.postcard-face {
+  display: block;
+  width: 100%;
+  height: auto;
+  backface-visibility: hidden;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.postcard-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+
+.postcard-message {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  background-color: rgb(var(--color-surface-overlay));
+  color: rgb(var(--color-text-primary));
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  resize: vertical;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard-inner {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -736,7 +847,7 @@ html.labs.hero-night .hero-night-note {
   object-fit: contain;
 }
 
-#portfolio-grid.contact-sheet [data-photo-link] > div:last-child {
+#portfolio-grid.contact-sheet .card-overlay {
   display: none;
 }
 
@@ -764,88 +875,6 @@ html.labs.hero-night .hero-night-note {
 .play-dial {
   accent-color: rgb(var(--color-text-accent));
   height: 44px;
-}
-
-/* Minutes of light (Labs, pages/light.astro). The stage is a darkroom, whatever the
-   theme: black, with white type, like the space around a photograph on its own page. */
-.light-track {
-  position: relative;
-  background: black;
-}
-
-.light-stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 5rem 1rem 2rem;
-  color: white;
-  overflow: hidden;
-}
-
-.light-clock {
-  font-size: clamp(1.5rem, 5vw, 3rem);
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-}
-
-.light-figure {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 0;
-  flex: 1;
-}
-
-.light-figure img {
-  max-height: 100%;
-  max-width: min(92vw, 1100px);
-  width: auto;
-  height: auto;
-  min-height: 0;
-  object-fit: contain;
-  flex: 1;
-}
-
-.light-figure figcaption {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.light-figure figcaption a {
-  color: white;
-}
-
-.light-note {
-  min-height: 1.5em;
-  max-width: 36rem;
-  text-align: center;
-  font-size: clamp(1rem, 2.2vw, 1.35rem);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.light-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.light-progress span {
-  display: block;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  transform-origin: left;
-  transform: scaleX(0);
 }
 
 /* Journal widgets (Labs, scripts/journal-widgets.ts). */
@@ -1027,76 +1056,299 @@ html:not(.torch-on) .lost-photo {
   display: none;
 }
 
-/* The light table (Labs, pages/table.astro). */
-.light-table {
+/* A measured palette as a row of chips, each as wide as its share of the frame
+   (colour rhyme on the photo page). The colours are data, passed in as --chip. */
+.palette-chips {
+  display: flex;
+  gap: 3px;
+  height: 12px;
+}
+
+.palette-chips > span {
+  flex-basis: 0;
+  min-width: 8px;
+  border-radius: 3px;
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+/* The Labs pill (BaseLayout.astro) hides while scrolling down; scripts/labs.ts. */
+.labs-pill {
+  transition: transform 250ms ease-out, opacity 250ms ease-out;
+}
+
+.labs-pill.labs-pill-away {
+  transform: translateY(160%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .labs-pill {
+    transition: none;
+  }
+}
+
+/* Colour match (Labs, pages/match.astro). The frames hold a camera feed or a photograph:
+   black, like the space around a photograph on its own page. */
+.match-frame {
   position: relative;
-  height: calc(100svh - 11rem);
-  min-height: 420px;
-  margin: 0 0.75rem 1rem;
-  border-radius: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
-  touch-action: none;
-  user-select: none;
-  background-color: rgb(var(--color-surface-card));
-  box-shadow: inset 0 0 120px rgb(var(--color-surface-overlay)), inset 0 0 0 1px var(--border-subtle);
+  border-radius: 1rem;
+  background: black;
+  color: white;
 }
 
-.table-photo {
+/* The visitor's own camera and pictures may be cropped to the frame; the archive's
+   photographs never are (.match-photo). */
+.match-frame video,
+.match-frame #match-picture {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: clamp(72px, 9vw, 132px);
-  aspect-ratio: var(--ratio);
-  padding: 4px;
-  background: white;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.12);
-  cursor: grab;
-  visibility: hidden;
-  will-change: transform;
-  touch-action: none;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.table-ready .table-photo {
+.match-photo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.match-photo.match-in {
+  opacity: 1;
+}
+
+.match-idle {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.match-colour-input {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match-photo {
+    transition: none;
+  }
+}
+
+/* Turn them over (Labs, gallery). The back of each card: what would be pencilled on the
+   back of a photograph. A turn is a half spin to edge-on and back, with the faces swapped
+   at the moment the card is edge-on, so neither face is ever seen mirrored. */
+.card-back {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: clamp(0.6rem, 5%, 1.1rem);
+  overflow: hidden;
+  border-radius: inherit;
+  border: 1px solid var(--border-subtle);
+  background-color: rgb(var(--color-surface-card));
+  color: rgb(var(--color-text-secondary));
+  pointer-events: none;
+  visibility: hidden;
+}
+
+#portfolio-grid.turned .card-back {
   visibility: visible;
 }
 
-.table-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
+/* The back is its own size container, so a big card (one column on a phone) gets bigger
+   writing instead of a sheet of empty paper. */
+.card-back {
+  container-type: size;
 }
 
-.table-photo.table-held {
-  cursor: grabbing;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25), 0 18px 40px rgba(0, 0, 0, 0.25);
+@container (min-height: 380px) and (min-width: 300px) {
+  .card-back-part {
+  min-width: 0;
 }
 
-.table-photo:focus-visible {
-  outline: 2px solid rgb(var(--color-text-accent));
-  outline-offset: 3px;
+.card-back-title {
+    font-size: 1.4rem;
+  }
+
+  .card-back-note {
+    font-size: 1.15rem;
+    line-height: 1.45;
+  }
+
+  .card-back-meta {
+    font-size: 12px;
+  }
+
+  .card-back-dots > span {
+    width: 14px;
+    height: 14px;
+  }
 }
 
-.table-gliding .table-photo {
-  transition: transform 600ms cubic-bezier(0.22, 0.8, 0.2, 1);
+.card-back-title {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: rgb(var(--color-text-primary));
+  margin-bottom: 0.3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.table-label {
-  position: absolute;
-  left: 0;
-  top: 0;
+.card-back-note {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  /* Long descriptions fade out rather than stopping mid-word at a hard edge. */
+  mask-image: linear-gradient(to bottom, black 65%, transparent);
+}
+
+.card-back-meta {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgb(var(--color-text-secondary));
-  background-color: rgb(var(--color-surface-card) / 0.85);
-  padding: 2px 8px;
-  border-radius: 9999px;
-  pointer-events: none;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.table-label[hidden] {
-  display: none;
+.card-back-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.45rem;
+}
+
+.card-back-dots > span {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #portfolio-grid.flipping > [data-slug]:not(.flip-instant) {
+    animation: card-turn 480ms cubic-bezier(0.45, 0, 0.25, 1) var(--flip-delay, 0ms) both;
+  }
+
+  #portfolio-grid.flipping.turned > [data-slug]:not(.flip-instant) .card-back {
+    animation: card-back-show 480ms steps(1, end) var(--flip-delay, 0ms) both;
+  }
+
+  #portfolio-grid.flipping:not(.turned) > [data-slug]:not(.flip-instant) .card-back {
+    animation: card-back-hide 480ms steps(1, end) var(--flip-delay, 0ms) both;
+  }
+}
+
+@keyframes card-turn {
+  0% { transform: perspective(900px) rotateY(0deg); }
+  50% { transform: perspective(900px) rotateY(90deg); }
+  100% { transform: perspective(900px) rotateY(0deg); }
+}
+
+@keyframes card-back-show {
+  0% { visibility: hidden; }
+  50%, 100% { visibility: visible; }
+}
+
+@keyframes card-back-hide {
+  0% { visibility: visible; }
+  50%, 100% { visibility: hidden; }
+}
+
+/* Your eye (Labs, scripts/your-eye.ts): the visitor's colour, as measured. */
+.eye-colours {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 6px;
+}
+
+.eye-colours > span {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+[data-eye-body] > p {
+  padding-right: 104px;
+}
+
+/* Phone or camera? (Labs, scripts/phone-or-camera.ts). */
+.phone-answer {
+  min-height: 56px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+  background-color: rgb(var(--color-surface-card));
+  color: rgb(var(--color-text-primary));
+  font-size: 1rem;
+  transition: background-color 200ms ease-out, color 200ms ease-out;
+}
+
+.phone-answer:hover:not(:disabled) {
+  background-color: rgb(var(--color-surface-overlay));
+}
+
+.phone-answer:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.phone-answer[data-picked] {
+  opacity: 1;
+  color: rgb(var(--color-surface-main));
+  background-color: rgb(var(--color-text-primary));
+}
+
+/* Over the photograph, so plain white and black. */
+.phone-verdict {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  translate: -50% 0;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: black;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.phone-verdict[data-correct='false'] {
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }

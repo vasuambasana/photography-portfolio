@@ -7,7 +7,17 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import sharp from 'sharp';
 import { getCollection } from 'astro:content';
-import { archiveSwatches, colourRhyme, paletteFromPixels, type ArchiveSwatch, type Paletted, type Swatch } from '../utils/palette';
+import {
+  PALETTE_SIZE,
+  accentFromPalette,
+  archiveSwatches,
+  colourRhyme,
+  paletteFromPixels,
+  type Accent,
+  type ArchiveSwatch,
+  type Paletted,
+  type Swatch,
+} from '../utils/palette';
 import { exposureValue, parseShutter } from '../utils/exposure';
 
 export interface PhotoFacts {
@@ -18,6 +28,8 @@ export interface PhotoFacts {
   ev: number | null;
   /** Shutter speed in seconds, when recorded. */
   seconds: number | null;
+  /** The photograph's own colour as a readable page accent, or null for a colourless one. */
+  accent: Accent | null;
 }
 
 export interface Archive {
@@ -43,7 +55,7 @@ async function paletteOf(file: string): Promise<Swatch[]> {
     .toColourspace('srgb')
     .raw()
     .toBuffer({ resolveWithObject: true });
-  return paletteFromPixels(data, 5);
+  return paletteFromPixels(data, PALETTE_SIZE);
 }
 
 async function build(): Promise<Archive> {
@@ -59,6 +71,7 @@ async function build(): Promise<Archive> {
         palette,
         ev: exposureValue(p.data.cameraSpecs),
         seconds: parseShutter(p.data.cameraSpecs?.shutterSpeed),
+        accent: accentFromPalette(palette),
       });
     })
   );

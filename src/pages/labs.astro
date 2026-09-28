@@ -6,6 +6,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 // stable site comes off this page.
 const experiments = [
   {
+    title: 'Colour match',
+    fresh: true,
+    where: 'Uses your camera, on your device',
+    about:
+      'Point your phone at anything, a jumper, a wall, the sky out of the window, and the archive answers with the photograph whose colours are closest, changing as you move. Or choose a picture, or pick a colour. Nothing is recorded or sent.',
+    href: '/match',
+    cta: 'Show it a colour',
+  },
+  {
+    title: 'Turn them over',
+    fresh: true,
+    where: 'In the gallery',
+    about:
+      'Every photograph turns over in a wave to show its back: the date, the place, the camera, the settings and its colours, like the notes on the back of an old photograph.',
+    href: '/gallery',
+    cta: 'Turn them over',
+  },
+  {
+    title: 'Postcards',
+    fresh: true,
+    where: 'On every photograph page, next to the settings card',
+    about:
+      'Any photograph as a postcard. Write on the back, turn it over, and send both sides as one picture. The stamp is the photograph; the postmark has the day it was made, and the place when I know it.',
+    href: '/photo/highway-to-the-cosmos',
+    cta: 'Write one',
+  },
+  {
+    title: 'The page wears the photograph',
+    fresh: true,
+    where: 'On every photograph page',
+    about:
+      'Each photograph page takes its colour from the photograph: its links, its highlights, a faint tint to the page, all measured from the picture and checked so the text stays readable. Step from one photograph to the next and watch it change.',
+    href: '/photo/crimson-ascent',
+    cta: 'See one',
+  },
+  {
+    title: 'Your eye',
+    fresh: true,
+    where: 'In the gallery, once you have opened six photographs',
+    about:
+      'What you have been drawn to, from the photographs you opened: how many were made after dark, how long your lenses run, your colour. Worked out in your browser, with a card to share if you like.',
+    href: '/gallery#your-eye',
+    cta: 'See your eye',
+  },
+  {
+    title: 'Phone or camera?',
+    fresh: true,
+    where: 'A game with no end',
+    about:
+      'Most of this archive was made on phones, the rest on a camera with lenses. One photograph at a time: which was it? The answer is the make the file records.',
+    href: '/play#phone',
+    cta: 'Play',
+  },
+  {
     title: 'Guess the exposure',
     where: 'A new photograph every day',
     about:
@@ -14,40 +68,18 @@ const experiments = [
     cta: 'Play today',
   },
   {
-    title: 'Minutes of light',
-    where: 'A page you scroll through',
-    about:
-      'Every exposure on the site laid end to end, where scrolling is time. Most of the archive is over in the first few seconds. One photograph takes most of the page.',
-    href: '/light',
-    cta: 'Start scrolling',
-  },
-  {
-    title: 'The light table',
-    where: 'Every photograph, loose on a table',
-    about: 'Drag them about, throw them, stack them, and tidy them into piles by kind.',
-    href: '/table',
-    cta: 'Open the table',
-  },
-  {
     title: 'Loupe and viewfinder',
     where: 'On every photograph page',
     about:
-      'Press and hold a photograph to look closer under a loupe. Press V, or the viewfinder button, to see it with its settings the way the camera showed them.',
+      "Press and hold a photograph to look closer under a loupe. Press V for the camera's view: framing guides, the settings, a histogram of the file, and a spot meter that reads in stops wherever you point.",
     href: '/photo/quiet-sentinel',
     cta: 'Try it on a photograph',
-  },
-  {
-    title: 'Settings card',
-    where: 'On every photograph page',
-    about: 'A card of the photograph and exactly how it was made, sized for sharing.',
-    href: '/photo/highway-to-the-cosmos',
-    cta: 'Make one',
   },
   {
     title: 'Colour rhymes',
     where: 'On every photograph page, and in the gallery',
     about:
-      'Each photograph points to another, from a different year, with the same colours in it. In the gallery, pick a colour and every photograph that holds it comes forward.',
+      'Each photograph points to another, from a different year, with the same colours in it. In the gallery, pick any colour the archive holds and every photograph with it comes forward.',
     href: '/gallery',
     cta: 'Pick a colour',
   },
@@ -126,7 +158,10 @@ const experiments = [
     <ul class="grid gap-4 sm:grid-cols-2">
       {experiments.map((x) => (
         <li class="rounded-card border border-subtle bg-surface-card p-6 flex flex-col">
-          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mb-2">{x.where}</p>
+          <p class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mb-2">
+            {x.fresh && <span class="rounded-full bg-text-primary text-surface-main px-2 py-0.5 tracking-[0.12em]">New</span>}
+            <span>{x.where}</span>
+          </p>
           <h2 class="font-display text-display-md text-text-primary mb-2">{x.title}</h2>
           <p class="text-body-sm text-text-secondary leading-relaxed flex-1">{x.about}</p>
           <a

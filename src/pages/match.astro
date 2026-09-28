@@ -1,0 +1,291 @@
+---
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LabsGate from '../components/labs/LabsGate.astro';
+import { getArchive } from '../data/archive';
+import { sortPhotos } from '../utils/photos';
+
+// Every photograph with its measured palette, so the browser can find the closest one to
+// whatever the visitor shows it. The sizes reuse variants the photo pages already build.
+const { facts } = await getArchive();
+const photos = await Promise.all(
+  sortPhotos(await getCollection('photos')).map(async (p) => {
+    const [large, thumb] = await Promise.all([
+      getImage({ src: p.data.image, width: 800, format: 'webp' }),
+      getImage({ src: p.data.image, width: 200, format: 'webp' }),
+    ]);
+    return {
+      slug: p.slug,
+      title: p.data.title,
+      alt: p.data.alt,
+      src: large.src,
+      thumb: thumb.src,
+      palette: (facts.get(p.slug)?.palette ?? []).map((s) => ({
+        hex: s.hex,
+        lab: s.lab.map((v) => Math.round(v * 10) / 10),
+        weight: Math.round(s.weight * 1000) / 1000,
+      })),
+    };
+  })
+);
+const photosJson = JSON.stringify(photos).replace(/</g, '\\u003c');
+---
+
+<BaseLayout
+  title="Colour match"
+  description="Point your camera at anything, and the archive answers with the photograph whose colours are closest."
+  noindex={true}
+>
+  <LabsGate what="Colour match" />
+
+  <section class="labs-only section-container max-w-5xl mx-auto pt-4 pb-16" aria-labelledby="match-heading">
+    <header class="mb-6 max-w-prose">
+      <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-2">Labs</p>
+      <h1 id="match-heading" class="font-display text-display-md text-text-primary mb-3">Colour match</h1>
+      <p class="text-body-md text-text-secondary">
+        Point your camera at anything: a jumper, a wall, the sky out of the window. The archive
+        answers with the photograph whose colours are closest, and keeps answering as you move.
+        The picture is read on your device and never leaves it.
+      </p>
+    </header>
+
+    <div class="grid md:grid-cols-2 gap-8 items-start">
+      <div>
+        <div class="match-frame" id="match-source">
+          <video id="match-video" playsinline muted hidden></video>
+          <img id="match-picture" alt="The picture you chose" hidden />
+          <div id="match-swatch" class="absolute inset-0" hidden></div>
+          <p id="match-idle" class="match-idle">Show me a colour</p>
+          <span class="vf-corner vf-tl" aria-hidden="true"></span><span class="vf-corner vf-tr" aria-hidden="true"></span>
+          <span class="vf-corner vf-bl" aria-hidden="true"></span><span class="vf-corner vf-br" aria-hidden="true"></span>
+        </div>
+        <div id="match-source-chips" class="palette-chips mt-3" aria-hidden="true"></div>
+
+        <div class="flex flex-wrap items-center gap-2 mt-4">
+          <button type="button" id="match-camera" class="labs-tool">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Use my camera
+          </button>
+          <button type="button" id="match-hold" class="labs-tool" aria-pressed="false" hidden>Hold</button>
+          <label class="labs-tool cursor-pointer">
+            Choose a picture
+            <input type="file" id="match-file" accept="image/*" class="sr-only" />
+          </label>
+          <label class="labs-tool cursor-pointer">
+            Pick a colour
+            <input type="color" id="match-colour" value="#3a78c2" class="match-colour-input" />
+          </label>
+        </div>
+        <p id="match-status" class="mt-3 text-caption text-text-secondary min-h-[1.5em]" aria-live="polite"></p>
+      </div>
+
+      <div id="match-result" hidden>
+        <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-2">The closest photograph</p>
+        <a id="match-link" href="/gallery" class="group block no-underline">
+          <div class="match-frame">
+            <img id="match-img" alt="" class="match-photo" />
+          </div>
+          <span id="match-title" class="block mt-3 font-display text-display-md text-text-primary group-hover:text-text-accent transition-colors duration-300"></span>
+        </a>
+        <div id="match-result-chips" class="palette-chips mt-3" aria-hidden="true"></div>
+
+        <p class="mt-8 text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-2">Also close</p>
+        <ul id="match-also" class="grid grid-cols-3 gap-2"></ul>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/json" id="match-photos" set:html={photosJson} />
+  <script>
+    import { paletteDistance, paletteFromPixels, rgbToLab, type Lab, type Swatch } from '../utils/palette';
+
+    interface MatchPhoto { slug: string; title: string; alt: string; src: string; thumb: string; palette: Swatch[] }
+
+    const photos: MatchPhoto[] = JSON.parse(document.getElementById('match-photos')!.textContent || '[]');
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+    const video = $<HTMLVideoElement>('match-video');
+    const picture = $<HTMLImageElement>('match-picture');
+    const swatch = $('match-swatch');
+    const idle = $('match-idle');
+    const status = $('match-status');
+    const hold = $<HTMLButtonElement>('match-hold');
+    const result = $('match-result');
+    const sampler = document.createElement('canvas');
+    const sctx = sampler.getContext('2d', { willReadFrequently: true })!;
+
+    let stream: MediaStream | null = null;
+    let timer = 0;
+    let current = '';
+    let challenger = '';
+    let challengerCount = 0;
+
+    const say = (text: string) => (status.textContent = text);
+    const esc = (text: string) => text.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+
+    function chips(el: HTMLElement, palette: { hex: string; weight: number }[]) {
+      el.innerHTML = palette.map((c) => `<span style="--chip:${c.hex};flex-grow:${c.weight}"></span>`).join('');
+    }
+
+    // The same measurement the build makes of every photograph: shrink to 48px, then find
+    // the palette. Comparing like with like is what makes the match fair.
+    function paletteOf(source: CanvasImageSource, sw: number, sh: number): Swatch[] {
+      const scale = Math.min(48 / sw, 48 / sh);
+      const w = Math.max(1, Math.round(sw * scale));
+      const h = Math.max(1, Math.round(sh * scale));
+      sampler.width = w;
+      sampler.height = h;
+      sctx.drawImage(source, 0, 0, w, h);
+      const rgba = sctx.getImageData(0, 0, w, h).data;
+      const rgb = new Uint8Array(w * h * 3);
+      for (let i = 0, j = 0; i < rgba.length; i += 4, j += 3) {
+        rgb[j] = rgba[i];
+        rgb[j + 1] = rgba[i + 1];
+        rgb[j + 2] = rgba[i + 2];
+      }
+      return paletteFromPixels(rgb);
+    }
+
+    const ranked = (palette: Swatch[]) =>
+      photos
+        .map((p) => ({ p, d: paletteDistance(palette, p.palette) }))
+        .filter((x) => Number.isFinite(x.d))
+        .sort((a, b) => a.d - b.d);
+
+    function show(palette: Swatch[], { steady = false } = {}) {
+      chips($('match-source-chips'), palette);
+      const list = ranked(palette);
+      if (!list.length) return;
+      const best = list[0].p;
+
+      // A moving camera flickers between near-equal answers. Only change the answer when
+      // a new one wins twice running.
+      if (steady && current && best.slug !== current) {
+        if (challenger === best.slug) challengerCount++;
+        else {
+          challenger = best.slug;
+          challengerCount = 1;
+        }
+        if (challengerCount < 2) return;
+      }
+      challenger = '';
+      challengerCount = 0;
+      if (best.slug === current) return;
+      current = best.slug;
+
+      result.hidden = false;
+      const img = $<HTMLImageElement>('match-img');
+      img.classList.remove('match-in');
+      img.onload = () => img.classList.add('match-in');
+      img.src = best.src;
+      img.alt = best.alt;
+      $<HTMLAnchorElement>('match-link').href = `/photo/${best.slug}`;
+      $('match-title').textContent = best.title;
+      chips($('match-result-chips'), best.palette);
+      $('match-also').innerHTML = list
+        .slice(1, 4)
+        .map(
+          ({ p }) =>
+            `<li><a href="/photo/${p.slug}" class="block no-underline" title="${esc(p.title)}"><img src="${p.thumb}" alt="${esc(p.alt)}" loading="lazy" class="w-full aspect-square object-contain bg-black rounded-md" /></a></li>`
+        )
+        .join('');
+    }
+
+    function stopCamera() {
+      clearInterval(timer);
+      stream?.getTracks().forEach((t) => t.stop());
+      stream = null;
+      video.hidden = true;
+      hold.hidden = true;
+    }
+
+    function useSource(kind: 'camera' | 'picture' | 'colour') {
+      if (kind !== 'camera') stopCamera();
+      idle.hidden = true;
+      video.hidden = kind !== 'camera';
+      picture.hidden = kind !== 'picture';
+      swatch.hidden = kind !== 'colour';
+      current = '';
+    }
+
+    function tick() {
+      if (!stream || video.paused || !video.videoWidth || document.hidden) return;
+      show(paletteOf(video, video.videoWidth, video.videoHeight), { steady: true });
+    }
+
+    $('match-camera').addEventListener('click', async () => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        say('This browser can’t use a camera here. Choose a picture or pick a colour instead.');
+        return;
+      }
+      say('Asking for the camera…');
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
+        });
+      } catch (err) {
+        const name = (err as DOMException).name;
+        say(
+          name === 'NotAllowedError'
+            ? 'No camera without your say-so. Choose a picture or pick a colour instead.'
+            : 'No camera found. Choose a picture or pick a colour instead.'
+        );
+        return;
+      }
+      useSource('camera');
+      video.srcObject = stream;
+      await video.play().catch(() => undefined);
+      hold.hidden = false;
+      hold.setAttribute('aria-pressed', 'false');
+      hold.textContent = 'Hold';
+      say('Point it at something with colour in it.');
+      clearInterval(timer);
+      timer = window.setInterval(tick, 350);
+    });
+
+    hold.addEventListener('click', () => {
+      const held = !video.paused;
+      if (held) video.pause();
+      else video.play();
+      hold.setAttribute('aria-pressed', String(held));
+      hold.textContent = held ? 'Let go' : 'Hold';
+    });
+
+    $<HTMLInputElement>('match-file').addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      try {
+        const bitmap = await createImageBitmap(file);
+        useSource('picture');
+        URL.revokeObjectURL(picture.src);
+        picture.src = URL.createObjectURL(file);
+        show(paletteOf(bitmap, bitmap.width, bitmap.height));
+        bitmap.close();
+        say('Matched on the whole picture.');
+      } catch {
+        say('That file couldn’t be read as a picture.');
+      }
+    });
+
+    $<HTMLInputElement>('match-colour').addEventListener('input', (e) => {
+      const hex = (e.target as HTMLInputElement).value;
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      useSource('colour');
+      swatch.style.background = hex;
+      const lab: Lab = rgbToLab(r, g, b);
+      show([{ hex, lab, weight: 1 }]);
+      say('The photograph with the most of that colour in it.');
+    });
+
+    // The camera is let go the moment it isn't needed.
+    addEventListener('pagehide', stopCamera);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && stream) {
+        stopCamera();
+        say('Camera off while you were away. Tap “Use my camera” to carry on.');
+      }
+    });
+
+  </script>
+</BaseLayout>

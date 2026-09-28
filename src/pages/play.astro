@@ -3,18 +3,19 @@ import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LabsGate from '../components/labs/LabsGate.astro';
-import { cameraName } from '../utils/camera';
+import { cameraName, comparableFocal, isPhone } from '../utils/camera';
 import { parseFocal, parseShutter } from '../utils/exposure';
 import { DIALS } from '../utils/game';
 
-// Every photograph whose file recorded all three settings. Focal length only counts when
-// it is comparable: a phone's 35mm-equivalent figure, or a real camera's lens. A phone's
-// raw 6.4mm would be unguessable, so those photographs sit this game out.
-const photos = (await getCollection('photos'))
+const all = await getCollection('photos');
+
+// Guess the exposure: every photograph whose file recorded all three settings. Focal
+// length only counts when it is comparable: a phone's 35mm-equivalent figure, or a real
+// camera's lens. A phone's raw 6.4mm would be unguessable, so those sit this game out.
+const photos = all
   .filter((p) => {
     const s = p.data.cameraSpecs;
-    const comparable = /35mm eq/i.test(s?.focalLength ?? '') || /canon/i.test(s?.body ?? '');
-    return parseShutter(s?.shutterSpeed) && Number(s?.iso) > 0 && parseFocal(s?.focalLength) && comparable;
+    return parseShutter(s?.shutterSpeed) && Number(s?.iso) > 0 && comparableFocal(s) !== null;
   })
   .sort((a, b) => a.slug.localeCompare(b.slug));
 
@@ -39,16 +40,48 @@ const rounds = await Promise.all(
   })
 );
 const roundsJson = JSON.stringify(rounds).replace(/</g, '\\u003c');
+
+// Phone or camera: every photograph whose file says what made it.
+const phoneRounds = await Promise.all(
+  all
+    .filter((p) => isPhone(p.data.cameraSpecs?.body) !== null)
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+    .map(async (p) => {
+      const s = p.data.cameraSpecs!;
+      const img = await getImage({ src: p.data.image, width: 1200, format: 'webp' });
+      return {
+        slug: p.slug,
+        title: p.data.title,
+        alt: p.data.alt,
+        src: img.src,
+        width: img.attributes.width,
+        height: img.attributes.height,
+        camera: cameraName(s.body) ?? '',
+        phone: isPhone(s.body)!,
+        settings: [s.focalLength?.replace(/\.0mm/, 'mm'), s.aperture, s.shutterSpeed, s.iso && `ISO ${s.iso}`]
+          .filter(Boolean)
+          .join(' · '),
+      };
+    })
+);
+const phoneShare = Math.round((100 * phoneRounds.filter((r) => r.phone).length) / Math.max(1, phoneRounds.length));
+const phoneJson = JSON.stringify(phoneRounds).replace(/</g, '\\u003c');
 ---
 
 <BaseLayout
-  title="Guess the exposure"
-  description="One photograph a day from the archive. Guess its shutter speed, ISO and focal length, then see the real settings from the file."
+  title="Play"
+  description="Two games made from the archive: guess a photograph's exposure, or guess whether it was made on a phone or a camera."
   noindex={true}
 >
-  <LabsGate what="Guess the exposure" />
+  <LabsGate what="Play" />
 
-  <section class="labs-only section-container max-w-3xl mx-auto pt-4 pb-16" aria-labelledby="play-heading">
+  <section class="labs-only section-container max-w-3xl mx-auto pt-4 pb-16">
+    <div role="tablist" aria-label="Games" class="inline-flex rounded-full border border-subtle p-1 gap-1 mb-6">
+      <button type="button" role="tab" data-game-tab="exposure" aria-selected="true" class="card-tab">Guess the exposure</button>
+      <button type="button" role="tab" data-game-tab="phone" aria-selected="false" class="card-tab">Phone or camera?</button>
+    </div>
+
+    <div data-game="exposure" aria-labelledby="play-heading">
     <header class="flex flex-wrap items-end justify-between gap-3 mb-6">
       <div>
         <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-1">
@@ -93,7 +126,33 @@ const roundsJson = JSON.stringify(rounds).replace(/</g, '\\u003c');
         <button type="button" id="play-practice" class="labs-tool">Practise on another</button>
       </div>
     </div>
+    </div>
+
+    <div data-game="phone" hidden aria-labelledby="phone-heading">
+      <header class="mb-6">
+        <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-1 min-h-[1.2em]" data-phone-score></p>
+        <h2 id="phone-heading" class="font-display text-display-md text-text-primary">Phone or camera?</h2>
+        <p class="mt-2 text-body-md text-text-secondary max-w-prose">
+          {phoneShare}% of these were made on a phone, the rest on a camera with a lens you can take off.
+          Can you tell which is which? Swipe, tap, or use the arrow keys.
+        </p>
+      </header>
+      <figure data-phone-figure class="relative rounded-2xl overflow-hidden bg-black border border-subtle flex items-center justify-center p-2 select-none">
+        <img data-phone-img alt="" class="max-h-[60vh] w-auto h-auto object-contain" draggable="false" />
+        <span data-phone-verdict class="phone-verdict" hidden></span>
+      </figure>
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <button type="button" data-answer="phone" class="phone-answer">&larr; Phone</button>
+        <button type="button" data-answer="camera" class="phone-answer">Camera &rarr;</button>
+      </div>
+      <div data-phone-reveal hidden aria-live="polite" class="mt-5">
+        <p class="font-display text-body-lg"><a data-phone-title class="no-underline text-text-primary hover:text-text-accent"></a></p>
+        <p data-phone-settings class="mt-1 font-mono text-xs text-text-secondary"></p>
+        <button type="button" data-phone-next class="labs-tool mt-4">Next photograph &rarr;</button>
+      </div>
+    </div>
   </section>
+  <script type="application/json" id="phone-rounds" set:html={phoneJson} />
 
   <script type="application/json" id="play-rounds" set:html={roundsJson} />
   <script>
@@ -101,6 +160,7 @@ const roundsJson = JSON.stringify(rounds).replace(/</g, '\\u003c');
     import type { Mark } from '../utils/game';
     import { stopsBetween } from '../utils/exposure';
     import { labsOn } from '../scripts/labs';
+    import { startPhoneGame, type PhoneRound } from '../scripts/phone-or-camera';
 
     interface Round {
       slug: string; title: string; alt: string; camera: string; src: string; width: number; height: number;
@@ -222,5 +282,27 @@ const roundsJson = JSON.stringify(rounds).replace(/</g, '\\u003c');
       const played = load();
       if (played && played.day === today && played.slug === round.slug) reveal(played.guesses);
     }
+
+    // Two games, one page: the address says which (#phone for the second).
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-game-tab]')];
+    const games = [...document.querySelectorAll<HTMLElement>('[data-game]')];
+    let phoneStarted = false;
+    function pick(game: string) {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.gameTab === game)));
+      games.forEach((g) => (g.hidden = g.dataset.game !== game));
+      if (game === 'phone' && !phoneStarted && labsOn()) {
+        phoneStarted = true;
+        const phoneRounds: PhoneRound[] = JSON.parse(document.getElementById('phone-rounds')!.textContent || '[]');
+        startPhoneGame(document.querySelector<HTMLElement>('[data-game="phone"]')!, phoneRounds);
+      }
+    }
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        const game = t.dataset.gameTab ?? 'exposure';
+        history.replaceState(null, '', game === 'phone' ? '#phone' : location.pathname + location.search);
+        pick(game);
+      })
+    );
+    pick(location.hash === '#phone' ? 'phone' : 'exposure');
   </script>
 </BaseLayout>

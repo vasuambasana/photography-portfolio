@@ -42,3 +42,30 @@ export function specLine(specs: Specs | undefined): string {
     .filter(Boolean)
     .join(' · ');
 }
+
+/**
+ * Whether a body is a phone (true), a dedicated camera (false), or unknown (null). From
+ * the make the file records, nothing else.
+ */
+export function isPhone(body: string | undefined): boolean | null {
+  const raw = body?.trim().toLowerCase();
+  if (!raw || /^unknown\b/.test(raw)) return null;
+  if (/\b(samsung|oneplus|apple|iphone|pixel|google|galaxy|xiaomi|huawei|motorola)\b/.test(raw)) return true;
+  if (/\b(canon|nikon|sony|fujifilm|fuji|panasonic|olympus|om system|leica|pentax|ricoh|hasselblad)\b/.test(raw)) return false;
+  return null;
+}
+
+/**
+ * A focal length that can be compared across cameras: a phone's 35mm-equivalent figure,
+ * or a dedicated camera's lens. A phone's raw focal length (6.4mm) means nothing next to
+ * a lens on a camera, so it is left out rather than converted by guesswork.
+ */
+export function comparableFocal(specs: { body?: string; focalLength?: string } | undefined): number | null {
+  const focal = specs?.focalLength?.trim();
+  const match = focal?.match(/^(\d+(?:\.\d+)?)\s*mm/i);
+  if (!match) return null;
+  const value = Number(match[1]);
+  if (!(value > 0)) return null;
+  if (/35mm eq/i.test(focal!)) return value;
+  return isPhone(specs?.body) === false ? value : null;
+}

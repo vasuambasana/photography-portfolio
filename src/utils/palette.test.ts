@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  accentFromPalette,
   archiveSwatches,
   colourRhyme,
+  contrast,
   deltaE,
+  familyOf,
   labToHex,
   paletteDistance,
   paletteFromPixels,
   rgbToLab,
+  tintedSurface,
   type Paletted,
+  type Rgb,
 } from './palette';
 
 // A flat image: n pixels of one colour.
@@ -98,22 +103,94 @@ describe('colourRhyme', () => {
   });
 });
 
+describe('colour families', () => {
+  const family = (r: number, g: number, b: number) => familyOf(rgbToLab(r, g, b)).key;
+
+  it('names colours the way people do', () => {
+    expect(family(5, 5, 6)).toBe('black');
+    expect(family(60, 60, 62)).toBe('charcoal');
+    expect(family(130, 130, 130)).toBe('grey');
+    expect(family(240, 240, 238)).toBe('white');
+    expect(family(100, 65, 40)).toBe('brown');
+    expect(family(235, 150, 180)).toBe('pink');
+    expect(family(210, 40, 35)).toBe('red');
+    expect(family(245, 150, 30)).toBe('orange');
+    expect(family(240, 220, 60)).toBe('yellow');
+    expect(family(80, 90, 35)).toBe('olive');
+    expect(family(40, 150, 60)).toBe('green');
+    expect(family(40, 140, 140)).toBe('teal');
+    expect(family(135, 200, 235)).toBe('pale-blue');
+    expect(family(40, 90, 160)).toBe('blue');
+    expect(family(10, 25, 70)).toBe('deep-blue');
+    expect(family(120, 70, 150)).toBe('violet');
+  });
+});
+
 describe('archiveSwatches', () => {
+  const item = (slug: string, ...colours: [number, number, number, number][]): Paletted => ({
+    slug,
+    day: '2024-01-01',
+    palette: paletteFromPixels(pixels(...colours.map(([n, r, g, b]) => flat(n, r, g, b)))),
+  });
+
   it('groups photographs by the colours they hold', () => {
-    const item = (slug: string, r: number, g: number, b: number): Paletted => ({
-      slug,
-      day: '2024-01-01',
-      palette: paletteFromPixels(pixels(flat(100, r, g, b))),
-    });
     const items = [
-      item('b1', 20, 40, 150), item('b2', 25, 45, 155), item('b3', 22, 38, 145),
-      item('o1', 240, 150, 30), item('o2', 235, 145, 35), item('o3', 245, 155, 25),
-      item('lonely', 30, 200, 60),
+      item('b1', [100, 40, 90, 160]), item('b2', [100, 45, 95, 165]), item('b3', [100, 38, 85, 155]),
+      item('o1', [100, 245, 150, 30]), item('o2', [100, 240, 145, 35]), item('o3', [100, 250, 155, 25]),
+      item('lonely', [100, 40, 150, 60]),
     ];
-    const swatches = archiveSwatches(items, { k: 3, minPhotos: 2 });
-    const groups = swatches.map((s) => s.slugs.sort().join(','));
-    expect(groups).toContain('b1,b2,b3');
-    expect(groups).toContain('o1,o2,o3');
-    expect(groups.join(',')).not.toContain('lonely');
+    const swatches = archiveSwatches(items, { minPhotos: 2 });
+    expect(swatches.map((s) => s.key)).toEqual(['orange', 'blue']);
+    expect(swatches[0].slugs).toEqual(['o1', 'o2', 'o3']);
+    expect(swatches[1].slugs).toEqual(['b1', 'b2', 'b3']);
+  });
+
+  it('counts a small vivid accent, but not a small patch of grey', () => {
+    const items = ['a', 'b', 'c'].map((slug) => item(slug, [90, 20, 20, 22], [10, 215, 35, 30]));
+    const keys = archiveSwatches(items).map((s) => s.key);
+    expect(keys).toContain('red');
+    expect(keys).toContain('black');
+    const greyAccent = ['a', 'b', 'c'].map((slug) => item(slug, [90, 20, 20, 22], [10, 130, 130, 130]));
+    expect(archiveSwatches(greyAccent).map((s) => s.key)).toEqual(['black']);
+  });
+
+  it('shows each colour as it appears in the photographs', () => {
+    const items = ['a', 'b', 'c'].map((slug) => item(slug, [100, 210, 40, 35]));
+    const [red] = archiveSwatches(items);
+    expect(deltaE(red.lab, rgbToLab(210, 40, 35))).toBeLessThan(3);
+  });
+});
+
+describe('accentFromPalette', () => {
+  const LIGHT: Rgb[] = [[250, 250, 250], [255, 255, 255], [244, 244, 245]];
+  const DARK: Rgb[] = [[9, 9, 11], [18, 18, 21], [28, 28, 33]];
+
+  it("takes the photograph's own colour and makes it readable in both themes", () => {
+    const palette = paletteFromPixels(pixels(flat(70, 20, 20, 22), flat(30, 110, 170, 230)));
+    const accent = accentFromPalette(palette)!;
+    for (const bg of LIGHT) expect(contrast(accent.light, bg)).toBeGreaterThanOrEqual(4.5);
+    for (const bg of DARK) expect(contrast(accent.dark, bg)).toBeGreaterThanOrEqual(4.5);
+    // Still blue: same hue family as the sky it came from.
+    expect(familyOf(rgbToLab(...accent.light)).key).toMatch(/blue/);
+    expect(familyOf(rgbToLab(...accent.dark)).key).toMatch(/blue/);
+  });
+
+  it('prefers a vivid colour with real area over a dull one that covers more', () => {
+    const palette = paletteFromPixels(pixels(flat(60, 120, 110, 95), flat(40, 230, 90, 30)));
+    const accent = accentFromPalette(palette)!;
+    expect(['red', 'orange']).toContain(familyOf(rgbToLab(...accent.light)).key);
+  });
+
+  it('leaves a photograph without real colour alone', () => {
+    expect(accentFromPalette(paletteFromPixels(pixels(flat(60, 30, 30, 30), flat(40, 200, 200, 198))))).toBeNull();
+  });
+});
+
+describe('tintedSurface', () => {
+  it('leans the background towards the accent only as far as the text allows', () => {
+    const text: Rgb = [113, 113, 122];
+    const tinted = tintedSurface([250, 250, 250], [37, 99, 235], text, 0.06);
+    expect(contrast(text, tinted)).toBeGreaterThanOrEqual(4.5);
+    expect(tinted).not.toEqual([250, 250, 250]);
   });
 });

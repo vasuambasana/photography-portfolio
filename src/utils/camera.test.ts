@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cameraName, specLine } from './camera';
+import { cameraName, comparableFocal, isPhone, specLine } from './camera';
 
 describe('cameraName', () => {
   it('turns model codes into the names the phones were sold under', () => {
@@ -38,5 +38,34 @@ describe('specLine', () => {
   it('is empty when nothing was recorded', () => {
     expect(specLine(undefined)).toBe('');
     expect(specLine({})).toBe('');
+  });
+});
+
+describe('isPhone', () => {
+  it('tells phones from cameras by the recorded make', () => {
+    expect(isPhone('samsung SM-S908U1')).toBe(true);
+    expect(isPhone('samsung Galaxy Z Fold7')).toBe(true);
+    expect(isPhone('OnePlus GM1917')).toBe(true);
+    expect(isPhone('Apple iPhone 17 Pro')).toBe(true);
+    expect(isPhone('Canon EOS R5m2')).toBe(false);
+    expect(isPhone('Canon EOS 700D')).toBe(false);
+  });
+
+  it('does not guess', () => {
+    expect(isPhone(undefined)).toBeNull();
+    expect(isPhone('Unknown Body')).toBeNull();
+    expect(isPhone('Mystery 3000')).toBeNull();
+  });
+});
+
+describe('comparableFocal', () => {
+  it("uses a phone's 35mm equivalent and a camera's lens", () => {
+    expect(comparableFocal({ body: 'samsung SM-S908U1', focalLength: '23mm (35mm eq)' })).toBe(23);
+    expect(comparableFocal({ body: 'Canon EOS R5m2', focalLength: '200.0mm' })).toBe(200);
+  });
+
+  it("leaves out a phone's raw focal length", () => {
+    expect(comparableFocal({ body: 'samsung SM-S908U1', focalLength: '6.4mm' })).toBeNull();
+    expect(comparableFocal(undefined)).toBeNull();
   });
 });

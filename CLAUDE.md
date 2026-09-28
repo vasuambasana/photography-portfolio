@@ -97,10 +97,12 @@ is the slug and therefore the URL (`/photo/<slug>`).
 ## Labs
 
 Experiments go behind the Labs switch, not straight onto the site. Visitors opt in at
-`/labs` (or `?labs=on`); the choice lives in their browser. Labs is **on by default** in
-`astro dev` and in Cloudflare preview builds of any branch but `main` (`CF_PAGES_BRANCH`),
-and off on the live site. `LABS_DEFAULT=on|off` overrides both. So `dev` is where Labs work
-is seen, and promoting to `main` ships it switched off until a visitor asks for it.
+`/labs` (or `?labs=on`, which is stored and then dropped from the address); the choice
+lives in their browser. Labs is **on by default** in `astro dev` and in Cloudflare preview
+builds of any branch but `main` (the build reads `WORKERS_CI_BRANCH` from Workers Builds,
+which is what `wrangler.jsonc` and the workers.dev previews use, or `CF_PAGES_BRANCH` from
+Pages), and off on the live site. `LABS_DEFAULT=on|off` overrides both. So `dev` is where
+Labs work is seen, and promoting to `main` ships it switched off until a visitor asks.
 
 Markup uses `labs-only` / `stable-only`; scripts check `labsOn()` from `scripts/labs.ts`.
 The design-system skill lists every experiment and how one graduates. Anything a Labs
@@ -108,6 +110,10 @@ feature remembers stays in the visitor's browser (see the privacy page), never s
 
 Build-time measurements (palettes, colour rhymes, exposure values) come from
 `src/data/archive.ts`, computed once per build. Call `getArchive()`, don't re-read images.
+
+A Labs feature must not add weight to the stable pages. Anything bulky it needs goes in a
+build-time JSON endpoint fetched only when Labs is on and the feature is used, the way the
+gallery's card backs, contact-sheet margins and "Your eye" use `/labs-data/gallery.json`.
 
 ## Ingest pipeline
 

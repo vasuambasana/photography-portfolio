@@ -19,8 +19,15 @@
     // default (on for dev previews, off on the live site) applies otherwise.
     let labs = root.dataset.labsDefault === 'on';
     try {
-      const asked = new URLSearchParams(location.search).get('labs');
-      if (asked === 'on' || asked === 'off') localStorage.setItem('labs', asked);
+      const url = new URL(location.href);
+      const asked = url.searchParams.get('labs');
+      if (asked === 'on' || asked === 'off') {
+        localStorage.setItem('labs', asked);
+        // Once stored, the parameter has done its job: take it out of the address so a
+        // reload or a shared link doesn't keep overriding the visitor's later choice.
+        url.searchParams.delete('labs');
+        history.replaceState(history.state, '', url);
+      }
       const stored = localStorage.getItem('labs');
       if (stored) labs = stored === 'on';
     } catch {}

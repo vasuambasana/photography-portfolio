@@ -1,6 +1,7 @@
-// Colour palettes measured from the photographs themselves, for the colour rhymes and
-// the gallery's colour filter. Pure functions: the pixels come from sharp at build time
-// (utils/palettes.server.ts), so everything here is deterministic and testable.
+// Colour palettes measured from the photographs themselves, for the colour rhymes, the
+// gallery's colour filter, colour match and the photo pages' accent. Pure functions: the
+// pixels come from sharp at build time (data/archive.ts) or from a canvas in the browser,
+// so everything here is deterministic and testable.
 //
 // Colours are compared in CIELAB, where equal distances look like roughly equal
 // differences to a person. RGB distances don't: two dark blues can be "far apart" in RGB
@@ -44,7 +45,10 @@ export function rgbToLab(r: number, g: number, b: number): Lab {
   return [116 * fy - 16, 500 * (f(x) - fy), 200 * (fy - f(z))];
 }
 
-export function labToHex([L, a, b]: Lab): string {
+export type Rgb = [number, number, number];
+
+/** Lab to 8-bit sRGB, clipped into gamut. */
+export function labToRgb([L, a, b]: Lab): Rgb {
   const fy = (L + 16) / 116;
   const x = fInv(fy + a / 500) * XN;
   const y = fInv(fy) * YN;
@@ -52,7 +56,22 @@ export function labToHex([L, a, b]: Lab): string {
   const R = x * 3.2404542 - y * 1.5371385 - z * 0.4985314;
   const G = -x * 0.969266 + y * 1.8760108 + z * 0.041556;
   const B = x * 0.0556434 - y * 0.2040259 + z * 1.0572252;
-  return '#' + [R, G, B].map((v) => fromLinear(v).toString(16).padStart(2, '0')).join('');
+  return [fromLinear(R), fromLinear(G), fromLinear(B)];
+}
+
+export function labToHex(lab: Lab): string {
+  return '#' + labToRgb(lab).map((v) => v.toString(16).padStart(2, '0')).join('');
+}
+
+/** WCAG relative luminance of an sRGB colour. */
+export function luminance([r, g, b]: Rgb): number {
+  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+}
+
+/** WCAG contrast ratio, 1 to 21. */
+export function contrast(a: Rgb, b: Rgb): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
 }
 
 export function deltaE(p: Lab, q: Lab): number {
@@ -118,8 +137,11 @@ export function kMeans(points: Lab[], weights: number[], k: number, iterations =
     .sort((a, b) => b.weight - a.weight);
 }
 
+/** Colours per palette: enough to catch a small vivid accent, few enough to compare fast. */
+export const PALETTE_SIZE = 8;
+
 /** The palette of a photograph from its raw RGB pixels (3 bytes each). */
-export function paletteFromPixels(rgb: Uint8Array | Buffer, k = 5): Swatch[] {
+export function paletteFromPixels(rgb: Uint8Array | Buffer | Uint8ClampedArray, k = PALETTE_SIZE): Swatch[] {
   // Bucket near-identical pixels first: a 48px thumbnail has ~2,300 pixels, and most of
   // a sky is the same few colours.
   const buckets = new Map<number, { n: number; r: number; g: number; b: number }>();
@@ -148,7 +170,7 @@ export function paletteFromPixels(rgb: Uint8Array | Buffer, k = 5): Swatch[] {
  * hold the same colours, but in the wrong amounts, so they come out far apart.
  *
  * This is a greedy earth mover's distance: move as much area as possible along the
- * shortest distances first. Not always the exact optimum, but close for five colours.
+ * shortest distances first. Not always the exact optimum, but close for a handful of colours.
  */
 export function paletteDistance(a: Swatch[], b: Swatch[]): number {
   if (a.length === 0 || b.length === 0) return Infinity;
@@ -207,7 +229,56 @@ export function colourRhyme(items: Paletted[], slug: string): { slug: string; di
   );
 }
 
+export interface ColourFamily {
+  key: string;
+  /** Plain name, for labels: "pale blue". */
+  name: string;
+  /** Share of a photograph that has to be this colour for it to count as holding it. */
+  share: number;
+  test: (lab: Lab) => boolean;
+}
+
+const NEUTRAL = 12;
+const inHue = (lab: Lab, from: number, to: number) => {
+  const h = hue(lab);
+  return from <= to ? h >= from && h < to : h >= from || h < to;
+};
+const coloured = (lab: Lab) => chroma(lab) >= NEUTRAL;
+
+/**
+ * The colours people name, as regions of Lab. A palette colour belongs to the first
+ * family that claims it, so the order matters: greys before anything, then brown (a dark,
+ * muted orange is brown, not orange), then round the wheel. Vivid colours need less of
+ * the frame to count, because a small red is still the thing you notice.
+ */
+export const FAMILIES: ColourFamily[] = [
+  { key: 'black', name: 'black', share: 0.3, test: (l) => !coloured(l) && l[0] < 16 },
+  { key: 'charcoal', name: 'charcoal', share: 0.25, test: (l) => !coloured(l) && l[0] >= 16 && l[0] < 40 },
+  { key: 'grey', name: 'grey', share: 0.2, test: (l) => !coloured(l) && l[0] >= 40 && l[0] < 72 },
+  { key: 'white', name: 'white', share: 0.15, test: (l) => !coloured(l) && l[0] >= 72 },
+  { key: 'brown', name: 'brown', share: 0.12, test: (l) => coloured(l) && inHue(l, 20, 78) && l[0] < 50 && chroma(l) < 40 },
+  { key: 'pink', name: 'pink', share: 0.06, test: (l) => coloured(l) && inHue(l, 340, 22) },
+  { key: 'red', name: 'red', share: 0.06, test: (l) => coloured(l) && inHue(l, 22, 50) },
+  { key: 'orange', name: 'orange', share: 0.06, test: (l) => coloured(l) && inHue(l, 50, 78) },
+  { key: 'yellow', name: 'yellow', share: 0.06, test: (l) => coloured(l) && inHue(l, 78, 108) && l[0] >= 50 },
+  { key: 'olive', name: 'olive', share: 0.1, test: (l) => coloured(l) && inHue(l, 78, 130) && l[0] < 50 },
+  { key: 'green', name: 'green', share: 0.08, test: (l) => coloured(l) && inHue(l, 108, 175) },
+  { key: 'teal', name: 'teal', share: 0.08, test: (l) => coloured(l) && inHue(l, 175, 220) },
+  { key: 'pale-blue', name: 'pale blue', share: 0.08, test: (l) => coloured(l) && inHue(l, 220, 300) && l[0] >= 58 },
+  { key: 'blue', name: 'blue', share: 0.08, test: (l) => coloured(l) && inHue(l, 220, 300) && l[0] >= 25 },
+  { key: 'deep-blue', name: 'deep blue', share: 0.12, test: (l) => coloured(l) && inHue(l, 220, 300) },
+  { key: 'violet', name: 'violet', share: 0.06, test: (l) => coloured(l) && inHue(l, 300, 340) },
+];
+
+export function familyOf(lab: Lab): ColourFamily {
+  // Every colour lands somewhere: the hue families cover the whole wheel.
+  return FAMILIES.find((f) => f.test(lab)) ?? FAMILIES[0];
+}
+
 export interface ArchiveSwatch {
+  key: string;
+  name: string;
+  /** The family's colour as it appears in these photographs, for showing it. */
   hex: string;
   lab: Lab;
   /** Photographs with a real share of this colour in them. */
@@ -215,46 +286,79 @@ export interface ArchiveSwatch {
 }
 
 /**
- * A handful of colours that summarise the whole archive, each with the photographs that
- * hold it. Greys and near-blacks come first by lightness, then colours round the wheel.
+ * The colours of the whole archive, each with the photographs that hold it: one swatch
+ * per colour family that at least `minPhotos` photographs hold. Each swatch shows the
+ * family's colour as it actually appears in those photographs (the vivid ones counted a
+ * little more, so "red" looks red rather than the average of every dull red), in family
+ * order: greys dark to light, brown, then round the wheel.
  */
-export function archiveSwatches(
-  items: Paletted[],
-  { k = 12, share = 0.18, minPhotos = 3 } = {}
-): ArchiveSwatch[] {
-  const points: Lab[] = [];
-  const weights: number[] = [];
-  for (const p of items) {
-    for (const s of p.palette) {
-      points.push(s.lab);
-      // A colourful swatch counts for more than its area: a filter of twelve shades of
-      // near-black would be no use to anyone.
-      weights.push(s.weight * (1 + chroma(s.lab) / 20));
+export function archiveSwatches(items: Paletted[], { minPhotos = 3 } = {}): ArchiveSwatch[] {
+  return FAMILIES.map((family) => {
+    const slugs: string[] = [];
+    const sum: Lab = [0, 0, 0];
+    let total = 0;
+    for (const p of items) {
+      const mine = p.palette.filter((s) => familyOf(s.lab) === family);
+      const share = mine.reduce((acc, s) => acc + s.weight, 0);
+      if (share < family.share) continue;
+      slugs.push(p.slug);
+      for (const s of mine) {
+        const w = s.weight * (1 + (chroma(s.lab) / 20) ** 2);
+        sum[0] += s.lab[0] * w;
+        sum[1] += s.lab[1] * w;
+        sum[2] += s.lab[2] * w;
+        total += w;
+      }
     }
-  }
-  const centres = kMeans(points, weights, k);
+    const lab: Lab = total > 0 ? [sum[0] / total, sum[1] / total, sum[2] / total] : [0, 0, 0];
+    return { key: family.key, name: family.name, hex: labToHex(lab), lab, slugs };
+  }).filter((s) => s.slugs.length >= minPhotos);
+}
 
-  const members = centres.map(() => [] as string[]);
-  for (const p of items) {
-    const held = centres.map(() => 0);
-    for (const s of p.palette) {
-      let best = 0;
-      centres.forEach((c, j) => {
-        if (deltaE(s.lab, c.lab) < deltaE(s.lab, centres[best].lab)) best = j;
-      });
-      held[best] += s.weight;
-    }
-    held.forEach((w, j) => {
-      if (w >= share) members[j].push(p.slug);
-    });
-  }
+/** Mix two sRGB colours; t = 0 is all `a`. */
+export function mix(a: Rgb, b: Rgb, t: number): Rgb {
+  return [0, 1, 2].map((i) => Math.round(a[i] * (1 - t) + b[i] * t)) as Rgb;
+}
 
-  const neutral = (lab: Lab) => chroma(lab) < 12;
-  return centres
-    .map((c, j) => ({ hex: c.hex, lab: c.lab, slugs: members[j] }))
-    .filter((s) => s.slugs.length >= minPhotos)
-    .sort((a, b) => {
-      if (neutral(a.lab) !== neutral(b.lab)) return neutral(a.lab) ? -1 : 1;
-      return neutral(a.lab) ? a.lab[0] - b.lab[0] : hue(a.lab) - hue(b.lab);
-    });
+// The theme surfaces the accent has to read on (global.css).
+const LIGHT_SURFACES: Rgb[] = [[250, 250, 250], [255, 255, 255], [244, 244, 245]];
+const DARK_SURFACES: Rgb[] = [[9, 9, 11], [18, 18, 21], [28, 28, 33]];
+
+export interface Accent {
+  light: Rgb;
+  dark: Rgb;
+}
+
+/**
+ * A photograph's own colour, made safe to use as the page's accent: its most vivid colour
+ * that covers a real part of the frame, darkened for the light theme and lightened for
+ * the dark one until it reads at 4.5:1 on every surface it can land on. Null for a
+ * photograph without a real colour in it: that page keeps the site's own accent.
+ */
+export function accentFromPalette(palette: Swatch[], { minChroma = 20, minWeight = 0.03 } = {}): Accent | null {
+  const candidates = palette.filter((s) => chroma(s.lab) >= minChroma && s.weight >= minWeight);
+  if (candidates.length === 0) return null;
+  const score = (s: Swatch) => chroma(s.lab) * Math.sqrt(s.weight);
+  const pick = candidates.reduce((a, b) => (score(b) > score(a) ? b : a));
+  const [L, A, B] = pick.lab;
+  const at = (l: number) => labToRgb([l, A, B]);
+  const readsOn = (rgb: Rgb, surfaces: Rgb[]) => surfaces.every((bg) => contrast(rgb, bg) >= 4.5);
+
+  let light = Math.min(L, 62);
+  while (light > 0 && !readsOn(at(light), LIGHT_SURFACES)) light -= 1;
+  let dark = Math.max(L, 55);
+  while (dark < 100 && !readsOn(at(dark), DARK_SURFACES)) dark += 1;
+  return { light: at(light), dark: at(dark) };
+}
+
+/**
+ * The page background, leaning towards the accent by as much as it can (up to `max`)
+ * while the secondary text on it still reads at 4.5:1.
+ */
+export function tintedSurface(surface: Rgb, accent: Rgb, text: Rgb, max: number): Rgb {
+  for (let t = max; t > 0; t -= 0.005) {
+    const tinted = mix(surface, accent, t);
+    if (contrast(text, tinted) >= 4.5) return tinted;
+  }
+  return surface;
 }
