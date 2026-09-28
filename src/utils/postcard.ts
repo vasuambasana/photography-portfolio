@@ -84,7 +84,8 @@ export interface BackLayout {
   /** Note beside the address (a wide card), or above it (a tall one). */
   wide: boolean;
   heading: { x: number; y: number };
-  stamp: Box;
+  /** The VA logo, where a stamp would go. */
+  logo: Box;
   postmark: { cx: number; cy: number; r: number; wavesFrom: number; wavesTo: number };
   /** The visitor's note: text starts at the top of this box. */
   note: Box;
@@ -99,10 +100,12 @@ const MARGIN = 80;
 /** Where everything on the back of a w x h postcard goes. */
 export function backLayout(w: number, h: number): BackLayout {
   const wide = w / h >= 1.25;
-  const stamp = { x: w - MARGIN - 170, y: 76, w: 170, h: 205 };
-  const cx = stamp.x - 68;
-  const cy = stamp.y + stamp.h - 40;
+  // The logo is 428 x 294; drawn 220 wide.
+  const logo = { x: w - MARGIN - 220, y: 76, w: 220, h: Math.round((220 * 294) / 428) };
   const r = 92;
+  // The postmark sits beside the logo, clear of it.
+  const cx = logo.x - r - 28;
+  const cy = logo.y + Math.round(logo.h / 2) + 20;
   const heading = { x: MARGIN, y: 116 };
   // The caption's title sits 150 up from the bottom, with two small lines under it.
   const caption = { x: MARGIN, y: h - 150, w: 0 };
@@ -115,7 +118,7 @@ export function backLayout(w: number, h: number): BackLayout {
     return {
       wide,
       heading,
-      stamp,
+      logo,
       postmark: { cx, cy, r, wavesFrom: cx - r - 8, wavesTo: Math.max(dividerX + 24, cx - 330) },
       note: { x: MARGIN, y: 170, w: dividerX - MARGIN - 60, h: h - 230 - 170 },
       divider: { x1: dividerX, y1: 170, x2: dividerX, y2: h - 110 },
@@ -131,18 +134,11 @@ export function backLayout(w: number, h: number): BackLayout {
   return {
     wide,
     heading,
-    stamp,
+    logo,
     postmark: { cx, cy, r, wavesFrom: cx - r - 8, wavesTo: Math.max(MARGIN + 260, cx - 330) },
     note: { x: MARGIN, y: 360, w: w - MARGIN * 2, h: dividerY - 60 - 360 },
     divider: { x1: MARGIN, y1: dividerY, x2: w - MARGIN, y2: dividerY },
     address: { x1: MARGIN, x2: w - MARGIN, ys: [0, 1, 2, 3].map((i) => Math.round(top + i * step)) },
     caption: { ...caption, w: w - MARGIN * 2 },
   };
-}
-
-/** A stamp's value: the photograph's shutter speed, "1/60s" as "1/60", "20s" as it is. */
-export function stampValue(shutter: string | null | undefined): string {
-  const s = shutter?.trim() ?? '';
-  if (!s) return '';
-  return s.includes('/') ? s.replace(/s$/, '') : s;
 }

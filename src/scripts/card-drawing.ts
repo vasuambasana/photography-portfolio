@@ -6,7 +6,7 @@
 // theme, the way "over a photograph" uses plain white and black.
 
 import type { PhotoFacts } from './viewfinder';
-import { backLayout, postcardSize, postmarkDate, postmarkPlace, stampValue, wrapWords } from '../utils/postcard';
+import { backLayout, postcardSize, postmarkDate, postmarkPlace, wrapWords } from '../utils/postcard';
 
 const token = (name: string) => `rgb(${getComputedStyle(document.documentElement).getPropertyValue(name).trim()})`;
 const ink = (alpha: number) => `rgba(24, 24, 30, ${alpha})`;
@@ -101,49 +101,6 @@ export function drawPostcardFront(canvas: HTMLCanvasElement, photo: HTMLImageEle
   canvas.getContext('2d')!.drawImage(photo, 0, 0, w, h);
 }
 
-// A perforated stamp printed in the photograph's own colour: the VA mark, the year it was
-// made, and for its value the shutter speed it was made at.
-function stamp(ctx: CanvasRenderingContext2D, box: { x: number; y: number; w: number; h: number }, facts: PhotoFacts) {
-  const { x, y, w, h } = box;
-  ctx.save();
-  ctx.fillStyle = ink(0.06);
-  ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = PAPER;
-  const step = 18;
-  for (let i = x; i <= x + w; i += step) {
-    ctx.beginPath();
-    ctx.arc(i, y, 6, 0, Math.PI * 2);
-    ctx.arc(i, y + h, 6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  for (let j = y; j <= y + h; j += step) {
-    ctx.beginPath();
-    ctx.arc(x, j, 6, 0, Math.PI * 2);
-    ctx.arc(x + w, j, 6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  const inset = 16;
-  const face = { x: x + inset, y: y + inset, w: w - inset * 2, h: h - inset * 2 };
-  // The accent is already dark enough for white type on it (utils/palette.ts).
-  ctx.fillStyle = facts.accent ? `rgb(${facts.accent.join(' ')})` : ink(0.9);
-  ctx.fillRect(face.x, face.y, face.w, face.h);
-
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-  ctx.textBaseline = 'alphabetic';
-  ctx.textAlign = 'left';
-  ctx.font = mono(19);
-  const value = stampValue(facts.shutter);
-  if (value) ctx.fillText(value, face.x + 12, face.y + 28);
-  ctx.textAlign = 'center';
-  ctx.font = serif(70);
-  ctx.fillText('VA', face.x + face.w / 2, face.y + face.h / 2 + 26);
-  ctx.font = mono(16);
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-  ctx.fillText(facts.isoDate.slice(0, 4), face.x + face.w / 2, face.y + face.h - 14);
-  ctx.restore();
-}
-
 // A round postmark: the place round the top when one was recorded, the date across the
 // middle, and the wavy cancellation lines trailing off to one side.
 function postmark(
@@ -186,7 +143,12 @@ function postmark(
     ctx.restore();
   });
 
-  // Cancellation waves, trailing off to the left.
+  // Cancellation waves, trailing off to the left, when there is room for them to read as
+  // waves rather than a stub.
+  if (mark.wavesFrom - mark.wavesTo < 80) {
+    ctx.restore();
+    return;
+  }
   ctx.lineWidth = 3;
   ctx.strokeStyle = ink(0.35);
   for (let k = -1.5; k <= 1.5; k++) {
@@ -203,11 +165,17 @@ function postmark(
 }
 
 /**
- * The back: the writing side. The visitor's note, a stamp, a postmark with the date the
+ * The back: the writing side. The visitor's note, the VA logo where a stamp would go, a postmark with the date the
  * photograph was made (and the place, when it was recorded), lines for an address, and a
  * small printed caption saying what is on the front.
  */
-export function drawPostcardBack(canvas: HTMLCanvasElement, facts: PhotoFacts, message: string, photo: HTMLImageElement) {
+export function drawPostcardBack(
+  canvas: HTMLCanvasElement,
+  facts: PhotoFacts,
+  message: string,
+  photo: HTMLImageElement,
+  logo: HTMLImageElement | null
+) {
   const { w, h } = sizeOf(photo);
   const l = backLayout(w, h);
   canvas.width = w;
@@ -221,7 +189,8 @@ export function drawPostcardBack(canvas: HTMLCanvasElement, facts: PhotoFacts, m
   ctx.font = mono(24);
   ctx.fillText('P O S T C A R D', l.heading.x, l.heading.y);
 
-  stamp(ctx, l.stamp, facts);
+  // The logo is dark ink on transparent, made for a light ground like this card.
+  if (logo) ctx.drawImage(logo, l.logo.x, l.logo.y, l.logo.w, l.logo.h);
   postmark(ctx, l.postmark, facts.isoDate, postmarkPlace(facts.location));
 
   ctx.strokeStyle = ink(0.18);

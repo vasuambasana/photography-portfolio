@@ -113,7 +113,7 @@ Build-time measurements (palettes, colour rhymes, exposure values) come from
 
 A Labs feature must not add weight to the stable pages. Anything bulky it needs goes in a
 build-time JSON endpoint fetched only when Labs is on and the feature is used, the way the
-gallery's card backs, contact-sheet margins and "Your eye" use `/labs-data/gallery.json`.
+gallery's contact-sheet margins and "Your eye" use `/labs-data/gallery.json`.
 
 ## Ingest pipeline
 

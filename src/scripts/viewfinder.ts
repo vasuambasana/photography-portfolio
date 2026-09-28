@@ -21,8 +21,6 @@ export interface PhotoFacts {
   ev: number | null;
   full: string;
   palette: { hex: string; weight: number }[];
-  /** The photograph's own colour, dark enough to carry white type, or null. */
-  accent: [number, number, number] | null;
 }
 
 export function readFacts(): PhotoFacts | null {

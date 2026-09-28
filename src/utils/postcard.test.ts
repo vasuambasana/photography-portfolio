@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { backLayout, postcardSize, postmarkDate, postmarkPlace, stampValue, wrapWords, type Box } from './postcard';
+import { backLayout, postcardSize, postmarkDate, postmarkPlace, wrapWords, type Box } from './postcard';
 
 describe('postmarkDate', () => {
   it('prints the date the way a postmark does', () => {
@@ -73,7 +73,7 @@ describe('backLayout', () => {
       const pm = l.postmark;
       const boxes: Record<string, Box> = {
         heading: { x: l.heading.x, y: l.heading.y - 26, w: 240, h: 32 },
-        stamp: l.stamp,
+        logo: l.logo,
         postmark: { x: pm.cx - pm.r, y: pm.cy - pm.r, w: pm.r * 2, h: pm.r * 2 },
         waves: { x: pm.wavesTo, y: pm.cy - 36, w: pm.wavesFrom - pm.wavesTo, h: 72 },
         note: l.note,
@@ -82,8 +82,9 @@ describe('backLayout', () => {
       };
       for (const [name, box] of Object.entries(boxes)) expect(inside(box, w, h), `${name} inside`).toBe(true);
       const apart: [string, string][] = [
-        ['note', 'caption'], ['note', 'address'], ['note', 'postmark'], ['note', 'stamp'], ['note', 'waves'],
-        ['address', 'caption'], ['address', 'postmark'], ['address', 'stamp'], ['heading', 'waves'], ['heading', 'postmark'],
+        ['note', 'caption'], ['note', 'address'], ['note', 'postmark'], ['note', 'logo'], ['note', 'waves'],
+        ['address', 'caption'], ['address', 'postmark'], ['address', 'logo'], ['heading', 'waves'], ['heading', 'postmark'],
+        ['logo', 'postmark'], ['logo', 'waves'], ['heading', 'logo'],
       ];
       for (const [x, y] of apart) expect(overlaps(boxes[x], boxes[y]), `${x} clear of ${y}`).toBe(false);
       // Room for a real note: at least four lines of handwriting-sized type.
@@ -92,12 +93,4 @@ describe('backLayout', () => {
       l.address.ys.slice(1).forEach((y, i) => expect(y - l.address.ys[i]).toBeGreaterThanOrEqual(50));
     });
   }
-});
-
-describe('stampValue', () => {
-  it("prints the shutter speed as a stamp's value", () => {
-    expect(stampValue('1/60s')).toBe('1/60');
-    expect(stampValue('20s')).toBe('20s');
-    expect(stampValue(null)).toBe('');
-  });
 });

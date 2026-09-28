@@ -122,7 +122,6 @@ the class and the guard, move its row up into the table above, and take it off `
 | Colour rhyme | `data/archive.ts`, `utils/palette.ts` | Nearest 8-colour palette from another year, measured at build time with sharp; shown as chips |
 | Photo accent | `pages/photo/[slug].astro`, `accentFromPalette()` | The page's accent (and a faint surface tint) from the photo's most vivid colour, held to 4.5:1 in both themes |
 | Colour filter, contact sheet, seen | gallery page, `scripts/seen.ts` | One swatch per colour family the archive holds (`FAMILIES`); film-strip view; opened and new-since-last-visit badges |
-| Turn them over | gallery page, `scripts/gallery-labs.ts` | Cards half-turn to edge-on in a diagonal wave and come back showing their backs (built from `/labs-data/gallery.json` on first use) |
 | Your eye | `scripts/your-eye.ts`, `utils/eye.ts` | After six opened photos: after-dark share, lens lean, subject, colour; shareable card |
 | Colour match | `pages/match.astro` | Camera, picture or picked colour matched to the archive's palettes on the device, with hysteresis |
 | Phone or camera? | `scripts/phone-or-camera.ts` | Second game on `/play` (`#phone`); answer is the recorded make (`isPhone()`) |

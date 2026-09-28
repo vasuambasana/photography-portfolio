@@ -1,5 +1,5 @@
 // Labs data for the gallery, as a file of its own: the gallery page fetches it only when
-// a Labs feature needs it (turning the cards over, the contact sheet, "Your eye"), so
+// a Labs feature needs it (the contact sheet, "Your eye"), so
 // visitors on the stable site never download it.
 
 import type { APIRoute } from 'astro';
@@ -18,7 +18,6 @@ export const GET: APIRoute = async () => {
       const specs = p.data.cameraSpecs;
       const measured = facts.get(p.slug);
       const ev = measured?.ev ?? null;
-      const focal = specs?.focalLength?.replace(/\s*\(35mm eq\)/, '').replace(/\.0mm$/, 'mm');
       return [
         p.slug,
         {
@@ -31,11 +30,7 @@ export const GET: APIRoute = async () => {
           phone: isPhone(specs?.body),
           year: p.data.date.getUTCFullYear(),
           colours: swatches.filter((s) => s.slugs.includes(p.slug)).map((s) => s.key),
-          // For the back of the card and the contact sheet's margin.
-          date: p.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }),
-          location: p.data.location || null,
-          settings: [specs?.aperture, specs?.shutterSpeed, specs?.iso && `ISO ${specs.iso}`, focal].filter(Boolean).join(' · '),
-          palette: (measured?.palette ?? []).filter((c) => c.weight >= 0.04).map((c) => c.hex),
+          // For the contact sheet's margin.
           sheet: specLine(specs) || 'no settings recorded',
         },
       ] as const;

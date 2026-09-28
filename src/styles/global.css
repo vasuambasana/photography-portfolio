@@ -479,6 +479,12 @@ html.theme-vt::view-transition-new(root) {
   animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
 }
 
+/* The hidden attribute always hides, even on elements whose class sets a display (a
+   .labs-tool button is inline-flex, which otherwise wins and shows a hidden button). */
+[hidden] {
+  display: none !important;
+}
+
 /* Labs (scripts/labs.ts): experiments stay out of sight unless the visitor opts in. */
 html:not(.labs) .labs-only {
   display: none !important;
@@ -1150,138 +1156,6 @@ html:not(.torch-on) .lost-photo {
   }
 }
 
-/* Turn them over (Labs, gallery). The back of each card: what would be pencilled on the
-   back of a photograph. A turn is a half spin to edge-on and back, with the faces swapped
-   at the moment the card is edge-on, so neither face is ever seen mirrored. */
-.card-back {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: clamp(0.6rem, 5%, 1.1rem);
-  overflow: hidden;
-  border-radius: inherit;
-  border: 1px solid var(--border-subtle);
-  background-color: rgb(var(--color-surface-card));
-  color: rgb(var(--color-text-secondary));
-  pointer-events: none;
-  visibility: hidden;
-}
-
-#portfolio-grid.turned .card-back {
-  visibility: visible;
-}
-
-/* The back is its own size container, so a big card (one column on a phone) gets bigger
-   writing instead of a sheet of empty paper. */
-.card-back {
-  container-type: size;
-}
-
-@container (min-height: 380px) and (min-width: 300px) {
-  .card-back-part {
-  min-width: 0;
-}
-
-.card-back-title {
-    font-size: 1.4rem;
-  }
-
-  .card-back-note {
-    font-size: 1.15rem;
-    line-height: 1.45;
-  }
-
-  .card-back-meta {
-    font-size: 12px;
-  }
-
-  .card-back-dots > span {
-    width: 14px;
-    height: 14px;
-  }
-}
-
-.card-back-title {
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 1rem;
-  line-height: 1.25;
-  color: rgb(var(--color-text-primary));
-  margin-bottom: 0.3rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-back-note {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  font-family: 'Newsreader', Georgia, serif;
-  font-style: italic;
-  font-size: 0.875rem;
-  line-height: 1.4;
-  /* Long descriptions fade out rather than stopping mid-word at a hard edge. */
-  mask-image: linear-gradient(to bottom, black 65%, transparent);
-}
-
-.card-back-meta {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  line-height: 1.5;
-  letter-spacing: 0.04em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.card-back-dots {
-  display: flex;
-  gap: 4px;
-  margin-top: 0.45rem;
-}
-
-.card-back-dots > span {
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  background: var(--chip);
-  box-shadow: inset 0 0 0 1px var(--border-subtle);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  #portfolio-grid.flipping > [data-slug]:not(.flip-instant) {
-    animation: card-turn 480ms cubic-bezier(0.45, 0, 0.25, 1) var(--flip-delay, 0ms) both;
-  }
-
-  #portfolio-grid.flipping.turned > [data-slug]:not(.flip-instant) .card-back {
-    animation: card-back-show 480ms steps(1, end) var(--flip-delay, 0ms) both;
-  }
-
-  #portfolio-grid.flipping:not(.turned) > [data-slug]:not(.flip-instant) .card-back {
-    animation: card-back-hide 480ms steps(1, end) var(--flip-delay, 0ms) both;
-  }
-}
-
-@keyframes card-turn {
-  0% { transform: perspective(900px) rotateY(0deg); }
-  50% { transform: perspective(900px) rotateY(90deg); }
-  100% { transform: perspective(900px) rotateY(0deg); }
-}
-
-@keyframes card-back-show {
-  0% { visibility: hidden; }
-  50%, 100% { visibility: visible; }
-}
-
-@keyframes card-back-hide {
-  0% { visibility: visible; }
-  50%, 100% { visibility: hidden; }
-}
 
 /* Your eye (Labs, scripts/your-eye.ts): the visitor's colour, as measured. */
 .eye-colours {

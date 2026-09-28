@@ -29,6 +29,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
 
   let mode: Mode = 'card';
   let photo: Promise<HTMLImageElement> | null = null;
+  let logo: Promise<HTMLImageElement | null> | null = null;
   let cardUrl = '';
   let exportUrl = '';
   let file: File | null = null;
@@ -36,6 +37,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
   let pending = 0;
 
   const getPhoto = () => (photo ??= Promise.all([loadImage(facts.full), fontsReady()]).then(([img]) => img));
+  const getLogo = () => (logo ??= loadImage('/logo.png').catch(() => null));
 
   // The picture that Save and Share hand over, for whichever mode is showing.
   async function refreshExport() {
@@ -63,7 +65,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
     if (mode === 'postcard' && !postcardDrawn) {
       const img = await getPhoto();
       drawPostcardFront(front, img);
-      drawPostcardBack(back, facts, message.value, img);
+      drawPostcardBack(back, facts, message.value, img, await getLogo());
       // The preview takes the card's own shape, the photograph's.
       postcard.style.setProperty('--ratio', String(front.width / front.height));
       postcardDrawn = true;
@@ -98,7 +100,7 @@ export function attachCards(facts: PhotoFacts, dialog: HTMLDialogElement, opener
     turnTo('back');
     clearTimeout(pending);
     pending = window.setTimeout(async () => {
-      drawPostcardBack(back, facts, message.value, await getPhoto());
+      drawPostcardBack(back, facts, message.value, await getPhoto(), await getLogo());
       await refreshExport();
     }, 250);
   });

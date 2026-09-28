@@ -138,11 +138,45 @@ async function drawEyeCard(eye: Eye, lines: string[], data: EyeData, recent: str
   );
 }
 
-export function attachYourEye(dialog: HTMLDialogElement, open: HTMLButtonElement, data: EyeData, seen: string[]) {
-  const known = seen.filter((slug) => data.photos[slug]);
-  if (known.length < EYE_MINIMUM) return;
-  open.hidden = false;
+let wired = false;
+let file: File | null = null;
 
+// The dialog's Share, Save and backdrop, set up once however many times it opens.
+function wire(dialog: HTMLDialogElement) {
+  if (wired) return;
+  wired = true;
+  dialog.querySelector('[data-eye-share]')!.addEventListener('click', async () => {
+    if (!file) return;
+    try {
+      await navigator.share({ files: [file], title: 'My eye', url: `${location.origin}/gallery` });
+    } catch {
+      // Dismissed.
+    }
+  });
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+}
+
+/** Not enough opened yet: say how many more, rather than a profile built on nothing. */
+export function showEyeNotYet(dialog: HTMLDialogElement, opened: number) {
+  wire(dialog);
+  const more = EYE_MINIMUM - opened;
+  dialog.querySelector('[data-eye-body]')!.innerHTML = `
+    <p class="font-display text-display-md text-text-primary leading-tight">Open ${more} more ${more === 1 ? 'photograph' : 'photographs'} first.</p>
+    <p class="mt-4 text-body-md text-text-secondary">After ${EYE_MINIMUM}, this shows what you have been drawn to: how many were made after dark, how long your lenses run, your colour.${opened ? ` You have opened ${opened} so far.` : ''}</p>`;
+  dialog.querySelectorAll<HTMLElement>('[data-eye-only]').forEach((el) => (el.hidden = true));
+  dialog.showModal();
+}
+
+/** The profile, and a card of it to share. */
+export async function showYourEye(dialog: HTMLDialogElement, data: EyeData, seen: string[]) {
+  wire(dialog);
+  const known = seen.filter((slug) => data.photos[slug]);
+  if (known.length < EYE_MINIMUM) {
+    showEyeNotYet(dialog, known.length);
+    return;
+  }
   const eye = eyeProfile(known.map((slug) => ({ slug, ...data.photos[slug] })));
   const lines = eyeLines(eye, data);
   const recent = known.slice(-6).reverse();
@@ -158,33 +192,16 @@ export function attachYourEye(dialog: HTMLDialogElement, open: HTMLButtonElement
         `<li><a href="/photo/${slug}" class="block no-underline" title="${esc(data.photos[slug].title)}"><img src="${data.photos[slug].src}" alt="" loading="lazy" class="w-full aspect-square object-contain bg-black rounded-md" /></a></li>`
     )
     .join('');
+  dialog.querySelectorAll<HTMLElement>('[data-eye-only]').forEach((el) => (el.hidden = false));
+  dialog.showModal();
 
   const save = dialog.querySelector<HTMLAnchorElement>('[data-eye-save]')!;
   const share = dialog.querySelector<HTMLButtonElement>('[data-eye-share]')!;
-  let file: File | null = null;
-
-  const show = async () => {
-    dialog.showModal();
-    if (file) return;
-    const blob = await drawEyeCard(eye, lines, data, recent);
-    file = new File([blob], 'my-eye.jpg', { type: 'image/jpeg' });
-    save.href = URL.createObjectURL(blob);
-    save.download = 'my-eye.jpg';
-    save.hidden = false;
-    share.hidden = !(navigator.canShare && navigator.canShare({ files: [file] }));
-  };
-
-  open.addEventListener('click', show);
-  share.addEventListener('click', async () => {
-    if (!file) return;
-    try {
-      await navigator.share({ files: [file], title: 'My eye', url: `${location.origin}/gallery` });
-    } catch {
-      // Dismissed.
-    }
-  });
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close();
-  });
-  if (location.hash === '#your-eye') show();
+  const blob = await drawEyeCard(eye, lines, data, recent);
+  file = new File([blob], 'my-eye.jpg', { type: 'image/jpeg' });
+  URL.revokeObjectURL(save.href);
+  save.href = URL.createObjectURL(blob);
+  save.download = 'my-eye.jpg';
+  save.hidden = false;
+  share.hidden = !(navigator.canShare && navigator.canShare({ files: [file] }));
 }

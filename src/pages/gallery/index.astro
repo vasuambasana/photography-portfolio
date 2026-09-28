@@ -111,7 +111,6 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
           ))}
         </div>
         <div class="flex flex-wrap items-center gap-1.5">
-          <button type="button" class="labs-tool" data-turn aria-pressed="false">Turn them over</button>
           <div class="flex items-center gap-1.5" role="group" aria-label="How to show the photographs">
             <button type="button" class="labs-tool view-btn" data-view="grid" aria-pressed="true">Grid</button>
             <button type="button" class="labs-tool view-btn" data-view="sheet" aria-pressed="false">Contact sheet</button>
@@ -138,10 +137,10 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
       <form method="dialog"><button class="labs-tool">Close</button></form>
     </div>
     <div data-eye-body class="relative"></div>
-    <p class="mt-6 mb-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">The last ones you opened</p>
-    <ul data-eye-photos class="grid grid-cols-3 gap-1.5"></ul>
+    <p data-eye-only class="mt-6 mb-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">The last ones you opened</p>
+    <ul data-eye-only data-eye-photos class="grid grid-cols-3 gap-1.5"></ul>
     <p class="mt-4 text-caption text-text-secondary">Worked out in your browser from what it remembers. Nothing is sent anywhere.</p>
-    <div class="mt-4 flex flex-wrap items-center gap-2 justify-end">
+    <div data-eye-only class="mt-4 flex flex-wrap items-center gap-2 justify-end">
       <button type="button" data-eye-share class="labs-tool" hidden>Share</button>
       <a data-eye-save class="labs-tool no-underline" hidden>Save image</a>
     </div>
@@ -151,8 +150,8 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
     import { ALL_FILTER, getActiveFilter, matchesFilter, withFilter } from '../../utils/filter';
     import { labsOn } from '../../scripts/labs';
     import { freshSlugs, seenSlugs } from '../../scripts/seen';
-    import { attachYourEye, EYE_MINIMUM } from '../../scripts/your-eye';
-    import { addBacks, addSheetMeta, labsData } from '../../scripts/gallery-labs';
+    import { EYE_MINIMUM, showEyeNotYet, showYourEye } from '../../scripts/your-eye';
+    import { addSheetMeta, labsData } from '../../scripts/gallery-labs';
 
     const grid = document.getElementById('portfolio-grid')!;
     const cards = [...grid.querySelectorAll<HTMLElement>(':scope > [data-category]')];
@@ -267,45 +266,6 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
       })
     );
 
-    // Labs: turn every photograph over to read the back. The ones on screen turn in a wave
-    // from the top left, each spinning to edge-on and back with the other face showing;
-    // the rest simply change.
-    const turnButton = document.querySelector<HTMLButtonElement>('[data-turn]');
-    let turned = false;
-    let flipTimer = 0;
-    turnButton?.addEventListener('click', async () => {
-      try {
-        await addBacks(cards);
-      } catch {
-        return;
-      }
-      turned = !turned;
-      turnButton.setAttribute('aria-pressed', String(turned));
-      turnButton.textContent = turned ? 'Turn them back' : 'Turn them over';
-      if (reducedMotion) {
-        grid.classList.toggle('turned', turned);
-        return;
-      }
-      const span = innerWidth + innerHeight;
-      let longest = 0;
-      cards.forEach((card) => {
-        const visible = card.style.display !== 'none' && onScreen(card);
-        card.classList.toggle('flip-instant', !visible);
-        if (!visible) return;
-        const r = card.getBoundingClientRect();
-        const delay = Math.round(((Math.max(0, r.left) + Math.max(0, r.top)) / span) * 650);
-        longest = Math.max(longest, delay);
-        card.style.setProperty('--flip-delay', `${delay}ms`);
-      });
-      // Restart cleanly if a turn is still under way.
-      grid.classList.remove('flipping');
-      void grid.offsetWidth;
-      grid.classList.add('flipping');
-      grid.classList.toggle('turned', turned);
-      clearTimeout(flipTimer);
-      flipTimer = window.setTimeout(() => grid.classList.remove('flipping'), longest + 520);
-    });
-
     // Labs: what this visitor has opened, and what is new since they were last here.
     if (labs) {
       try {
@@ -335,10 +295,22 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
 
       const eyeDialog = document.getElementById('eye-dialog') as HTMLDialogElement | null;
       const eyeOpen = document.getElementById('eye-open') as HTMLButtonElement | null;
-      if (eyeDialog && eyeOpen && seen.size >= EYE_MINIMUM) {
-        labsData()
-          .then((data) => attachYourEye(eyeDialog, eyeOpen, data, [...seen]))
-          .catch(() => undefined);
+      if (eyeDialog && eyeOpen) {
+        // Always there with Labs on; before six photographs it says how many more to open.
+        eyeOpen.hidden = false;
+        const openEye = async () => {
+          if (seen.size < EYE_MINIMUM) {
+            showEyeNotYet(eyeDialog, seen.size);
+            return;
+          }
+          try {
+            await showYourEye(eyeDialog, await labsData(), [...seen]);
+          } catch {
+            // The data didn't arrive; the button can be pressed again.
+          }
+        };
+        eyeOpen.addEventListener('click', openEye);
+        if (location.hash === '#your-eye') openEye();
       }
     }
 
