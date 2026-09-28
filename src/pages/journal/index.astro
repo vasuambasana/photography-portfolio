@@ -70,18 +70,18 @@ const tags = [...collectTags(allEntries).entries()]
       <nav aria-label="Filter journal by tag" class="mb-8 flex flex-wrap gap-2">
         <button
           data-tag="all"
-          class="tag-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors"
+          class="tag-btn group px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
           aria-pressed="false"
         >
-          All <span class="text-text-secondary/60">{entries.length}</span>
+          All <span class="text-text-secondary/60 group-aria-pressed:text-surface-main/70">{entries.length}</span>
         </button>
         {tags.map(([slug, { tag, entries: tagged }]) => (
           <button
             data-tag={slug}
-            class="tag-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors"
+            class="tag-btn group px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary transition-colors aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
             aria-pressed="false"
           >
-            {tag} <span class="text-text-secondary/60">{tagged.length}</span>
+            {tag} <span class="text-text-secondary/60 group-aria-pressed:text-surface-main/70">{tagged.length}</span>
           </button>
         ))}
       </nav>
@@ -131,10 +131,8 @@ const tags = [...collectTags(allEntries).entries()]
     function apply(tag: string, pushUrl: boolean) {
       buttons.forEach((b) => {
         const isActive = b.dataset.tag === tag;
+        // The pressed look comes from aria-pressed alone; see the aria-pressed: classes.
         b.setAttribute('aria-pressed', String(isActive));
-        b.classList.toggle('bg-text-primary', isActive);
-        b.classList.toggle('text-surface-main', isActive);
-        b.classList.toggle('text-text-secondary', !isActive);
       });
 
       let visible = 0;

@@ -64,7 +64,7 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
             <li>
               <button
                 data-filter="all"
-                class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle transition-all duration-200 text-text-secondary hover:text-text-primary hover:bg-surface-overlay"
+                class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle transition-all duration-200 text-text-secondary hover:text-text-primary hover:bg-surface-overlay aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
                 aria-pressed="false"
               >
                 All
@@ -74,7 +74,7 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
               <li>
                 <button
                   data-filter={cat}
-                  class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+                  class="filter-btn px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200 aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
                   aria-pressed="false"
                 >
                   {cat}
@@ -89,14 +89,14 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
           <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">Order</span>
           <button
             data-sort="newest"
-            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200 aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
             aria-pressed="true"
           >
             Newest
           </button>
           <button
             data-sort="light"
-            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200"
+            class="sort-btn px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-subtle text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-all duration-200 aria-pressed:bg-text-primary aria-pressed:text-surface-main aria-pressed:border-text-primary aria-pressed:shadow-sm aria-pressed:hover:bg-text-primary aria-pressed:hover:text-surface-main"
             aria-pressed="false"
             title="Sorted by exposure value, from the longest night exposure to the brightest daylight"
           >
@@ -146,15 +146,10 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
       return ea - eb;
     });
 
+    // The pressed look comes from aria-pressed alone (aria-pressed: variants in the markup),
+    // so it cannot drift from what assistive tech is told, and hover never overrides it.
     function setPressed(buttons: NodeListOf<HTMLButtonElement>, key: 'filter' | 'sort', value: string) {
-      buttons.forEach((b) => {
-        const active = b.dataset[key] === value;
-        b.setAttribute('aria-pressed', String(active));
-        b.classList.toggle('bg-text-primary', active);
-        b.classList.toggle('text-surface-main', active);
-        b.classList.toggle('shadow-sm', active);
-        b.classList.toggle('text-text-secondary', !active);
-      });
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset[key] === value)));
     }
 
     function render() {
