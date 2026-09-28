@@ -37,8 +37,6 @@ than the salt flat. That is a factor of roughly seven million. Nothing about it 
 difficult. One phone had to be held still for twenty seconds, the other was pointed at a
 white salt crust under a deep blue sky, and each camera did the arithmetic for itself.
 
-<div data-widget="stops-slider" data-day="2023-04-23"></div>
-
 The night before has the same settings exactly.
 [*Highway to the Cosmos*](/photo/highway-to-the-cosmos), dated 22 April, is a two-lane road
 running away under a sky dense with stars, the double yellow line leading toward low hills.

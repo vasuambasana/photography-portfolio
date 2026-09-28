@@ -110,12 +110,6 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
             ></button>
           ))}
         </div>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <div class="flex items-center gap-1.5" role="group" aria-label="How to show the photographs">
-            <button type="button" class="labs-tool view-btn" data-view="grid" aria-pressed="true">Grid</button>
-            <button type="button" class="labs-tool view-btn" data-view="sheet" aria-pressed="false">Contact sheet</button>
-          </div>
-        </div>
       </div>
 
       <!-- Photos grid -->
@@ -151,7 +145,7 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
     import { labsOn } from '../../scripts/labs';
     import { freshSlugs, seenSlugs } from '../../scripts/seen';
     import { EYE_MINIMUM, showEyeNotYet, showYourEye } from '../../scripts/your-eye';
-    import { addSheetMeta, labsData } from '../../scripts/gallery-labs';
+    import { labsData } from '../../scripts/gallery-labs';
 
     const grid = document.getElementById('portfolio-grid')!;
     const cards = [...grid.querySelectorAll<HTMLElement>(':scope > [data-category]')];
@@ -245,36 +239,8 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
       })
     );
 
-    // Labs: contact sheet view, remembered in this browser.
-    const viewButtons = document.querySelectorAll<HTMLButtonElement>('.view-btn');
-    function setView(view: string) {
-      if (view === 'sheet') addSheetMeta(cards).catch(() => undefined);
-      grid.classList.toggle('contact-sheet', view === 'sheet');
-      viewButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
-    }
-    viewButtons.forEach((btn) =>
-      btn.addEventListener('click', () => {
-        const view = btn.dataset.view ?? 'grid';
-        try {
-          localStorage.setItem('gallery-view', view);
-        } catch {
-          // Not remembered; fine.
-        }
-        grid.classList.add('stagger-done');
-        if (reducedMotion || !document.startViewTransition) setView(view);
-        else document.startViewTransition(() => setView(view));
-      })
-    );
-
     // Labs: what this visitor has opened, and what is new since they were last here.
     if (labs) {
-      try {
-        const saved = localStorage.getItem('gallery-view');
-        if (saved) setView(saved);
-      } catch {
-        // Storage blocked: the grid it is.
-      }
-
       const seen = seenSlugs();
       const fresh = freshSlugs(cards.map((c) => c.dataset.slug ?? ''));
       cards.forEach((card) => {

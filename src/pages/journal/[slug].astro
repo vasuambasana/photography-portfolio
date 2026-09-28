@@ -7,7 +7,7 @@ import type { CollectionEntry } from 'astro:content';
 import { JOURNAL_TYPE_LABELS } from '../../content/config';
 import { publishedJournal, readingTime, sortJournal, tagSlug } from '../../utils/journal';
 import { neighbours } from '../../utils/photos';
-import { developDuration, exposureValue } from '../../utils/exposure';
+import { developDuration } from '../../utils/exposure';
 import { specLine } from '../../utils/camera';
 
 export async function getStaticPaths() {
@@ -41,11 +41,6 @@ const previews = Object.fromEntries(
         const photo = await getEntry('photos', slug);
         if (!photo) return null;
         const img = await getImage({ src: photo.data.image, width: 480, format: 'webp' });
-        // Labs journal widgets want a bigger frame and the raw settings, and only on the
-        // entries that have a widget.
-        const widgets = entry.body.includes('data-widget=');
-        const large = widgets ? await getImage({ src: photo.data.image, width: 800, format: 'webp' }) : null;
-        const s = photo.data.cameraSpecs;
         return [
           slug,
           {
@@ -55,15 +50,6 @@ const previews = Object.fromEntries(
             height: img.attributes.height,
             specs: specLine(photo.data.cameraSpecs),
             date: photo.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' }),
-            ...(large && {
-              alt: photo.data.alt,
-              large: large.src,
-              day: photo.data.date.toISOString().slice(0, 10),
-              aperture: s?.aperture ?? null,
-              shutter: s?.shutterSpeed ?? null,
-              iso: s?.iso ?? null,
-              ev: exposureValue(s),
-            }),
           },
         ] as const;
       })
@@ -233,7 +219,6 @@ const { prev: newerEntry, next: olderEntry } = neighbours(allEntries, entry.slug
 
   <script>
     import '../../scripts/photo-preview';
-    import '../../scripts/journal-widgets';
   </script>
 
   <!-- Bottom spacer -->

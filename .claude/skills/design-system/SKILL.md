@@ -121,13 +121,12 @@ the class and the guard, move its row up into the table above, and take it off `
 | Histogram, spot meter | `scripts/viewfinder.ts`, `utils/tones.ts` | In the viewfinder: luma histogram of the file; hover reads stops from middle grey |
 | Colour rhyme | `data/archive.ts`, `utils/palette.ts` | Nearest 8-colour palette from another year, measured at build time with sharp; shown as chips |
 | Photo accent | `pages/photo/[slug].astro`, `accentFromPalette()` | The page's accent (and a faint surface tint) from the photo's most vivid colour, held to 4.5:1 in both themes |
-| Colour filter, contact sheet, seen | gallery page, `scripts/seen.ts` | One swatch per colour family the archive holds (`FAMILIES`); film-strip view; opened and new-since-last-visit badges |
+| Colour filter, seen | gallery page, `scripts/seen.ts` | One swatch per colour family the archive holds (`FAMILIES`); film-strip view; opened and new-since-last-visit badges |
 | Your eye | `scripts/your-eye.ts`, `utils/eye.ts` | After six opened photos: after-dark share, lens lean, subject, colour; shareable card |
 | Colour match | `pages/match.astro` | Camera, picture or picked colour matched to the archive's palettes on the device, with hysteresis |
 | Phone or camera? | `scripts/phone-or-camera.ts` | Second game on `/play` (`#phone`); answer is the recorded make (`isPhone()`) |
 | After dark, shake | `pages/index.astro`, `scripts/hero.ts` | After 8pm local, the hero leads with EV < 5 photos; shake a phone for another |
 | Guess the exposure | `pages/play.astro`, `utils/game.ts` | Daily photo, three log-scale dials, scored in stops |
-| Journal widgets | `scripts/journal-widgets.ts` | `<div data-widget="stops-slider">` and `"moon-rule"` in an entry's markdown |
 | Darkroom | `scripts/darkroom.ts` | Konami code or hold the theme button: safelight tokens, photos develop from white |
 | Torch | `pages/404.astro` | The lost page is dark; a torch follows the pointer or focus |
 

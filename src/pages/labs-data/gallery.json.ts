@@ -1,12 +1,12 @@
 // Labs data for the gallery, as a file of its own: the gallery page fetches it only when
-// a Labs feature needs it (the contact sheet, "Your eye"), so
+// a Labs feature needs it ("Your eye"), so
 // visitors on the stable site never download it.
 
 import type { APIRoute } from 'astro';
 import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { getArchive } from '../../data/archive';
-import { cameraName, comparableFocal, isPhone, specLine } from '../../utils/camera';
+import { cameraName, comparableFocal, isPhone } from '../../utils/camera';
 import { sortPhotos } from '../../utils/photos';
 
 export const GET: APIRoute = async () => {
@@ -30,8 +30,6 @@ export const GET: APIRoute = async () => {
           phone: isPhone(specs?.body),
           year: p.data.date.getUTCFullYear(),
           colours: swatches.filter((s) => s.slugs.includes(p.slug)).map((s) => s.key),
-          // For the contact sheet's margin.
-          sheet: specLine(specs) || 'no settings recorded',
         },
       ] as const;
     })
