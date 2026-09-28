@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { Photo } from '../../utils/photos';
 import { developDuration } from '../../utils/exposure';
+import { specLine } from '../../utils/camera';
 
 export interface Props {
   photo: Photo;
@@ -13,6 +14,10 @@ export interface Props {
   sizes?: string;
   showCategory?: boolean;
   showLocation?: boolean;
+  /** Labs contact sheet: the settings line written in the frame's margin. */
+  sheetMeta?: boolean;
+  /** Labs colour filter: indices of the archive swatches this photograph holds. */
+  colours?: number[];
   class?: string;
 }
 
@@ -25,6 +30,8 @@ const {
   sizes = '(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 92vw',
   showCategory = false,
   showLocation = false,
+  sheetMeta = false,
+  colours,
   class: className = '',
 } = Astro.props;
 
@@ -35,6 +42,7 @@ const develop = developDuration(cameraSpecs?.shutterSpeed);
 <div
   data-category={category}
   data-slug={photo.slug}
+  data-colours={colours?.join(' ')}
   class:list={[
     'group relative overflow-hidden bg-surface-overlay mb-3 md:mb-4 break-inside-avoid',
     rounded,
@@ -72,4 +80,5 @@ const develop = developDuration(cameraSpecs?.shutterSpeed);
       )}
     </div>
   </a>
+  {sheetMeta && <span class="sheet-meta" aria-hidden="true">{specLine(cameraSpecs) || 'no settings recorded'}</span>}
 </div>

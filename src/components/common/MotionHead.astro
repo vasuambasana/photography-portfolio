@@ -14,6 +14,20 @@
   (() => {
     const root = document.documentElement;
     root.classList.add('js');
+
+    // Labs: ?labs=on|off sets it, the visitor's stored choice keeps it, and the build
+    // default (on for dev previews, off on the live site) applies otherwise.
+    let labs = root.dataset.labsDefault === 'on';
+    try {
+      const asked = new URLSearchParams(location.search).get('labs');
+      if (asked === 'on' || asked === 'off') localStorage.setItem('labs', asked);
+      const stored = localStorage.getItem('labs');
+      if (stored) labs = stored === 'on';
+    } catch {}
+    if (labs) root.classList.add('labs');
+    // The darkroom (scripts/darkroom.ts) lasts for the session, and must be in place
+    // before the first paint or every page would flash white on the way in.
+    try { if (labs && sessionStorage.getItem('darkroom') === 'on') root.classList.add('darkroom'); } catch {}
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       root.classList.add('reduce-motion');
       return;

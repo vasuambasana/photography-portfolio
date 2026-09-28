@@ -478,3 +478,625 @@ html.theme-vt::view-transition-new(root) {
   animation-duration: 420ms;
   animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
 }
+
+/* Labs (scripts/labs.ts): experiments stay out of sight unless the visitor opts in. */
+html:not(.labs) .labs-only {
+  display: none !important;
+}
+
+html.labs .stable-only {
+  display: none !important;
+}
+
+html.labs .labs-switch-track {
+  background-color: rgb(var(--color-text-accent));
+  border-color: transparent;
+}
+
+html.labs .labs-switch-thumb {
+  background-color: rgb(var(--color-surface-card));
+  transform: translateX(20px);
+}
+
+.labs-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+  background-color: rgb(var(--color-surface-card));
+  color: rgb(var(--color-text-secondary));
+  cursor: pointer;
+  transition: color 200ms ease-out, background-color 200ms ease-out;
+}
+
+.labs-tool:hover,
+.labs-tool[aria-pressed='true'] {
+  color: rgb(var(--color-text-primary));
+  background-color: rgb(var(--color-surface-overlay));
+}
+
+.labs-tool:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Loupe (scripts/loupe.ts). Over a photograph, so plain white and black. */
+.loupe {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  border-radius: 9999px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-color: black;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 10px 40px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 160ms ease-out, scale 200ms cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+.loupe.loupe-open {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Viewfinder (scripts/viewfinder.ts). */
+.viewfinder {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  color: white;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: clamp(10px, 1.4vw, 13px);
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+}
+
+.viewfinder.vf-on {
+  opacity: 1;
+}
+
+.vf-thirds {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent calc(33.333% - 0.5px), rgba(255, 255, 255, 0.28) calc(33.333% - 0.5px), rgba(255, 255, 255, 0.28) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgba(255, 255, 255, 0.28) calc(66.666% - 0.5px), rgba(255, 255, 255, 0.28) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(33.333% - 0.5px), rgba(255, 255, 255, 0.28) calc(33.333% - 0.5px), rgba(255, 255, 255, 0.28) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px), transparent calc(66.666% - 0.5px), rgba(255, 255, 255, 0.28) calc(66.666% - 0.5px), rgba(255, 255, 255, 0.28) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px));
+}
+
+.vf-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid rgba(255, 255, 255, 0.9);
+}
+.vf-tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
+.vf-tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
+.vf-bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
+.vf-br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+
+.vf-focus {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 32px;
+  translate: -50% -50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+}
+
+.vf-top,
+.vf-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.6em;
+  padding: 0.7em 2.6em;
+}
+.vf-top { top: 0; justify-content: space-between; }
+.vf-bottom {
+  bottom: 0;
+  justify-content: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+  padding-top: 2em;
+}
+.vf-ev { opacity: 0.7; }
+
+/* Settings card (scripts/settings-card.ts). */
+.settings-card-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loupe,
+  .viewfinder {
+    transition: none;
+  }
+}
+
+/* Home hero after dark (Labs, pages/index.astro). */
+html.labs.hero-night .hero-night-note {
+  display: inline-block;
+}
+
+/* Gallery colour filter (Labs, pages/gallery/index.astro). The swatch colour is measured
+   from the photographs, so it comes in as data (--swatch), not as a theme token. */
+.colour-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.colour-btn::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 9999px;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+  transition: inset 200ms ease-out;
+}
+
+.colour-btn:hover::before {
+  inset: 7px;
+}
+
+.colour-btn[aria-pressed='true']::before {
+  inset: 6px;
+  box-shadow: 0 0 0 2px rgb(var(--color-surface-main)), 0 0 0 4px rgb(var(--color-text-primary));
+}
+
+/* Seen and new badges (Labs). Over a photograph, so plain white and black. */
+.card-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.card-badge-new {
+  color: black;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.sheet-meta {
+  display: none;
+}
+
+/* Contact sheet (Labs): the archive as strips of film. Every frame keeps its photograph
+   whole, fitted inside the frame, never cropped. Frame numbers count only what is shown. */
+#portfolio-grid.contact-sheet {
+  columns: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(46vw, 210px), 1fr));
+  gap: 0;
+  padding: 6px 0;
+  border-radius: 0.5rem;
+  background: rgb(18 16 14);
+  counter-reset: frame;
+}
+
+#portfolio-grid.contact-sheet > [data-slug] {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 22px 8px 30px;
+  counter-increment: frame;
+  /* Sprocket holes along the top and bottom of every frame line up into a strip. */
+  background-image:
+    repeating-linear-gradient(to right, transparent 0 6px, rgba(255, 255, 255, 0.16) 6px 14px, transparent 14px 20px),
+    repeating-linear-gradient(to right, transparent 0 6px, rgba(255, 255, 255, 0.16) 6px 14px, transparent 14px 20px);
+  background-size: 100% 8px, 100% 8px;
+  background-position: 0 7px, 0 calc(100% - 7px);
+  background-repeat: no-repeat;
+}
+
+#portfolio-grid.contact-sheet > [data-slug]::before {
+  content: counter(frame);
+  position: absolute;
+  left: 10px;
+  bottom: 16px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  color: rgba(255, 196, 120, 0.8);
+}
+
+#portfolio-grid.contact-sheet [data-photo-link] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  background: black;
+}
+
+#portfolio-grid.contact-sheet [data-photo-link] img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#portfolio-grid.contact-sheet [data-photo-link] > div:last-child {
+  display: none;
+}
+
+#portfolio-grid.contact-sheet .sheet-meta {
+  display: block;
+  position: absolute;
+  left: 30px;
+  right: 8px;
+  bottom: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 196, 120, 0.7);
+}
+
+#portfolio-grid.contact-sheet .card-badge {
+  top: 26px;
+  left: 12px;
+}
+
+/* Guess the exposure dials (Labs, pages/play.astro). */
+.play-dial {
+  accent-color: rgb(var(--color-text-accent));
+  height: 44px;
+}
+
+/* Minutes of light (Labs, pages/light.astro). The stage is a darkroom, whatever the
+   theme: black, with white type, like the space around a photograph on its own page. */
+.light-track {
+  position: relative;
+  background: black;
+}
+
+.light-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 5rem 1rem 2rem;
+  color: white;
+  overflow: hidden;
+}
+
+.light-clock {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.light-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 0;
+  flex: 1;
+}
+
+.light-figure img {
+  max-height: 100%;
+  max-width: min(92vw, 1100px);
+  width: auto;
+  height: auto;
+  min-height: 0;
+  object-fit: contain;
+  flex: 1;
+}
+
+.light-figure figcaption {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.light-figure figcaption a {
+  color: white;
+}
+
+.light-note {
+  min-height: 1.5em;
+  max-width: 36rem;
+  text-align: center;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.light-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.light-progress span {
+  display: block;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Journal widgets (Labs, scripts/journal-widgets.ts). */
+.journal-widget {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background-color: rgb(var(--color-surface-card));
+}
+
+.jw-label {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgb(var(--color-text-secondary));
+  margin: 0 0 0.75rem;
+}
+
+.jw-figure {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  background: black;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.jw-figure img {
+  max-height: 420px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 0;
+}
+
+.jw-caption,
+.jw-readout,
+.jw-answer {
+  font-size: 0.875rem;
+  color: rgb(var(--color-text-secondary));
+  margin: 0.75rem 0 0;
+}
+
+.jw-readout {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: rgb(var(--color-text-primary));
+}
+
+.jw-scale {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.jw-scale input {
+  width: 100%;
+  height: 44px;
+  accent-color: rgb(var(--color-text-accent));
+}
+
+.jw-ticks {
+  position: relative;
+  height: 20px;
+  margin: 0 8px;
+}
+
+.jw-ticks button {
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  translate: -50% 0;
+  cursor: pointer;
+}
+
+.jw-ticks button::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  width: 2px;
+  height: 12px;
+  translate: -50% 0;
+  background: rgb(var(--color-text-secondary));
+}
+
+.jw-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: rgb(var(--color-text-secondary));
+}
+
+.jw-controls select {
+  min-height: 44px;
+  margin-left: 0.5rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+  background-color: rgb(var(--color-surface-overlay));
+  color: rgb(var(--color-text-primary));
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.jw-answer strong {
+  color: rgb(var(--color-text-primary));
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.jw-table {
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  border-collapse: collapse;
+}
+
+.jw-table th {
+  text-align: left;
+  font-weight: normal;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--color-text-secondary));
+  padding: 0.4rem 0.5rem 0.4rem 0;
+}
+
+.jw-table td {
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  color: rgb(var(--color-text-primary));
+}
+
+/* The darkroom (Labs, hidden; scripts/darkroom.ts). Safelight: the theme tokens go red and
+   dim, whatever the theme was. Photographs come up out of white, like a print in the
+   developer, over three times their usual time, and end exactly as they are. */
+html.darkroom {
+  --color-surface-main: 14 4 3;
+  --color-surface-card: 24 7 5;
+  --color-surface-overlay: 36 10 8;
+  --color-text-primary: 255 92 70;
+  --color-text-secondary: 190 60 46;
+  --color-text-accent: 255 128 96;
+  --border-subtle: rgba(255, 80, 60, 0.18);
+  --glass-bg: rgba(14, 4, 3, 0.8);
+  --selection-bg: rgba(255, 80, 60, 0.3);
+  color-scheme: dark;
+}
+
+html:not(.darkroom) .darkroom-only {
+  display: none;
+}
+
+html.darkroom.js:not(.reduce-motion) img[data-develop]:not(.developed) {
+  filter: brightness(2.6) contrast(0.35) saturate(0);
+}
+
+html.darkroom.js:not(.reduce-motion) img[data-develop]:not(.no-develop) {
+  transition-duration: calc(var(--develop, 480ms) * 3), 700ms, 300ms;
+}
+
+/* The lost page's torch (Labs, pages/404.astro). */
+.torch {
+  display: none;
+}
+
+html.labs.torch-on .torch {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 45%), transparent 0, transparent 90px, rgba(0, 0, 0, 0.6) 150px, rgba(0, 0, 0, 0.96) 230px);
+}
+
+html:not(.torch-on) .lost-photo {
+  display: none;
+}
+
+/* The light table (Labs, pages/table.astro). */
+.light-table {
+  position: relative;
+  height: calc(100svh - 11rem);
+  min-height: 420px;
+  margin: 0 0.75rem 1rem;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  background-color: rgb(var(--color-surface-card));
+  box-shadow: inset 0 0 120px rgb(var(--color-surface-overlay)), inset 0 0 0 1px var(--border-subtle);
+}
+
+.table-photo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(72px, 9vw, 132px);
+  aspect-ratio: var(--ratio);
+  padding: 4px;
+  background: white;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.12);
+  cursor: grab;
+  visibility: hidden;
+  will-change: transform;
+  touch-action: none;
+}
+
+.table-ready .table-photo {
+  visibility: visible;
+}
+
+.table-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.table-photo.table-held {
+  cursor: grabbing;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25), 0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+.table-photo:focus-visible {
+  outline: 2px solid rgb(var(--color-text-accent));
+  outline-offset: 3px;
+}
+
+.table-gliding .table-photo {
+  transition: transform 600ms cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+.table-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgb(var(--color-text-secondary));
+  background-color: rgb(var(--color-surface-card) / 0.85);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.table-label[hidden] {
+  display: none;
+}

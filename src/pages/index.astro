@@ -6,7 +6,7 @@ import JournalCard from '../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
 import { sortPhotos } from '../utils/photos';
 import { decorate, publishedJournal, sortJournal } from '../utils/journal';
-import { developDuration } from '../utils/exposure';
+import { developDuration, exposureValue } from '../utils/exposure';
 import type { Photo } from '../utils/photos';
 
 const allPhotos = await getCollection('photos');
@@ -37,6 +37,9 @@ async function heroEntry(p: Photo, widths: number[]) {
     srcset: variants.map((v, i) => `${v.src} ${widths[i]}w`).join(', '),
     src: variants[variants.length - 1].src,
     develop: developDuration(p.data.cameraSpecs?.shutterSpeed),
+    // Labs: made in low light, by its own settings (EV below 5 is a lit street at night
+    // or darker). Only what the file recorded; a photo without settings is never "night".
+    night: (exposureValue(p.data.cameraSpecs) ?? Infinity) < 5,
   };
 }
 
@@ -89,8 +92,17 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
             const list = pool[orientation].length ? pool[orientation] : pool.landscape;
             let last = null;
             try { last = localStorage.getItem('hero-last'); } catch {}
-            let index = Math.floor(Math.random() * list.length);
-            if (list.length > 1 && list[index].slug === last) index = (index + 1) % list.length;
+            // Labs: after dark where the visitor is, lead with photographs made after dark.
+            const hour = new Date().getHours();
+            let choices = list.map((_, i) => i);
+            let night = false;
+            if (document.documentElement.classList.contains('labs') && (hour >= 20 || hour < 6)) {
+              const dark = choices.filter((i) => list[i].night);
+              if (dark.length >= 3) { choices = dark; night = true; }
+            }
+            let at = Math.floor(Math.random() * choices.length);
+            if (choices.length > 1 && list[choices[at]].slug === last) at = (at + 1) % choices.length;
+            const index = choices[at];
             const pick = list[index];
             const img = document.getElementById('hero-img');
             img.style.setProperty('--develop', pick.develop + 'ms');
@@ -98,7 +110,8 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
             img.srcset = pick.srcset;
             img.src = pick.src;
             try { localStorage.setItem('hero-last', pick.slug); } catch {}
-            window.__hero = { orientation, index };
+            window.__hero = { orientation, index, night };
+            if (night) document.documentElement.classList.add('hero-night');
           })();
         </script>
         <noscript>
@@ -120,6 +133,9 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
       <div class="relative z-10 flex items-center justify-between">
         <span class="px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-[0.2em] uppercase text-white/90 bg-white/10 backdrop-blur-md border border-white/20">
           Personal archive &middot; {yearSpan}
+        </span>
+        <span class="hero-night-note hidden px-3.5 py-1.5 rounded-full text-[11px] font-mono tracking-[0.2em] uppercase text-white/90 bg-white/10 backdrop-blur-md border border-white/20">
+          It's night where you are
         </span>
       </div>
 

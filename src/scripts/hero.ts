@@ -11,20 +11,24 @@ interface HeroPhoto {
   location: string;
   srcset: string;
   src: string;
+  night?: boolean;
 }
 
 type Pool = Record<'landscape' | 'portrait', HeroPhoto[]>;
 
 const frame = document.getElementById('hero-frame');
 const pool: Pool = JSON.parse(document.getElementById('hero-pool')?.textContent || '{}');
-const state = (window as unknown as { __hero?: { orientation: keyof Pool; index: number } }).__hero;
+const state = (window as unknown as { __hero?: { orientation: keyof Pool; index: number; night?: boolean } }).__hero;
 
 if (frame && state) {
   const list = pool[state.orientation].length ? pool[state.orientation] : pool.landscape;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // A shuffled order that starts with the photograph already showing.
-  const rest = list.map((_, i) => i).filter((i) => i !== state.index);
+  // After dark (Labs), stepping stays among the night photographs.
+  const rest = list
+    .map((_, i) => i)
+    .filter((i) => i !== state.index && (!state.night || list[i].night));
   for (let i = rest.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [rest[i], rest[j]] = [rest[j], rest[i]];
@@ -98,7 +102,48 @@ if (frame && state) {
   const section = frame.closest('section');
   if (section) onSwipe(section, { left: () => show(1), right: () => show(-1) });
 
+  // Labs: shake a phone for another photograph.
+  if (document.documentElement.classList.contains('labs')) listenForShake(() => show(1));
+
   const first = frame.querySelector<HTMLImageElement>('#hero-img');
   if (first?.complete) preload(1);
   else first?.addEventListener('load', () => preload(1), { once: true });
+}
+
+// A shake is two hard jolts close together; walking with the phone in hand is not. iOS
+// only reports motion after the visitor allows it, which has to be asked on a tap, so
+// the first tap of the "another photograph" button asks.
+function listenForShake(onShake: () => void) {
+  if (!('DeviceMotionEvent' in window) || !matchMedia('(pointer: coarse)').matches) return;
+  let jolts: number[] = [];
+  let quietUntil = 0;
+
+  const listen = () =>
+    addEventListener('devicemotion', (e) => {
+      const a = e.acceleration;
+      if (!a || a.x === null || a.y === null || a.z === null) return;
+      const now = performance.now();
+      if (now < quietUntil || Math.hypot(a.x, a.y, a.z) < 14) return;
+      jolts = [...jolts.filter((t) => now - t < 700), now];
+      if (jolts.length >= 2) {
+        jolts = [];
+        quietUntil = now + 1200;
+        onShake();
+      }
+    });
+
+  const ask = (DeviceMotionEvent as unknown as { requestPermission?: () => Promise<string> }).requestPermission;
+  if (typeof ask !== 'function') {
+    listen();
+    return;
+  }
+  document.getElementById('hero-next')?.addEventListener(
+    'click',
+    () => {
+      ask.call(DeviceMotionEvent)
+        .then((answer) => answer === 'granted' && listen())
+        .catch(() => undefined);
+    },
+    { once: true }
+  );
 }

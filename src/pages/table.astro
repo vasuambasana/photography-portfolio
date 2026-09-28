@@ -1,0 +1,223 @@
+---
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LabsGate from '../components/labs/LabsGate.astro';
+import { sortPhotos } from '../utils/photos';
+
+// Every photograph, loose on a light table. Each one keeps its own shape.
+const photos = await Promise.all(
+  sortPhotos(await getCollection('photos')).map(async (p) => {
+    const img = await getImage({ src: p.data.image, width: 200, format: 'webp' });
+    return { slug: p.slug, title: p.data.title, alt: p.data.alt, category: p.data.category, src: img.src, w: img.attributes.width, h: img.attributes.height };
+  })
+);
+const categories = [...new Set(photos.map((p) => p.category))].sort();
+---
+
+<BaseLayout
+  title="The light table"
+  description="Every photograph in the archive, loose on a table. Drag them about, throw them, stack them, tidy them into piles."
+  noindex={true}
+>
+  <LabsGate what="The light table" />
+
+  <div class="labs-only">
+    <div class="section-container flex flex-wrap items-center justify-between gap-3 pb-3">
+      <div>
+        <h1 class="font-display text-display-md text-text-primary">The light table</h1>
+        <p class="text-body-sm text-text-secondary">Drag, throw, stack. Double-click or press Enter to open one. Arrow keys nudge.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" class="labs-tool" data-table="piles">Tidy into piles</button>
+        <button type="button" class="labs-tool" data-table="scatter">Scatter</button>
+      </div>
+    </div>
+
+    <div id="light-table" class="light-table" role="application" aria-label={`Light table with ${photos.length} photographs`}>
+      {categories.map((c) => <span class="table-label" data-pile={c}>{c}</span>)}
+      {photos.map((p) => (
+        <a
+          href={`/photo/${p.slug}`}
+          class="table-photo"
+          data-category={p.category}
+          draggable="false"
+          aria-label={p.title}
+          style={`--ratio:${(p.w / p.h).toFixed(3)}`}
+        >
+          <img src={p.src} alt={p.alt} width={p.w} height={p.h} draggable="false" loading="lazy" decoding="async" />
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <script>
+    import { labsOn } from '../scripts/labs';
+
+    const table = document.getElementById('light-table');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    interface Item { el: HTMLAnchorElement; x: number; y: number; vx: number; vy: number; r: number; w: number; h: number }
+
+    if (labsOn() && table) {
+      const items: Item[] = [...table.querySelectorAll<HTMLAnchorElement>('.table-photo')].map((el) => ({
+        el, x: 0, y: 0, vx: 0, vy: 0, r: 0, w: 0, h: 0,
+      }));
+      let z = 1;
+      let moving = new Set<Item>();
+
+      const bounds = () => table.getBoundingClientRect();
+      const draw = (it: Item) => {
+        it.el.style.transform = `translate3d(${it.x}px, ${it.y}px, 0) rotate(${it.r}deg)`;
+      };
+      const measure = () => items.forEach((it) => ({ width: it.w, height: it.h } = it.el.getBoundingClientRect()));
+      const clamp = (it: Item) => {
+        const b = bounds();
+        it.x = Math.min(Math.max(it.x, -it.w * 0.3), b.width - it.w * 0.7);
+        it.y = Math.min(Math.max(it.y, -it.h * 0.3), b.height - it.h * 0.7);
+      };
+
+      const glide = (animate: boolean, place: (it: Item, i: number) => void) => {
+        if (animate && !reduced) table.classList.add('table-gliding');
+        items.forEach((it, i) => {
+          place(it, i);
+          clamp(it);
+          it.vx = it.vy = 0;
+          draw(it);
+        });
+        document.querySelectorAll<HTMLElement>('.table-label').forEach((l) => (l.hidden = true));
+        setTimeout(() => table.classList.remove('table-gliding'), 700);
+      };
+
+      const scatter = (animate = true) => {
+        const b = bounds();
+        glide(animate, (it) => {
+          it.x = Math.random() * (b.width - it.w);
+          it.y = Math.random() * (b.height - it.h);
+          it.r = (Math.random() - 0.5) * 16;
+        });
+      };
+
+      const piles = () => {
+        const b = bounds();
+        const cats = [...new Set(items.map((it) => it.el.dataset.category))].sort();
+        const cols = Math.ceil(Math.sqrt(cats.length * (b.width / b.height)));
+        const rows = Math.ceil(cats.length / cols);
+        const centre = (c: string | undefined) => {
+          const i = cats.indexOf(c);
+          return { cx: ((i % cols) + 0.5) * (b.width / cols), cy: (Math.floor(i / cols) + 0.5) * (b.height / rows) };
+        };
+        glide(true, (it) => {
+          const { cx, cy } = centre(it.el.dataset.category);
+          it.x = cx - it.w / 2 + (Math.random() - 0.5) * 24;
+          it.y = cy - it.h / 2 + (Math.random() - 0.5) * 24;
+          it.r = (Math.random() - 0.5) * 10;
+        });
+        document.querySelectorAll<HTMLElement>('.table-label').forEach((l) => {
+          const { cx, cy } = centre(l.dataset.pile);
+          l.style.transform = `translate(${cx}px, ${cy + b.height / rows / 2 - 28}px) translateX(-50%)`;
+          l.hidden = false;
+          l.style.zIndex = String(++z + 1000);
+        });
+      };
+
+      // Throwing: after release a photograph slides on and slows, and bounces off the edge.
+      let last = 0;
+      const step = (t: number) => {
+        const dt = Math.min(32, t - (last || t));
+        last = t;
+        const b = bounds();
+        moving.forEach((it) => {
+          it.x += it.vx * dt;
+          it.y += it.vy * dt;
+          const drag = Math.pow(0.992, dt);
+          it.vx *= drag;
+          it.vy *= drag;
+          if (it.x < -it.w * 0.3 || it.x > b.width - it.w * 0.7) { it.vx *= -0.5; clamp(it); }
+          if (it.y < -it.h * 0.3 || it.y > b.height - it.h * 0.7) { it.vy *= -0.5; clamp(it); }
+          draw(it);
+          if (Math.hypot(it.vx, it.vy) < 0.01) moving.delete(it);
+        });
+        if (moving.size) requestAnimationFrame(step);
+        else last = 0;
+      };
+      const throwIt = (it: Item) => {
+        if (reduced) return;
+        const start = moving.size === 0;
+        moving.add(it);
+        if (start) requestAnimationFrame(step);
+      };
+
+      items.forEach((it) => {
+        let grab: { dx: number; dy: number; id: number; x0: number; y0: number } | null = null;
+        let trail: { x: number; y: number; t: number }[] = [];
+        let dragged = false;
+
+        it.el.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          moving.delete(it);
+          const b = bounds();
+          grab = { dx: e.clientX - b.left - it.x, dy: e.clientY - b.top - it.y, id: e.pointerId, x0: e.clientX, y0: e.clientY };
+          trail = [{ x: e.clientX, y: e.clientY, t: e.timeStamp }];
+          dragged = false;
+          it.el.setPointerCapture(e.pointerId);
+          it.el.style.zIndex = String(++z);
+          it.el.classList.add('table-held');
+        });
+        it.el.addEventListener('pointermove', (e) => {
+          if (!grab || e.pointerId !== grab.id) return;
+          if (!dragged && Math.hypot(e.clientX - grab.x0, e.clientY - grab.y0) < 5) return;
+          dragged = true;
+          const b = bounds();
+          it.x = e.clientX - b.left - grab.dx;
+          it.y = e.clientY - b.top - grab.dy;
+          draw(it);
+          trail = [...trail.filter((p) => e.timeStamp - p.t < 90), { x: e.clientX, y: e.clientY, t: e.timeStamp }];
+        });
+        const release = (e: PointerEvent) => {
+          if (!grab || e.pointerId !== grab.id) return;
+          grab = null;
+          it.el.classList.remove('table-held');
+          const first = trail[0];
+          const lastPoint = trail[trail.length - 1];
+          const dt = lastPoint.t - first.t;
+          if (dragged && dt > 0) {
+            it.vx = (lastPoint.x - first.x) / dt;
+            it.vy = (lastPoint.y - first.y) / dt;
+            throwIt(it);
+          }
+        };
+        it.el.addEventListener('pointerup', release);
+        it.el.addEventListener('pointercancel', release);
+        // A single click only picks a photograph up; a double-click (or Enter) opens it.
+        it.el.addEventListener('click', (e) => {
+          if (e.detail !== 0) e.preventDefault();
+        });
+        it.el.addEventListener('dblclick', () => (location.href = it.el.href));
+        it.el.addEventListener('keydown', (e) => {
+          const nudge: Record<string, [number, number]> = { ArrowLeft: [-20, 0], ArrowRight: [20, 0], ArrowUp: [0, -20], ArrowDown: [0, 20] };
+          const n = nudge[e.key];
+          if (!n) return;
+          e.preventDefault();
+          it.x += n[0];
+          it.y += n[1];
+          clamp(it);
+          it.el.style.zIndex = String(++z);
+          draw(it);
+        });
+        it.el.addEventListener('focus', () => (it.el.style.zIndex = String(++z)));
+      });
+
+      document.querySelector('[data-table="scatter"]')?.addEventListener('click', () => scatter());
+      document.querySelector('[data-table="piles"]')?.addEventListener('click', piles);
+
+      measure();
+      scatter(false);
+      table.classList.add('table-ready');
+      addEventListener('resize', () => {
+        measure();
+        items.forEach((it) => { clamp(it); draw(it); });
+      });
+    }
+  </script>
+</BaseLayout>

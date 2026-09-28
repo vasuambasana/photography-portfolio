@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Everything that is still an experiment, and where to find it. Keep this list in step
+// with the design-system skill's motion table: an experiment that graduates to the
+// stable site comes off this page.
+const experiments = [
+  {
+    title: 'Guess the exposure',
+    where: 'A new photograph every day',
+    about:
+      'One frame from the archive and three dials: shutter speed, ISO and focal length. Guess what it was shot at, then see the real settings from the file.',
+    href: '/play',
+    cta: 'Play today',
+  },
+  {
+    title: 'Minutes of light',
+    where: 'A page you scroll through',
+    about:
+      'Every exposure on the site laid end to end, where scrolling is time. Most of the archive is over in the first few seconds. One photograph takes most of the page.',
+    href: '/light',
+    cta: 'Start scrolling',
+  },
+  {
+    title: 'The light table',
+    where: 'Every photograph, loose on a table',
+    about: 'Drag them about, throw them, stack them, and tidy them into piles by kind.',
+    href: '/table',
+    cta: 'Open the table',
+  },
+  {
+    title: 'Loupe and viewfinder',
+    where: 'On every photograph page',
+    about:
+      'Press and hold a photograph to look closer under a loupe. Press V, or the viewfinder button, to see it with its settings the way the camera showed them.',
+    href: '/photo/quiet-sentinel',
+    cta: 'Try it on a photograph',
+  },
+  {
+    title: 'Settings card',
+    where: 'On every photograph page',
+    about: 'A card of the photograph and exactly how it was made, sized for sharing.',
+    href: '/photo/highway-to-the-cosmos',
+    cta: 'Make one',
+  },
+  {
+    title: 'Colour rhymes',
+    where: 'On every photograph page, and in the gallery',
+    about:
+      'Each photograph points to another, from a different year, with the same colours in it. In the gallery, pick a colour and every photograph that holds it comes forward.',
+    href: '/gallery',
+    cta: 'Pick a colour',
+  },
+  {
+    title: 'Contact sheet',
+    where: 'In the gallery',
+    about: 'The whole archive as strips of film, with the settings written in the margins.',
+    href: '/gallery',
+    cta: 'Open the sheet',
+  },
+  {
+    title: 'What you have seen',
+    where: 'In the gallery',
+    about:
+      'Your browser remembers which photographs you have opened and which are new since your last visit. Nothing is sent anywhere.',
+    href: '/gallery',
+    cta: 'See your progress',
+  },
+  {
+    title: 'After dark',
+    where: 'On the home page',
+    about:
+      'If it is evening where you are, the home page leads with photographs made in low light. On a phone, shake it for another photograph.',
+    href: '/',
+    cta: 'Go home',
+  },
+  {
+    title: 'Journal you can play with',
+    where: 'In two entries',
+    about:
+      'A slider between the darkest and brightest frames of one April day, and a working version of the old rule for photographing the moon.',
+    href: '/journal/nearly-twenty-three-stops',
+    cta: 'Read with the slider',
+  },
+];
+---
+
+<BaseLayout
+  title="Labs"
+  description="Things I am still trying out on this site. Switch them on to see what is coming; the rest of the site stays as it is."
+  noindex={true}
+>
+  <section class="section-container max-w-4xl mx-auto pt-6 pb-16">
+    <header class="mb-10">
+      <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-3">Labs</p>
+      <h1 class="font-display text-display-lg text-text-primary mb-4">Things I am still trying out</h1>
+      <p class="text-body-lg text-text-secondary max-w-prose">
+        The site you usually see stays exactly as it is. Switch Labs on and these experiments
+        appear on top of it, in this browser only. Some will become part of the site; some will
+        quietly go away. Switch it off any time.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          role="switch"
+          aria-checked="false"
+          data-labs-toggle
+          class="labs-switch group inline-flex items-center gap-3 rounded-full border border-subtle bg-surface-card pl-2 pr-5 py-2 text-body-sm text-text-primary shadow-sm hover:bg-surface-overlay transition-colors"
+        >
+          <span class="labs-switch-track relative inline-block h-6 w-11 rounded-full bg-surface-overlay border border-subtle transition-colors">
+            <span class="labs-switch-thumb absolute top-0.5 left-0.5 h-[18px] w-[18px] rounded-full bg-text-secondary transition-transform"></span>
+          </span>
+          <span><span class="labs-only">Labs is on</span><span class="stable-only">Labs is off</span></span>
+        </button>
+        <button
+          type="button"
+          data-forget-seen
+          class="labs-only text-body-sm text-text-secondary hover:text-text-primary underline decoration-border-subtle underline-offset-4"
+        >
+          Forget what I have seen
+        </button>
+      </div>
+    </header>
+
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {experiments.map((x) => (
+        <li class="rounded-card border border-subtle bg-surface-card p-6 flex flex-col">
+          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mb-2">{x.where}</p>
+          <h2 class="font-display text-display-md text-text-primary mb-2">{x.title}</h2>
+          <p class="text-body-sm text-text-secondary leading-relaxed flex-1">{x.about}</p>
+          <a
+            href={x.href}
+            class="labs-only mt-4 self-start text-body-sm text-text-accent hover:opacity-80 no-underline"
+          >
+            {x.cta} &rarr;
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-10 text-body-sm text-text-secondary">
+      Two things are hidden. There is a darkroom: hold the theme button for a moment, or type the
+      old cheat code. And the <a href="/somewhere-that-does-not-exist" class="text-text-accent">lost page</a> is darker than it used to be.
+    </p>
+  </section>
+
+  <script>
+    import { labsOn } from '../scripts/labs';
+    import { forgetSeen } from '../scripts/seen';
+
+    document.querySelectorAll('[data-labs-toggle]').forEach((b) => b.setAttribute('aria-checked', String(labsOn())));
+    document.querySelector('[data-forget-seen]')?.addEventListener('click', (e) => {
+      forgetSeen();
+      (e.currentTarget as HTMLButtonElement).textContent = 'Forgotten';
+    });
+  </script>
+</BaseLayout>

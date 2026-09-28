@@ -103,7 +103,33 @@ What exists, so it gets reused rather than rebuilt:
 | Gallery filter reflow | gallery page script | Filter changes animate; only on-screen cards are named |
 | Lightbox | `ClickableImage.tsx`, `Lightbox.tsx` | Zooms out of the page photo; swipe down to close, sideways to step |
 | Home hero | `pages/index.astro`, `scripts/hero.ts` | A different photograph each visit, landscape pool on wide screens and portrait on phones; steps only when asked (button or swipe), never on its own |
-| Swipe | `scripts/swipe.ts` `onSwipe()` | Horizontal one-finger swipe; vertical scroll and pinch stay native. Photo page and hero use it |
+| Swipe | `scripts/swipe.ts` `onSwipe()` | Horizontal one-finger swipe; vertical scroll and pinch stay native. Photo page and hero use it. `enabled()` lets another gesture (the loupe) stand it down |
+
+### Labs
+
+Experiments ship behind the Labs switch (`scripts/labs.ts`, class `html.labs` set in
+`MotionHead.astro`), listed on `/labs`. Mark their markup `labs-only` (or `stable-only` for
+the text shown with Labs off) and check `labsOn()` before wiring behaviour. A Labs-only page
+renders `<LabsGate>` for visitors who haven't opted in. When an experiment graduates, remove
+the class and the guard, move its row up into the table above, and take it off `/labs`.
+
+| Piece | Where | What it does |
+| --- | --- | --- |
+| Loupe | `scripts/loupe.ts` | Press and hold the photo page image; releases swallow the click |
+| Viewfinder | `scripts/viewfinder.ts` | V or the button: framing guides and the file's settings over the picture |
+| Settings card | `scripts/settings-card.ts` | Canvas card of the photo (contained, never cropped) and its settings; share sheet or download |
+| Colour rhyme | `data/archive.ts`, `utils/palette.ts` | Nearest palette from another year, measured at build time with sharp |
+| Colour filter, contact sheet, seen | gallery page, `scripts/seen.ts` | Archive swatches; film-strip view; opened and new-since-last-visit badges |
+| After dark, shake | `pages/index.astro`, `scripts/hero.ts` | After 8pm local, the hero leads with EV < 5 photos; shake a phone for another |
+| Guess the exposure | `pages/play.astro`, `utils/game.ts` | Daily photo, three log-scale dials, scored in stops |
+| Minutes of light | `pages/light.astro` | Every exposure end to end, 3.5vh of scroll per second; the frame brightens over its own exposure |
+| Journal widgets | `scripts/journal-widgets.ts` | `<div data-widget="stops-slider">` and `"moon-rule"` in an entry's markdown |
+| Darkroom | `scripts/darkroom.ts` | Konami code or hold the theme button: safelight tokens, photos develop from white |
+| Torch | `pages/404.astro` | The lost page is dark; a torch follows the pointer or focus |
+| Light table | `pages/table.astro` | Every photo loose on a table: drag, throw, pile by category |
+
+Colours measured from photographs (swatches, palette bars) arrive as data in inline styles
+or `--swatch`, not as tokens. That is the one other place a literal colour is right.
 
 Any new element given a `view-transition-name` must be unique on the page at the moment
 of the transition, or the whole transition is skipped. Name elements just before a

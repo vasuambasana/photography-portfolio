@@ -1,5 +1,25 @@
 ---
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortPhotos } from '../utils/photos';
+
+// Labs: the lost page is dark, and a torch finds a few night photographs lying about in
+// it. The same handful every build (the newest night frames), placed round the edges.
+const night = sortPhotos((await getCollection('photos')).filter((p) => p.data.category === 'night')).slice(0, 6);
+const SPOTS = [
+  'left:3%;top:6%', 'right:4%;top:10%', 'left:5%;bottom:4%',
+  'right:6%;bottom:2%', 'left:13%;top:42%', 'right:12%;top:46%',
+];
+const scattered = await Promise.all(
+  night.map(async (p, i) => ({
+    slug: p.slug,
+    alt: p.data.alt,
+    src: (await getImage({ src: p.data.image, width: 200, format: 'webp' })).src,
+    spot: SPOTS[i],
+    tilt: [-6, 4, 3, -4, 2, -3][i],
+  }))
+);
 ---
 
 <BaseLayout
@@ -7,7 +27,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="The page you're looking for doesn't exist."
   noindex={true}
 >
-  <section class="py-section min-h-[60vh] flex items-center justify-center">
+  <section class="lost relative py-section min-h-[60vh] flex items-center justify-center overflow-hidden">
+    <div class="labs-only" aria-hidden="true">
+      {scattered.map((p) => (
+        <a href={`/photo/${p.slug}`} tabindex="-1" class="lost-photo absolute hidden lg:block w-32 xl:w-36" style={`${p.spot};rotate:${p.tilt}deg`}>
+          <img src={p.src} alt={p.alt} loading="lazy" class="w-full h-auto rounded-sm shadow-sm" />
+        </a>
+      ))}
+    </div>
     <div class="text-center fade-in">
       <p class="font-mono text-8xl text-text-secondary/20 mb-6" aria-hidden="true">404</p>
 
@@ -35,4 +62,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
+
+  <div class="torch labs-only" aria-hidden="true"></div>
+  <button type="button" class="torch-off labs-only labs-tool fixed right-4 bottom-4 z-50">Lights on</button>
+
+  <script>
+    import { labsOn } from '../scripts/labs';
+
+    // A torch in the dark: follows the pointer, a finger, or whatever has keyboard focus.
+    const torch = document.querySelector<HTMLElement>('.torch');
+    const off = document.querySelector<HTMLButtonElement>('.torch-off');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (labsOn() && torch && off && !reduced) {
+      const root = document.documentElement;
+      root.classList.add('torch-on');
+      const aim = (x: number, y: number) => {
+        torch.style.setProperty('--x', `${x}px`);
+        torch.style.setProperty('--y', `${y}px`);
+      };
+      aim(innerWidth / 2, innerHeight * 0.45);
+      addEventListener('pointermove', (e) => aim(e.clientX, e.clientY), { passive: true });
+      addEventListener('pointerdown', (e) => aim(e.clientX, e.clientY), { passive: true });
+      addEventListener('focusin', (e) => {
+        const r = (e.target as HTMLElement).getBoundingClientRect();
+        aim(r.left + r.width / 2, r.top + r.height / 2);
+      });
+      off.addEventListener('click', () => {
+        root.classList.remove('torch-on');
+        off.remove();
+      });
+    } else {
+      off?.remove();
+    }
+  </script>
 </BaseLayout>

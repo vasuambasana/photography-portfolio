@@ -31,6 +31,8 @@ which lets in about five times as much light as f/11, so the same rule asks for 
 1/200s. The file says 1/200s. Whether the phone got there by itself or I set it, the file
 does not record, but the number is the right one.
 
+<div data-widget="moon-rule" data-photo="selenic-tapestry"></div>
+
 The reason the rule works is that the moon is a rock in direct sunlight, and it should be
 exposed like one. Which is why the two aircraft land in the same place.
 [*Ascent into the Void*](/photo/ascent-into-the-void) is an airliner high up and lit white,

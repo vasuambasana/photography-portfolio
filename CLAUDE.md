@@ -94,6 +94,21 @@ is the slug and therefore the URL (`/photo/<slug>`).
   `getStaticPaths`, shared across all 127 pages. Keep it that way. Moving `getImage()`
   calls inside the per-page map multiplies build time by 127.
 
+## Labs
+
+Experiments go behind the Labs switch, not straight onto the site. Visitors opt in at
+`/labs` (or `?labs=on`); the choice lives in their browser. Labs is **on by default** in
+`astro dev` and in Cloudflare preview builds of any branch but `main` (`CF_PAGES_BRANCH`),
+and off on the live site. `LABS_DEFAULT=on|off` overrides both. So `dev` is where Labs work
+is seen, and promoting to `main` ships it switched off until a visitor asks for it.
+
+Markup uses `labs-only` / `stable-only`; scripts check `labsOn()` from `scripts/labs.ts`.
+The design-system skill lists every experiment and how one graduates. Anything a Labs
+feature remembers stays in the visitor's browser (see the privacy page), never sent.
+
+Build-time measurements (palettes, colour rhymes, exposure values) come from
+`src/data/archive.ts`, computed once per build. Call `getArchive()`, don't re-read images.
+
 ## Ingest pipeline
 
 `npm run add-photo` reads originals from `PHOTO_SOURCE_DIR` (see `.env.example`),

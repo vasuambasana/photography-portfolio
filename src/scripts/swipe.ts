@@ -8,6 +8,8 @@ interface SwipeHandlers {
   left?: () => void;
   /** Finger moved left to right: usually "previous". */
   right?: () => void;
+  /** Checked when the finger lifts: false means another gesture owns this touch. */
+  enabled?: () => boolean;
 }
 
 const THRESHOLD = 60;
@@ -30,6 +32,7 @@ export function onSwipe(el: HTMLElement, handlers: SwipeHandlers) {
     const dy = e.clientY - start.y;
     start = null;
 
+    if (handlers.enabled && !handlers.enabled()) return;
     if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
     swallowClick = true;
     (dx < 0 ? handlers.left : handlers.right)?.();

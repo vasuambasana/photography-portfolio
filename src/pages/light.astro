@@ -1,0 +1,200 @@
+---
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LabsGate from '../components/labs/LabsGate.astro';
+import { formatShutter, parseShutter } from '../utils/exposure';
+
+// Every exposure on the site laid end to end, in order of length. Scrolling is time.
+// All the numbers on this page are sums of shutter speeds from the files; nothing is
+// written in by hand, so the page stays true as photographs are added.
+const all = await getCollection('photos');
+const timed = all
+  .map((p) => ({ p, seconds: parseShutter(p.data.cameraSpecs?.shutterSpeed) }))
+  .filter((x): x is { p: (typeof all)[number]; seconds: number } => x.seconds !== null)
+  .sort((a, b) => a.seconds - b.seconds || a.p.slug.localeCompare(b.p.slug));
+const untimed = all.length - timed.length;
+
+const quick = timed.filter((x) => x.seconds < 1);
+const slow = timed.filter((x) => x.seconds >= 1);
+const quickTotal = quick.reduce((s, x) => s + x.seconds, 0);
+const total = timed.reduce((s, x) => s + x.seconds, 0);
+const minutes = Math.round(total / 60);
+const longest = timed[timed.length - 1];
+const longestBeatsRest = longest && longest.seconds > total - longest.seconds;
+
+const quickThumbs = await Promise.all(
+  quick.map(async ({ p, seconds }) => ({
+    slug: p.slug,
+    alt: p.data.alt,
+    shutter: formatShutter(seconds),
+    src: (await getImage({ src: p.data.image, width: 200, format: 'webp' })).src,
+  }))
+);
+
+let clock = quickTotal;
+const stages = await Promise.all(
+  slow.map(async ({ p, seconds }) => {
+    const img = await getImage({ src: p.data.image, width: 1200, format: 'webp' });
+    const start = clock;
+    clock += seconds;
+    return {
+      slug: p.slug,
+      title: p.data.title,
+      alt: p.data.alt,
+      shutter: p.data.cameraSpecs!.shutterSpeed!,
+      seconds,
+      start,
+      src: img.src,
+      width: img.attributes.width,
+      height: img.attributes.height,
+    };
+  })
+);
+const stagesJson = JSON.stringify({ stages, quickTotal, total }).replace(/</g, '\\u003c');
+
+const mmss = (s: number) => `${Math.floor(s / 60)} minutes ${Math.round(s % 60)} seconds`;
+// Height of the scroll track: 3.5% of the screen per second of exposure.
+const VH_PER_SECOND = 3.5;
+---
+
+<BaseLayout
+  title={`${minutes} minutes of light`}
+  description="Every exposure on this site laid end to end, where scrolling is time."
+  noindex={true}
+>
+  <LabsGate what="This page" />
+
+  <div class="labs-only">
+    <section class="section-container max-w-3xl mx-auto pt-6 pb-10">
+      <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-3">Labs</p>
+      <h1 class="font-display text-display-lg text-text-primary mb-4">{minutes} minutes of light</h1>
+      <p class="text-body-lg text-text-secondary max-w-prose">
+        Add up the shutter speed of every photograph on this site and you get {mmss(total)}.
+        This page is that time laid end to end, shortest first. Scroll, and the clock runs.
+      </p>
+      {untimed > 0 && (
+        <p class="mt-3 text-body-sm text-text-secondary">
+          {untimed} {untimed === 1 ? 'file' : 'files'} didn't record a shutter speed, so {untimed === 1 ? 'it isn\'t' : 'they aren\'t'} here.
+        </p>
+      )}
+    </section>
+
+    <section class="section-container max-w-5xl mx-auto pb-10" aria-labelledby="quick-heading">
+      <h2 id="quick-heading" class="font-display text-display-md text-text-primary mb-2">The first {quickTotal.toFixed(2)} seconds</h2>
+      <p class="text-body-md text-text-secondary mb-6 max-w-prose">
+        {quick.length} of the {timed.length} photographs were each over in less than a second. Together, all
+        {quick.length} of them let in light for {quickTotal.toFixed(2)} seconds.
+      </p>
+      <ul class="grid grid-cols-6 sm:grid-cols-9 md:grid-cols-12 gap-1">
+        {quickThumbs.map((t) => (
+          <li>
+            <a href={`/photo/${t.slug}`} class="block no-underline" title={t.shutter}>
+              <img src={t.src} alt={t.alt} loading="lazy" class="w-full aspect-square object-contain bg-black rounded-sm" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <div class="light-track" style={`height:${(total - quickTotal) * VH_PER_SECOND + 100}vh`}>
+      <div class="light-stage">
+        <div class="light-clock font-mono" aria-live="off">
+          <span id="light-elapsed">0:00.00</span>
+          <span class="text-white/50"> / {Math.floor(total / 60)}:{String(Math.round(total % 60)).padStart(2, '0')}</span>
+        </div>
+        <figure class="light-figure">
+          <img id="light-img" alt="" />
+          <figcaption id="light-caption" class="font-mono"></figcaption>
+        </figure>
+        <p id="light-note" class="light-note font-display"></p>
+        <div class="light-progress"><span id="light-bar"></span></div>
+      </div>
+    </div>
+
+    <section class="section-container max-w-3xl mx-auto py-section">
+      <h2 class="font-display text-display-md text-text-primary mb-3">That's all of it</h2>
+      <p class="text-body-lg text-text-secondary max-w-prose">
+        {mmss(total)} of light, from {timed.length} photographs.
+        {longest && longestBeatsRest && (
+          <>
+            One of them, <a href={`/photo/${longest.p.slug}`}>{longest.p.data.title}</a>, was
+            open for {mmss(longest.seconds)}: longer than the other {timed.length - 1} put together.
+          </>
+        )}
+      </p>
+    </section>
+  </div>
+
+  <script type="application/json" id="light-data" set:html={stagesJson} />
+  <script>
+    import { labsOn } from '../scripts/labs';
+
+    interface Stage { slug: string; title: string; alt: string; shutter: string; seconds: number; start: number; src: string; width: number; height: number; }
+    const { stages, quickTotal, total } = JSON.parse(document.getElementById('light-data')!.textContent || '{}') as { stages: Stage[]; quickTotal: number; total: number };
+
+    const track = document.querySelector<HTMLElement>('.light-track');
+    const img = document.getElementById('light-img') as HTMLImageElement;
+    const caption = document.getElementById('light-caption')!;
+    const note = document.getElementById('light-note')!;
+    const elapsed = document.getElementById('light-elapsed')!;
+    const bar = document.getElementById('light-bar')!;
+    const VH_PER_SECOND = 3.5;
+
+    const clock = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toFixed(2).padStart(5, '0')}`;
+    const longest = stages.reduce<Stage | null>((a, b) => (!a || b.seconds > a.seconds ? b : a), null);
+
+    // What to say, worked out from the numbers.
+    const length = (s: number) =>
+      s >= 60 ? `${Math.floor(s / 60)} minutes ${Math.round(s % 60)} seconds` : `${s} ${s === 1 ? 'second' : 'seconds'}`;
+    function noteFor(stage: Stage, now: number) {
+      if (now >= total / 2 && stage.start <= total / 2) return 'You are past halfway through all the light on this site.';
+      if (stage === longest && stage.seconds > total - stage.seconds) {
+        return `Open for ${length(stage.seconds)}: longer than every other exposure here put together.`;
+      }
+      return `Open for ${length(stage.seconds)}.`;
+    }
+
+    let current: Stage | null = null;
+    let frame = 0;
+
+    function update() {
+      frame = 0;
+      if (!track) return;
+      const top = track.getBoundingClientRect().top;
+      const secondsIn = Math.max(0, -top) / ((innerHeight * VH_PER_SECOND) / 100);
+      const now = Math.min(total, quickTotal + secondsIn);
+      elapsed.textContent = clock(now);
+      bar.style.transform = `scaleX(${now / total})`;
+
+      const stage = stages.find((s) => now < s.start + s.seconds) ?? stages[stages.length - 1];
+      if (!stage) return;
+      if (stage !== current) {
+        current = stage;
+        img.src = stage.src;
+        img.width = stage.width;
+        img.height = stage.height;
+        img.alt = stage.alt;
+        caption.innerHTML = '';
+        const link = document.createElement('a');
+        link.href = `/photo/${stage.slug}`;
+        link.textContent = stage.title;
+        caption.append(link, ` · ${stage.shutter}`);
+        // Warm the next one.
+        const next = stages[stages.indexOf(stage) + 1];
+        if (next) new Image().src = next.src;
+      }
+      // The shutter is open: the frame gathers light for exactly as long as it did.
+      const into = Math.min(stage.seconds, Math.max(0, now - stage.start));
+      const exposed = into / stage.seconds;
+      img.style.filter = `brightness(${0.08 + 0.92 * exposed})`;
+      note.textContent = noteFor(stage, now);
+    }
+
+    if (labsOn() && track) {
+      addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
+      addEventListener('resize', () => (frame ||= requestAnimationFrame(update)));
+      update();
+    }
+  </script>
+</BaseLayout>

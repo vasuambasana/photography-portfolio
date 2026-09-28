@@ -5,9 +5,16 @@ import GalleryGrid from '../../components/portfolio/GalleryGrid.astro';
 import PhotoCard from '../../components/portfolio/PhotoCard.astro';
 import { getCollection } from 'astro:content';
 import { sortPhotos } from '../../utils/photos';
+import { getArchive } from '../../data/archive';
 
 const allPhotos = await getCollection('photos');
 const sortedPhotos = sortPhotos(allPhotos);
+
+// Labs: the colours of the whole archive, measured from the photographs, each with the
+// photographs that hold it.
+const { swatches } = await getArchive();
+const colourOf = new Map<string, number[]>();
+swatches.forEach((s, i) => s.slugs.forEach((slug) => colourOf.set(slug, [...(colourOf.get(slug) ?? []), i])));
 
 const categories = [...new Set(allPhotos.map((p) => p.data.category))].sort();
 
@@ -51,6 +58,7 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
             <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-surface-overlay text-text-secondary border border-subtle">
               {sortedPhotos.length} Photographs
             </span>
+            <span id="seen-progress" class="labs-only hidden px-2.5 py-0.5 rounded-full text-xs font-mono text-text-secondary border border-subtle"></span>
           </div>
           <p class="text-body-sm text-text-secondary max-w-prose">
             A visual archive of architecture, nature, street, and twilight captures.
@@ -84,10 +92,32 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
         </nav>
       </div>
 
+      <!-- Labs: pick a colour; choose how to see the archive. -->
+      <div class="labs-only flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div class="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter photos by colour">
+          <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mr-1">Colour</span>
+          {swatches.map((s, i) => (
+            <button
+              type="button"
+              class="colour-btn"
+              data-colour={i}
+              aria-pressed="false"
+              aria-label={`Photographs with this colour in them (${s.slugs.length})`}
+              title={`${s.slugs.length} photographs`}
+              style={`--swatch:${s.hex}`}
+            ></button>
+          ))}
+        </div>
+        <div class="flex items-center gap-1.5" role="group" aria-label="How to show the photographs">
+          <button type="button" class="labs-tool view-btn" data-view="grid" aria-pressed="true">Grid</button>
+          <button type="button" class="labs-tool view-btn" data-view="sheet" aria-pressed="false">Contact sheet</button>
+        </div>
+      </div>
+
       <!-- Photos grid -->
       <GalleryGrid>
         {sortedPhotos.map((photo) => (
-          <PhotoCard photo={photo} showCategory />
+          <PhotoCard photo={photo} showCategory sheetMeta colours={colourOf.get(photo.slug) ?? []} />
         ))}
       </GalleryGrid>
 
@@ -99,6 +129,8 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
 
   <script>
     import { ALL_FILTER, getActiveFilter, matchesFilter, withFilter } from '../../utils/filter';
+    import { labsOn } from '../../scripts/labs';
+    import { freshSlugs, seenSlugs } from '../../scripts/seen';
 
     const grid = document.getElementById('portfolio-grid')!;
     const cards = [...grid.querySelectorAll<HTMLElement>(':scope > [data-category]')];
@@ -107,6 +139,11 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let filter = getActiveFilter();
+    // Labs colour filter. Deliberately not in the URL: the category in ?filter= is what
+    // the photo pages, filmstrip and lightbox follow, and a colour is only a way of looking.
+    let colour: string | null = null;
+    const colourButtons = document.querySelectorAll<HTMLButtonElement>('.colour-btn');
+    const labs = labsOn();
 
     // The pressed look comes from aria-pressed alone (aria-pressed: variants in the markup),
     // so it cannot drift from what assistive tech is told, and hover never overrides it.
@@ -116,16 +153,19 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
 
     function render() {
       setPressed(filter);
+      colourButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.colour === colour)));
 
       let visible = 0;
       cards.forEach((card) => {
-        const shown = matchesFilter(card.dataset.category, filter);
+        const hasColour = colour === null || (card.dataset.colours ?? '').split(' ').includes(colour);
+        const shown = matchesFilter(card.dataset.category, filter) && hasColour;
         card.style.display = shown ? '' : 'none';
         if (shown) visible++;
         const link = card.querySelector<HTMLAnchorElement>('[data-photo-link]');
         if (link) link.href = withFilter(link.pathname, filter);
       });
       empty?.classList.toggle('hidden', visible > 0);
+      if (empty) empty.textContent = colour === null ? 'No photographs in this category yet.' : 'Nothing in this category with that colour.';
     }
 
     function syncUrl() {
@@ -176,6 +216,61 @@ const social = await getImage({ src: sortedPhotos[0].data.image, width: 1200, he
         update();
       })
     );
+
+    colourButtons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        colour = colour === btn.dataset.colour ? null : (btn.dataset.colour ?? null);
+        update();
+      })
+    );
+
+    // Labs: contact sheet view, remembered in this browser.
+    const viewButtons = document.querySelectorAll<HTMLButtonElement>('.view-btn');
+    function setView(view: string) {
+      grid.classList.toggle('contact-sheet', view === 'sheet');
+      viewButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    }
+    viewButtons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view ?? 'grid';
+        try {
+          localStorage.setItem('gallery-view', view);
+        } catch {
+          // Not remembered; fine.
+        }
+        grid.classList.add('stagger-done');
+        if (reducedMotion || !document.startViewTransition) setView(view);
+        else document.startViewTransition(() => setView(view));
+      })
+    );
+
+    // Labs: what this visitor has opened, and what is new since they were last here.
+    if (labs) {
+      try {
+        const saved = localStorage.getItem('gallery-view');
+        if (saved) setView(saved);
+      } catch {
+        // Storage blocked: the grid it is.
+      }
+
+      const seen = seenSlugs();
+      const fresh = freshSlugs(cards.map((c) => c.dataset.slug ?? ''));
+      cards.forEach((card) => {
+        const slug = card.dataset.slug ?? '';
+        const label = fresh.has(slug) ? 'New' : seen.has(slug) ? 'Seen' : '';
+        if (!label) return;
+        const badge = document.createElement('span');
+        badge.className = `card-badge ${label === 'New' ? 'card-badge-new' : ''}`;
+        badge.textContent = label;
+        card.append(badge);
+      });
+      const opened = cards.filter((c) => seen.has(c.dataset.slug ?? '')).length;
+      const progress = document.getElementById('seen-progress');
+      if (progress && opened > 0) {
+        progress.textContent = opened === cards.length ? `You've seen all ${cards.length}` : `You've seen ${opened} of ${cards.length}`;
+        progress.classList.remove('hidden');
+      }
+    }
 
     render();
   </script>

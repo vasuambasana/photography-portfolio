@@ -11,10 +11,19 @@ import '../styles/global.css';
 export type Props = SEOProps;
 
 const seo = Astro.props;
+
+// Labs: experiments are opt-in on the live site, and on by default everywhere else (the
+// dev branch preview, local dev), so work in progress is seen before it is promoted.
+// Cloudflare Pages sets CF_PAGES_BRANCH at build time. LABS_DEFAULT=on|off overrides.
+const env = (name: string): string | undefined => process.env[name] ?? import.meta.env[name];
+const branch = env('CF_PAGES_BRANCH');
+const labsDefault = env('LABS_DEFAULT')
+  ? env('LABS_DEFAULT') === 'on'
+  : import.meta.env.DEV || (branch !== undefined && branch !== 'main');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-labs-default={labsDefault ? 'on' : 'off'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,7 +39,7 @@ const seo = Astro.props;
     )}
 
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.clarity.ms https://*.bing.com; worker-src 'self' blob:;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.clarity.ms https://*.bing.com; worker-src 'self' blob:;" />
 
     <!-- Google tag (gtag.js) -->
     <script is:inline type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-DY8LMP98HR"></script>
@@ -114,8 +123,21 @@ const seo = Astro.props;
 
     <Footer />
 
+    <!-- Shown only while Labs is on, so nobody forgets they are looking at experiments. -->
+    <div class="labs-only labs-pill fixed bottom-3 left-3 z-30 flex items-center gap-1 rounded-full border border-subtle bg-surface-card/90 backdrop-blur-nav shadow-sm pl-3 pr-1 py-1 text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">
+      <a href="/labs" class="no-underline text-text-secondary hover:text-text-primary">Labs on</a>
+      <button type="button" data-darkroom-leave class="darkroom-only rounded-full px-2 py-1 hover:bg-surface-overlay hover:text-text-primary">
+        Lights on
+      </button>
+      <button type="button" data-labs-off class="rounded-full px-2 py-1 hover:bg-surface-overlay hover:text-text-primary" aria-label="Turn Labs off">
+        Off
+      </button>
+    </div>
+
     <script>
       import '../scripts/develop';
+      import '../scripts/labs';
+      import '../scripts/darkroom';
     </script>
 
     <!-- Image Protection Script -->

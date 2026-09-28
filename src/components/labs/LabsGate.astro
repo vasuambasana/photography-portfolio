@@ -1,0 +1,21 @@
+---
+// Shown instead of a Labs-only page when Labs is off: the page exists, but the visitor
+// hasn't opted in. One switch, and a way back to the stable site.
+export interface Props {
+  what: string;
+}
+const { what } = Astro.props;
+---
+
+<div class="stable-only section-container max-w-xl mx-auto py-section text-center">
+  <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-3">Labs</p>
+  <h1 class="font-display text-display-md text-text-primary mb-4">{what} is still an experiment</h1>
+  <p class="text-body-md text-text-secondary mb-8">
+    It lives in Labs, with the other things I am still trying out. Switch Labs on to see it; the
+    rest of the site stays as it is.
+  </p>
+  <div class="flex flex-wrap items-center justify-center gap-3">
+    <button type="button" data-labs-toggle class="labs-tool">Switch Labs on</button>
+    <a href="/labs" class="labs-tool no-underline">What is in Labs</a>
+  </div>
+</div>

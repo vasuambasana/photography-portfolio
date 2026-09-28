@@ -6,8 +6,11 @@ import type { CollectionEntry } from 'astro:content';
 import ClickableImage from '../../components/portfolio/ClickableImage';
 import { neighbours, photosInCategory, sortPhotos } from '../../utils/photos';
 import { exifData, metaDescription } from '../../utils/seo';
+import { Image } from 'astro:assets';
 import { cameraName } from '../../utils/camera';
 import { developDuration } from '../../utils/exposure';
+import { getArchive } from '../../data/archive';
+import type { PhotoFacts } from '../../data/archive';
 import { journalMentions, publishedJournal, sortJournal } from '../../utils/journal';
 import type { JournalMention } from '../../utils/journal';
 import { JOURNAL_TYPE_LABELS } from '../../content/config';
@@ -31,6 +34,10 @@ export async function getStaticPaths() {
   // Links only ever ran journal -> photo. This is the way back, also built once.
   const mentions = journalMentions(sortJournal(publishedJournal(await getCollection('journal'))));
 
+  // Labs: measured palettes and each photograph's colour rhyme, computed once.
+  const archive = await getArchive();
+  const bySlug = new Map<string, CollectionEntry<'photos'>>(photos.map((p) => [p.slug, p]));
+
   return photos.map((photo) => {
     const all = neighbours(photos, photo.slug);
     const cat = neighbours(photosInCategory(photos, photo.data.category), photo.slug);
@@ -48,6 +55,12 @@ export async function getStaticPaths() {
         nextPhotoAll: summarise(all.next),
         prevPhotoCat: summarise(cat.prev),
         nextPhotoCat: summarise(cat.next),
+        facts: archive.facts.get(photo.slug) ?? null,
+        rhyme: (() => {
+          const other = bySlug.get(archive.rhymes.get(photo.slug) ?? '');
+          const otherFacts = other && archive.facts.get(other.slug);
+          return other && otherFacts ? { photo: other, palette: otherFacts.palette } : null;
+        })(),
       },
     };
   });
@@ -70,9 +83,11 @@ interface Props {
   nextPhotoAll: { slug: string; title: string } | null;
   prevPhotoCat: { slug: string; title: string } | null;
   nextPhotoCat: { slug: string; title: string } | null;
+  facts: PhotoFacts | null;
+  rhyme: { photo: CollectionEntry<'photos'>; palette: { hex: string; weight: number }[] } | null;
 }
 
-const { photo, clientPhotos, writtenAbout, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat } = Astro.props;
+const { photo, clientPhotos, writtenAbout, prevPhotoAll, nextPhotoAll, prevPhotoCat, nextPhotoCat, facts, rhyme } = Astro.props;
 const { Content } = await photo.render();
 const { title, category, date, image, alt, location, cameraSpecs } = photo.data;
 
@@ -96,6 +111,24 @@ const ambient = clientPhotos[initialIndex]?.thumb ?? display.src;
 // at all. Social previews get their own JPEG at the size the platforms expect.
 const social = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpeg' });
 const description = metaDescription(photo.body, alt);
+
+const dateLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const palette = (facts?.palette ?? []).map((s) => ({ hex: s.hex, weight: Number(s.weight.toFixed(3)) }));
+// Everything the Labs scripts need, from the file and the measurements, nothing else.
+const photoFacts = JSON.stringify({
+  slug: photo.slug,
+  title,
+  date: dateLabel,
+  location: location || null,
+  camera,
+  focal: specs.focalLength?.replace(/\s*\(35mm eq\)/, '').replace(/\.0mm$/, 'mm') ?? null,
+  aperture: specs.aperture ?? null,
+  shutter: specs.shutterSpeed ?? null,
+  iso: specs.iso ?? null,
+  ev: facts?.ev ?? null,
+  full: display.src,
+  palette,
+}).replace(/</g, '\\u003c');
 ---
 
 <PhotoLayout
@@ -187,6 +220,19 @@ const description = metaDescription(photo.body, alt);
       </a>
     </nav>
 
+    <!-- Labs: tools for looking at the photograph. -->
+    <div class="labs-only flex flex-wrap items-center justify-center gap-2 pb-2 text-body-sm">
+      <button type="button" data-viewfinder aria-pressed="false" class="labs-tool">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Viewfinder <kbd class="hidden sm:inline font-mono text-[10px] opacity-60">V</kbd>
+      </button>
+      <button type="button" data-settings-card class="labs-tool">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><rect x="7" y="6" width="10" height="8"/><path d="M7 17h10"/></svg>
+        Settings card
+      </button>
+      <span class="text-text-secondary text-caption px-2">Press and hold the photograph to look closer</span>
+    </div>
+
     <!-- Metadata and Content: Balanced 2-Column Spread on Desktop -->
     <div class="mt-8 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -234,6 +280,39 @@ const description = metaDescription(photo.body, alt);
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {rhyme && (
+            <section aria-labelledby="rhyme-heading" class="labs-only pt-6 border-t border-subtle">
+              <h2 id="rhyme-heading" class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-3">
+                Colour rhyme
+              </h2>
+              <a href={`/photo/${rhyme.photo.slug}`} class="group flex items-center gap-4 no-underline">
+                <Image
+                  src={rhyme.photo.data.image}
+                  alt={rhyme.photo.data.alt}
+                  width={240}
+                  widths={[120, 240]}
+                  sizes="120px"
+                  class="w-[120px] h-auto max-h-[120px] object-contain rounded-md bg-surface-overlay"
+                />
+                <span class="min-w-0">
+                  <span class="block font-display text-body-lg text-text-primary group-hover:text-text-accent transition-colors duration-300">
+                    {rhyme.photo.data.title}
+                  </span>
+                  <span class="block text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary mt-0.5">
+                    {rhyme.photo.data.date.getUTCFullYear()} &middot; the same colours, another day
+                  </span>
+                  <span class="mt-2 flex flex-col gap-1" aria-hidden="true">
+                    {[palette, rhyme.palette].map((p) => (
+                      <span class="flex h-2 w-40 overflow-hidden rounded-full">
+                        {p.map((c) => <span style={`background:${c.hex};flex:${c.weight}`}></span>)}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </a>
             </section>
           )}
         </div>
@@ -306,11 +385,26 @@ const description = metaDescription(photo.body, alt);
       </div>
     </div>
   </div>
+
+  <dialog id="settings-card-dialog" class="settings-card-dialog rounded-2xl border border-subtle bg-surface-card text-text-primary p-4 sm:p-6 max-w-[min(92vw,480px)] w-full">
+    <img alt={`Settings card for ${title}`} class="w-full h-auto rounded-lg border border-subtle" />
+    <div class="mt-4 flex flex-wrap items-center gap-2 justify-end">
+      <button type="button" data-card-share class="labs-tool" hidden>Share</button>
+      <a data-card-save class="labs-tool no-underline">Save image</a>
+      <form method="dialog"><button class="labs-tool">Close</button></form>
+    </div>
+  </dialog>
+  <script type="application/json" id="photo-facts" set:html={photoFacts} />
 </PhotoLayout>
 
 <script>
   import { ALL_FILTER, getActiveFilter, withFilter } from '../../utils/filter';
   import { onSwipe } from '../../scripts/swipe';
+  import { labsOn } from '../../scripts/labs';
+  import { attachLoupe, loupeEngaged } from '../../scripts/loupe';
+  import { attachViewfinder, readFacts } from '../../scripts/viewfinder';
+  import { attachSettingsCard } from '../../scripts/settings-card';
+  import { markSeen } from '../../scripts/seen';
 
   const filter = getActiveFilter();
 
@@ -334,5 +428,23 @@ const description = metaDescription(photo.body, alt);
     const link = document.getElementById(id) as HTMLAnchorElement | null;
     if (link && !link.classList.contains('hidden') && link.getAttribute('href') !== '#') link.click();
   };
-  if (theatre) onSwipe(theatre, { left: () => follow('next-link'), right: () => follow('prev-link') });
+  if (theatre) {
+    onSwipe(theatre, {
+      left: () => follow('next-link'),
+      right: () => follow('prev-link'),
+      enabled: () => !loupeEngaged(),
+    });
+  }
+
+  // Labs.
+  const facts = readFacts();
+  const img = document.getElementById('vt-photo') as HTMLImageElement | null;
+  if (labsOn() && facts && img) {
+    markSeen(facts.slug);
+    attachLoupe(img, facts.full);
+    attachViewfinder(img, facts, [...document.querySelectorAll<HTMLButtonElement>('[data-viewfinder]')]);
+    const cardButton = document.querySelector<HTMLButtonElement>('[data-settings-card]');
+    const dialog = document.getElementById('settings-card-dialog') as HTMLDialogElement | null;
+    if (cardButton && dialog) attachSettingsCard(facts, cardButton, dialog);
+  }
 </script>

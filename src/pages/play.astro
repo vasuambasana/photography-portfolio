@@ -1,0 +1,226 @@
+---
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LabsGate from '../components/labs/LabsGate.astro';
+import { cameraName } from '../utils/camera';
+import { parseFocal, parseShutter } from '../utils/exposure';
+import { DIALS } from '../utils/game';
+
+// Every photograph whose file recorded all three settings. Focal length only counts when
+// it is comparable: a phone's 35mm-equivalent figure, or a real camera's lens. A phone's
+// raw 6.4mm would be unguessable, so those photographs sit this game out.
+const photos = (await getCollection('photos'))
+  .filter((p) => {
+    const s = p.data.cameraSpecs;
+    const comparable = /35mm eq/i.test(s?.focalLength ?? '') || /canon/i.test(s?.body ?? '');
+    return parseShutter(s?.shutterSpeed) && Number(s?.iso) > 0 && parseFocal(s?.focalLength) && comparable;
+  })
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+
+const rounds = await Promise.all(
+  photos.map(async (p) => {
+    const s = p.data.cameraSpecs!;
+    const img = await getImage({ src: p.data.image, width: 1200, format: 'webp' });
+    return {
+      slug: p.slug,
+      title: p.data.title,
+      alt: p.data.alt,
+      camera: cameraName(s.body) ?? '',
+      src: img.src,
+      width: img.attributes.width,
+      height: img.attributes.height,
+      shutter: parseShutter(s.shutterSpeed)!,
+      shutterLabel: s.shutterSpeed!,
+      iso: Number(s.iso),
+      focal: parseFocal(s.focalLength)!,
+      focalLabel: s.focalLength!.replace(/\.0mm/, 'mm'),
+    };
+  })
+);
+const roundsJson = JSON.stringify(rounds).replace(/</g, '\\u003c');
+---
+
+<BaseLayout
+  title="Guess the exposure"
+  description="One photograph a day from the archive. Guess its shutter speed, ISO and focal length, then see the real settings from the file."
+  noindex={true}
+>
+  <LabsGate what="Guess the exposure" />
+
+  <section class="labs-only section-container max-w-3xl mx-auto pt-4 pb-16" aria-labelledby="play-heading">
+    <header class="flex flex-wrap items-end justify-between gap-3 mb-6">
+      <div>
+        <p class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-secondary mb-1">
+          <span id="play-mode">Today's photograph</span> &middot; <span id="play-day"></span>
+        </p>
+        <h1 id="play-heading" class="font-display text-display-md text-text-primary">Guess the exposure</h1>
+      </div>
+      <p id="play-streak" class="text-xs font-mono text-text-secondary"></p>
+    </header>
+
+    <figure class="rounded-2xl overflow-hidden bg-black border border-subtle flex items-center justify-center p-2">
+      <img id="play-img" alt="" class="max-h-[60vh] w-auto h-auto object-contain" />
+    </figure>
+    <p id="play-camera" class="mt-3 text-xs font-mono text-text-secondary"></p>
+
+    <form id="play-form" class="mt-6 space-y-5">
+      {DIALS.map((d) => (
+        <label class="block">
+          <span class="flex items-baseline justify-between mb-1">
+            <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">{d.label}</span>
+            <output data-readout={d.key} class="font-mono text-body-md text-text-primary"></output>
+          </span>
+          <input type="range" name={d.key} min={d.min} max={d.max} step="1" value={d.start} class="play-dial w-full" />
+        </label>
+      ))}
+      <button type="submit" class="labs-tool !bg-text-primary !text-surface-main">Check my guess</button>
+    </form>
+
+    <div id="play-result" class="hidden mt-8" aria-live="polite">
+      <h2 class="font-display text-display-md text-text-primary mb-1"><a id="play-title" class="no-underline hover:text-text-accent"></a></h2>
+      <p id="play-total" class="text-body-md text-text-secondary mb-4"></p>
+      <table class="w-full text-body-sm">
+        <thead>
+          <tr class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary text-left">
+            <th class="py-2 font-normal"></th><th class="py-2 font-normal">You</th><th class="py-2 font-normal">The file</th><th class="py-2 font-normal text-right">Stops out</th>
+          </tr>
+        </thead>
+        <tbody id="play-rows" class="font-mono"></tbody>
+      </table>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <button type="button" id="play-share" class="labs-tool">Share result</button>
+        <button type="button" id="play-practice" class="labs-tool">Practise on another</button>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/json" id="play-rounds" set:html={roundsJson} />
+  <script>
+    import { DIALS, dailyIndex, dayNumber, dialScore, formatFocal, formatIso, formatShutterStop, markFor, MARK_EMOJI, nextStreak, shareText } from '../utils/game';
+    import type { Mark } from '../utils/game';
+    import { stopsBetween } from '../utils/exposure';
+    import { labsOn } from '../scripts/labs';
+
+    interface Round {
+      slug: string; title: string; alt: string; camera: string; src: string; width: number; height: number;
+      shutter: number; shutterLabel: string; iso: number; focal: number; focalLabel: string;
+    }
+    interface Played { day: number; streak: number; slug: string; guesses: Record<string, number>; }
+
+    const rounds: Round[] = JSON.parse(document.getElementById('play-rounds')!.textContent || '[]');
+    const today = dayNumber(new Date());
+    const dayLabel = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    const form = document.getElementById('play-form') as HTMLFormElement;
+    const img = document.getElementById('play-img') as HTMLImageElement;
+    const result = document.getElementById('play-result')!;
+    const format = { shutter: formatShutterStop, iso: formatIso, focal: formatFocal } as Record<string, (v: number) => string>;
+    const actualOf = (r: Round) => ({ shutter: r.shutter, iso: r.iso, focal: r.focal }) as Record<string, number>;
+    const labelOf = (r: Round) => ({ shutter: r.shutterLabel, iso: `ISO ${r.iso}`, focal: r.focalLabel }) as Record<string, string>;
+
+    const load = (): Played | null => {
+      try { return JSON.parse(localStorage.getItem('play') ?? 'null'); } catch { return null; }
+    };
+    const save = (p: Played) => {
+      try { localStorage.setItem('play', JSON.stringify(p)); } catch { /* not remembered */ }
+    };
+
+    let round = rounds[dailyIndex(today, rounds.length)];
+    let practice = false;
+    let lastMarks: Mark[] = [];
+    let lastTotal = 0;
+
+    const readouts = () =>
+      DIALS.forEach((d) => {
+        const input = form.elements.namedItem(d.key) as HTMLInputElement;
+        const out = document.querySelector(`[data-readout="${d.key}"]`)!;
+        out.textContent = format[d.key](d.value(Number(input.value)));
+      });
+
+    function show(r: Round) {
+      round = r;
+      img.src = r.src;
+      img.width = r.width;
+      img.height = r.height;
+      img.alt = r.alt;
+      document.getElementById('play-camera')!.textContent = r.camera ? `Made on a ${r.camera}` : '';
+      document.getElementById('play-mode')!.textContent = practice ? 'Practice' : "Today's photograph";
+      DIALS.forEach((d) => ((form.elements.namedItem(d.key) as HTMLInputElement).value = String(d.start)));
+      readouts();
+      form.classList.remove('hidden');
+      result.classList.add('hidden');
+    }
+
+    function reveal(guesses: Record<string, number>) {
+      const actual = actualOf(round);
+      const labels = labelOf(round);
+      lastMarks = [];
+      lastTotal = 0;
+      const rows = DIALS.map((d) => {
+        const guess = d.value(guesses[d.key]);
+        const stops = stopsBetween(guess, actual[d.key]);
+        const mark = markFor(stops);
+        lastMarks.push(mark);
+        lastTotal += dialScore(guess, actual[d.key]);
+        return `<tr class="border-t border-subtle"><td class="py-2 font-body text-text-secondary">${d.label}</td><td class="py-2 text-text-primary">${format[d.key](guess)}</td><td class="py-2 text-text-primary">${labels[d.key]}</td><td class="py-2 text-right">${stops.toFixed(1)} ${MARK_EMOJI[mark]}</td></tr>`;
+      });
+      document.getElementById('play-rows')!.innerHTML = rows.join('');
+      const title = document.getElementById('play-title') as HTMLAnchorElement;
+      title.textContent = round.title;
+      title.href = `/photo/${round.slug}`;
+      document.getElementById('play-total')!.textContent = `${lastTotal} of ${DIALS.length * 100}. Every stop out costs 25.`;
+      form.classList.add('hidden');
+      result.classList.remove('hidden');
+      document.getElementById('play-share')!.classList.toggle('hidden', practice);
+    }
+
+    function streakLine() {
+      const played = load();
+      const n = played && (played.day === today || played.day === today - 1) ? played.streak : 0;
+      document.getElementById('play-streak')!.textContent = n > 1 ? `${n} days in a row` : '';
+    }
+
+    form.addEventListener('input', readouts);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const guesses = Object.fromEntries(DIALS.map((d) => [d.key, Number((form.elements.namedItem(d.key) as HTMLInputElement).value)]));
+      if (!practice) {
+        const previous = load();
+        save({ day: today, streak: nextStreak(previous, today), slug: round.slug, guesses });
+        streakLine();
+      }
+      reveal(guesses);
+    });
+
+    document.getElementById('play-practice')!.addEventListener('click', () => {
+      practice = true;
+      let next = round;
+      while (rounds.length > 1 && next.slug === round.slug) next = rounds[Math.floor(Math.random() * rounds.length)];
+      show(next);
+      scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('play-share')!.addEventListener('click', async (e) => {
+      const text = shareText(dayLabel, lastMarks, lastTotal, `${location.origin}/play`);
+      const button = e.currentTarget as HTMLButtonElement;
+      try {
+        if (navigator.share) await navigator.share({ text });
+        else {
+          await navigator.clipboard.writeText(text);
+          button.textContent = 'Copied';
+        }
+      } catch {
+        // Dismissed.
+      }
+    });
+
+    if (labsOn() && rounds.length) {
+      document.getElementById('play-day')!.textContent = dayLabel;
+      show(round);
+      streakLine();
+      const played = load();
+      if (played && played.day === today && played.slug === round.slug) reveal(played.guesses);
+    }
+  </script>
+</BaseLayout>

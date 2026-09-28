@@ -30,3 +30,46 @@ export function developDuration(shutter: string | undefined): number {
   const clamped = Math.min(1, Math.max(0, t));
   return Math.round(DEVELOP_MIN_MS + clamped * (DEVELOP_MAX_MS - DEVELOP_MIN_MS));
 }
+
+/** "f/2.8" -> 2.8. */
+export function parseAperture(value: string | undefined): number | null {
+  const n = Number(value?.trim().replace(/^f\//i, ''));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/** "200.0mm" -> 200, "23mm (35mm eq)" -> 23. The number as recorded, nothing converted. */
+export function parseFocal(value: string | undefined): number | null {
+  const match = value?.trim().match(/^(\d+(?:\.\d+)?)\s*mm/i);
+  const n = match ? Number(match[1]) : NaN;
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+interface Specs {
+  aperture?: string;
+  shutterSpeed?: string;
+  iso?: string;
+}
+
+/**
+ * Exposure value at ISO 100: how much light the scene had. Big numbers are bright
+ * (sunlit snow is about 16), small numbers are dark (a lit street at night is about 5).
+ * Null unless the file recorded aperture, shutter and ISO; nothing is estimated.
+ */
+export function exposureValue(specs: Specs | undefined): number | null {
+  const t = parseShutter(specs?.shutterSpeed);
+  const n = parseAperture(specs?.aperture);
+  const iso = Number(specs?.iso);
+  if (t === null || n === null || !(iso > 0)) return null;
+  return Math.log2((n * n) / t) - Math.log2(iso / 100);
+}
+
+/** The gap between two values in stops (doublings), always positive. */
+export function stopsBetween(a: number, b: number): number {
+  return Math.abs(Math.log2(a / b));
+}
+
+/** 0.004 -> "1/250s", 20 -> "20s", 0.5 -> "1/2s", 1.3 -> "1.3s". */
+export function formatShutter(seconds: number): string {
+  if (seconds >= 1) return `${Number(seconds.toFixed(1))}s`;
+  return `1/${Math.round(1 / seconds)}s`;
+}
