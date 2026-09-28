@@ -2,6 +2,12 @@
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   darkMode: 'class',
+  // Hover styles only on devices that really hover. On iOS a :hover change (the photo
+  // cards' title overlay) makes the first tap show the hover state instead of following
+  // the link, so a photo looked as if it would not open until tapped twice.
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {

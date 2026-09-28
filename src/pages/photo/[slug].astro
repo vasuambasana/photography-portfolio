@@ -301,6 +301,7 @@ const description = metaDescription(photo.body, alt);
 
 <script>
   import { ALL_FILTER, getActiveFilter, withFilter } from '../../utils/filter';
+  import { onSwipe } from '../../scripts/swipe';
 
   const filter = getActiveFilter();
 
@@ -316,4 +317,13 @@ const description = metaDescription(photo.body, alt);
       link.classList.add('hidden');
     }
   }
+
+  // On touch screens, swipe the photograph itself to step to the next or previous one,
+  // in the same order as the links above (which already respect the gallery filter).
+  const theatre = document.querySelector<HTMLElement>('.photo-theatre');
+  const follow = (id: string) => {
+    const link = document.getElementById(id) as HTMLAnchorElement | null;
+    if (link && !link.classList.contains('hidden') && link.getAttribute('href') !== '#') link.click();
+  };
+  if (theatre) onSwipe(theatre, { left: () => follow('next-link'), right: () => follow('prev-link') });
 </script>

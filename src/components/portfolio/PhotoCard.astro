@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { Photo } from '../../utils/photos';
-import { developDuration, exposureValue } from '../../utils/exposure';
+import { developDuration } from '../../utils/exposure';
 
 export interface Props {
   photo: Photo;
@@ -30,13 +30,11 @@ const {
 
 const { title, alt, image, category, location, cameraSpecs } = photo.data;
 const develop = developDuration(cameraSpecs?.shutterSpeed);
-const ev = exposureValue(cameraSpecs);
 ---
 
 <div
   data-category={category}
   data-slug={photo.slug}
-  data-ev={ev === null ? '' : ev.toFixed(2)}
   class:list={[
     'group relative overflow-hidden bg-surface-overlay mb-3 md:mb-4 break-inside-avoid',
     rounded,

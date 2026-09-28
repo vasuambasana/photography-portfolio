@@ -1,7 +1,3 @@
-import type { CollectionEntry } from 'astro:content';
-
-type Specs = CollectionEntry<'photos'>['data']['cameraSpecs'];
-
 /** "1/250s" -> 0.004, "20s" -> 20. Anything else is null: no guessing. */
 export function parseShutter(value: string | undefined): number | null {
   const raw = value?.trim().replace(/s$/, '');
@@ -15,24 +11,6 @@ export function parseShutter(value: string | undefined): number | null {
 
   const seconds = Number(raw);
   return Number.isFinite(seconds) && seconds > 0 ? seconds : null;
-}
-
-/** "f/2.8" -> 2.8 */
-export function parseAperture(value: string | undefined): number | null {
-  const n = Number(value?.trim().replace(/^f\//i, ''));
-  return Number.isFinite(n) && n > 0 ? n : null;
-}
-
-/**
- * Exposure value normalised to ISO 100: how bright the scene was, in stops.
- * Higher is brighter. Null unless the file recorded all three settings.
- */
-export function exposureValue(specs: Specs): number | null {
-  const t = parseShutter(specs?.shutterSpeed);
-  const n = parseAperture(specs?.aperture);
-  const iso = Number(specs?.iso);
-  if (t === null || n === null || !(iso > 0)) return null;
-  return Math.log2((n * n) / t) - Math.log2(iso / 100);
 }
 
 // The "develop" reveal maps a photo's own shutter speed onto how long it takes to

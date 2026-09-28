@@ -1,16 +1,50 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PhotoCard from '../components/portfolio/PhotoCard.astro';
 import JournalCard from '../components/journal/JournalCard.astro';
 import { getCollection } from 'astro:content';
 import { sortPhotos } from '../utils/photos';
 import { decorate, publishedJournal, sortJournal } from '../utils/journal';
+import { developDuration } from '../utils/exposure';
+import type { Photo } from '../utils/photos';
 
 const allPhotos = await getCollection('photos');
 const featuredPhotos = sortPhotos(allPhotos.filter((p) => p.data.featured)).slice(0, 12);
 
+// The share card and the no-JavaScript hero stay fixed on one photograph.
 const heroPhoto = allPhotos.find((p) => p.slug === 'twilight-over-manhattan') ?? sortPhotos(allPhotos)[0];
+
+// Every visit shows a different photograph in the hero. Two pools, so a photo is never
+// cropped far from its own shape: landscape frames for wide screens, portrait frames for
+// phones. Only the categories the hero's tagline names, so a stranger's portrait never
+// ends up under the headline.
+const HERO_CATEGORIES = new Set(['architecture', 'nature', 'night']);
+const aspect = (p: Photo) => p.data.image.width / p.data.image.height;
+const heroCandidates = sortPhotos(allPhotos).filter((p) => HERO_CATEGORIES.has(p.data.category));
+
+async function heroEntry(p: Photo, widths: number[]) {
+  const variants = await Promise.all(widths.map((width) => getImage({ src: p.data.image, width, format: 'webp' })));
+  return {
+    slug: p.slug,
+    title: p.data.title,
+    alt: p.data.alt,
+    location: p.data.location || '',
+    srcset: variants.map((v, i) => `${v.src} ${widths[i]}w`).join(', '),
+    src: variants[variants.length - 1].src,
+    develop: developDuration(p.data.cameraSpecs?.shutterSpeed),
+  };
+}
+
+const heroPool = {
+  landscape: await Promise.all(heroCandidates.filter((p) => aspect(p) >= 1.3).map((p) => heroEntry(p, [800, 1600, 2400]))),
+  portrait: await Promise.all(
+    heroCandidates.filter((p) => aspect(p) >= 0.45 && aspect(p) <= 0.8).map((p) => heroEntry(p, [800, 1200]))
+  ),
+};
+// JSON inside a script tag: `<` is escaped so no title can ever close the tag early.
+const heroJson = JSON.stringify(heroPool).replace(/</g, '\\u003c');
+const fallback = await heroEntry(heroPhoto, [800, 1600, 2400]);
 
 const journal = sortJournal(publishedJournal(await getCollection('journal')));
 const journalCount = journal.length;
@@ -31,17 +65,48 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
   <section class="relative px-3 sm:px-4 md:px-6 pt-2 pb-6 md:pb-8" aria-labelledby="hero-heading">
     <div class="relative w-full min-h-[72vh] md:min-h-[80vh] rounded-3xl overflow-hidden flex flex-col justify-between p-6 sm:p-8 md:p-14 shadow-2xl border border-white/10">
       
-      <!-- Hero Background Photography -->
-      <Image
-        src={heroPhoto.data.image}
-        alt={heroPhoto.data.alt}
-        width={2400}
-        widths={[800, 1600, 2400]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        class="absolute inset-0 w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out"
-      />
+      <!-- Hero photograph: a different one each visit. The pick happens inline, right
+           here, so the chosen image starts loading at once instead of after a default. -->
+      <script type="application/json" id="hero-pool" set:html={heroJson} />
+      <div class="absolute inset-0" id="hero-frame">
+        <img
+          id="hero-img"
+          class="hero-img absolute inset-0 w-full h-full object-cover object-center scale-105"
+          sizes="100vw"
+          fetchpriority="high"
+          decoding="async"
+          alt=""
+          data-develop
+        />
+        <script is:inline>
+          (() => {
+            const pool = JSON.parse(document.getElementById('hero-pool').textContent);
+            const orientation = matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';
+            const list = pool[orientation].length ? pool[orientation] : pool.landscape;
+            let last = null;
+            try { last = localStorage.getItem('hero-last'); } catch {}
+            let index = Math.floor(Math.random() * list.length);
+            if (list.length > 1 && list[index].slug === last) index = (index + 1) % list.length;
+            const pick = list[index];
+            const img = document.getElementById('hero-img');
+            img.style.setProperty('--develop', pick.develop + 'ms');
+            img.alt = pick.alt;
+            img.srcset = pick.srcset;
+            img.src = pick.src;
+            try { localStorage.setItem('hero-last', pick.slug); } catch {}
+            window.__hero = { orientation, index };
+          })();
+        </script>
+        <noscript>
+          <img
+            src={fallback.src}
+            srcset={fallback.srcset}
+            sizes="100vw"
+            alt={fallback.alt}
+            class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+          />
+        </noscript>
+      </div>
       
       <!-- Multi-layer Atmospheric Gradients for pristine contrast -->
       <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60 backdrop-blur-[0.5px]" />
@@ -87,9 +152,31 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
 
       <!-- Bottom Hero Plaque / Meta -->
       <div class="relative z-10 pt-4 border-t border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-white/75">
-        <div class="flex items-center gap-2">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>Featured: {heroPhoto.data.title}{heroPhoto.data.location && `, ${heroPhoto.data.location}`}</span>
+        <div class="flex items-center gap-1 min-w-0">
+          <button
+            id="hero-next"
+            type="button"
+            class="inline-flex items-center justify-center w-11 h-11 -ml-2.5 shrink-0 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            aria-label="Show another photograph"
+            title="Another photograph"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>
+          </button>
+          <span id="hero-caption" class="truncate" aria-live="polite">
+            Now showing <a id="hero-link" href={`/photo/${heroPhoto.slug}`} class="text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">{heroPhoto.data.title}</a><span id="hero-where">{heroPhoto.data.location && `, ${heroPhoto.data.location}`}</span>
+          </span>
+          <script is:inline>
+            (() => {
+              const pool = JSON.parse(document.getElementById('hero-pool').textContent);
+              const h = window.__hero;
+              if (!h) return;
+              const pick = pool[h.orientation].length ? pool[h.orientation][h.index] : pool.landscape[h.index];
+              const link = document.getElementById('hero-link');
+              link.href = '/photo/' + pick.slug;
+              link.textContent = pick.title;
+              document.getElementById('hero-where').textContent = pick.location ? ', ' + pick.location : '';
+            })();
+          </script>
         </div>
         <div class="flex items-center gap-4 text-white/60 text-[11px]">
           <span>{allPhotos.length} PHOTOGRAPHS</span>
@@ -102,6 +189,10 @@ const social = await getImage({ src: heroPhoto.data.image, width: 1200, height: 
 
     </div>
   </section>
+
+  <script>
+    import '../scripts/hero';
+  </script>
 
   <!-- Featured Work (Seamless Masonry Showcase) -->
   {featuredPhotos.length > 0 && (

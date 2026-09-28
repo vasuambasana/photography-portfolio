@@ -100,8 +100,10 @@ What exists, so it gets reused rather than rebuilt:
 | Journal previews | `scripts/photo-preview.ts` | Hover or focus a photo link in an entry to see the frame and its settings |
 | Theme aperture | `ThemeToggle.astro` | New theme opens through a hexagonal iris from the toggle |
 | Ambient + lights down | `.photo-ambient`, `.lights-down` | Blurred copy of the photo behind it; page dims while it fills the screen |
-| Sort by light | gallery `?sort=light`, `exposureValue()` | Darkest exposure first; filter and sort changes animate |
+| Gallery filter reflow | gallery page script | Filter changes animate; only on-screen cards are named |
 | Lightbox | `ClickableImage.tsx`, `Lightbox.tsx` | Zooms out of the page photo; swipe down to close, sideways to step |
+| Home hero | `pages/index.astro`, `scripts/hero.ts` | A different photograph each visit, landscape pool on wide screens and portrait on phones; steps only when asked (button or swipe), never on its own |
+| Swipe | `scripts/swipe.ts` `onSwipe()` | Horizontal one-finger swipe; vertical scroll and pinch stay native. Photo page and hero use it |
 
 Any new element given a `view-transition-name` must be unique on the page at the moment
 of the transition, or the whole transition is skipped. Name elements just before a
