@@ -128,9 +128,6 @@ const labsDefault = env('LABS_DEFAULT')
     <!-- Shown only while Labs is on, so nobody forgets they are looking at experiments. -->
     <div class="labs-only labs-pill fixed bottom-3 left-3 z-30 flex items-center gap-1 rounded-full border border-subtle bg-surface-card/90 backdrop-blur-nav shadow-sm pl-3 pr-1 py-1 text-[10px] font-mono uppercase tracking-[0.15em] text-text-secondary">
       <a href="/labs" class="no-underline text-text-secondary hover:text-text-primary">Labs on</a>
-      <button type="button" data-darkroom-leave class="darkroom-only rounded-full px-2 py-1 hover:bg-surface-overlay hover:text-text-primary">
-        Lights on
-      </button>
       <button type="button" data-labs-off class="rounded-full px-2 py-1 hover:bg-surface-overlay hover:text-text-primary" aria-label="Turn Labs off">
         Off
       </button>
@@ -139,7 +136,6 @@ const labsDefault = env('LABS_DEFAULT')
     <script>
       import '../scripts/develop';
       import '../scripts/labs';
-      import '../scripts/darkroom';
     </script>
 
     <!-- Image Protection Script -->

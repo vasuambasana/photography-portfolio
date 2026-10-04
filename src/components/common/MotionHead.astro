@@ -32,9 +32,6 @@
       if (stored) labs = stored === 'on';
     } catch {}
     if (labs) root.classList.add('labs');
-    // The darkroom (scripts/darkroom.ts) lasts for the session, and must be in place
-    // before the first paint or every page would flash white on the way in.
-    try { if (labs && sessionStorage.getItem('darkroom') === 'on') root.classList.add('darkroom'); } catch {}
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
       root.classList.add('reduce-motion');
       return;

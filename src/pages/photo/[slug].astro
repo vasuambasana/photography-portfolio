@@ -146,10 +146,10 @@ const rhymeRows = rhyme
 const accent = facts?.accent;
 const rgb = (c: number[]) => c.join(' ');
 const accentCss = accent
-  ? `html.labs:not(.darkroom){--color-text-accent:${rgb(accent.light)};` +
+  ? `html.labs{--color-text-accent:${rgb(accent.light)};` +
     `--color-surface-main:${rgb(tintedSurface([250, 250, 250], accent.light, [113, 113, 122], 0.04))};` +
     `--selection-bg:rgba(${accent.light.join(',')},.22)}` +
-    `html.labs.dark:not(.darkroom){--color-text-accent:${rgb(accent.dark)};` +
+    `html.labs.dark{--color-text-accent:${rgb(accent.dark)};` +
     `--color-surface-main:${rgb(tintedSurface([9, 9, 11], accent.dark, [161, 161, 170], 0.08))};` +
     `--selection-bg:rgba(${accent.dark.join(',')},.3)}`
   : '';

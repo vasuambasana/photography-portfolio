@@ -127,7 +127,6 @@ the class and the guard, move its row up into the table above, and take it off `
 | Phone or camera? | `scripts/phone-or-camera.ts` | Second game on `/play` (`#phone`); answer is the recorded make (`isPhone()`) |
 | After dark, shake | `pages/index.astro`, `scripts/hero.ts` | After 8pm local, the hero leads with EV < 5 photos; shake a phone for another |
 | Guess the exposure | `pages/play.astro`, `utils/game.ts` | Daily photo, three log-scale dials, scored in stops |
-| Darkroom | `scripts/darkroom.ts` | Konami code or hold the theme button: safelight tokens, photos develop from white |
 | Torch | `pages/404.astro` | The lost page is dark; a torch follows the pointer or focus |
 
 Colours measured from photographs (swatches, palette bars) arrive as data in inline styles

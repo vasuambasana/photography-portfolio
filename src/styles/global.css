@@ -805,34 +805,6 @@ html.labs.hero-night .hero-night-note {
 }
 
 
-/* The darkroom (Labs, hidden; scripts/darkroom.ts). Safelight: the theme tokens go red and
-   dim, whatever the theme was. Photographs come up out of white, like a print in the
-   developer, over three times their usual time, and end exactly as they are. */
-html.darkroom {
-  --color-surface-main: 14 4 3;
-  --color-surface-card: 24 7 5;
-  --color-surface-overlay: 36 10 8;
-  --color-text-primary: 255 92 70;
-  --color-text-secondary: 190 60 46;
-  --color-text-accent: 255 128 96;
-  --border-subtle: rgba(255, 80, 60, 0.18);
-  --glass-bg: rgba(14, 4, 3, 0.8);
-  --selection-bg: rgba(255, 80, 60, 0.3);
-  color-scheme: dark;
-}
-
-html:not(.darkroom) .darkroom-only {
-  display: none;
-}
-
-html.darkroom.js:not(.reduce-motion) img[data-develop]:not(.developed) {
-  filter: brightness(2.6) contrast(0.35) saturate(0);
-}
-
-html.darkroom.js:not(.reduce-motion) img[data-develop]:not(.no-develop) {
-  transition-duration: calc(var(--develop, 480ms) * 3), 700ms, 300ms;
-}
-
 /* The lost page's torch (Labs, pages/404.astro). */
 .torch {
   display: none;
